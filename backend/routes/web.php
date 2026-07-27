@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\PenggunaController;
+use App\Http\Controllers\RdirektoratController;
+use App\Http\Controllers\RprojectController;
+use App\Http\Controllers\RrkapController;
+use App\Http\Controllers\RcatalogController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\HprojectController;
+use App\Http\Controllers\LaporanController;
+
+Route::redirect('/', '/login');
+
+Route::get('login', [LoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
+Route::post('login', [LoginController::class, 'login'])->middleware('guest');
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    // Profil / Ubah Password
+    Route::post('/change-password', [PenggunaController::class, 'changePassword'])->name('change.password');
+    // Admin Only Routes
+    Route::middleware(\App\Http\Middleware\CheckLevelAdmin::class)->group(function () {
+        Route::resource('pengguna', PenggunaController::class);
+        Route::resource('rdirektorat', RdirektoratController::class);
+        Route::resource('rproject', RprojectController::class);
+        Route::resource('rrkap', RrkapController::class);
+        Route::resource('rcatalog', RcatalogController::class);
+        Route::get('rcatalog/{id}/projects', [RcatalogController::class, 'getProjects']);
+        Route::resource('project', ProjectController::class);
+    });
+
+    Route::get('/hproject/{project_id}', [HprojectController::class, 'index'])->name('hproject.index');
+    Route::post('/hproject', [HprojectController::class, 'store'])->name('hproject.store');
+    Route::put('/hproject/{id}', [HprojectController::class, 'update'])->name('hproject.update');
+    Route::delete('/hproject/{id}', [HprojectController::class, 'destroy'])->name('hproject.destroy');
+
+    Route::get('/laporan/progress', [LaporanController::class, 'progressIndex'])->name('laporan.progress');
+});

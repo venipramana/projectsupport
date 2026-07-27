@@ -1,0 +1,42 @@
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: pm_nginx
+    ports:
+      - "${NGINX_PORT:-8000}:80"
+    volumes:
+      - ./backend:/var/www/backend
+      - ./frontend:/var/www/frontend
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - pm-network
+
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: pm_php
+    volumes:
+      - ./backend:/var/www/backend
+    environment:
+      - DB_CONNECTION=${DB_CONNECTION}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    networks:
+      - pm-network
+      - external_default
+
+networks:
+  pm-network:
+    driver: bridge
+
+  # Network untuk terhubung ke container MySQL di luar environment ini
+  external_default:
+    name: db_default 
+    external: true
