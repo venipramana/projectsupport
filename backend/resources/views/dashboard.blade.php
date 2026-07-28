@@ -147,6 +147,19 @@
         background: rgba(59, 130, 246, 0.15);
         border-color: rgba(59, 130, 246, 0.3);
     }
+    .list-item.danger-row {
+        background: #dc2626 !important;
+        color: #ffffff !important;
+        border: 1px solid #ef4444 !important;
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
+    }
+    .list-item.danger-row:hover {
+        background: #b91c1c !important;
+        border-color: #f87171 !important;
+    }
+    .list-item.danger-row .list-item-title {
+        color: #ffffff !important;
+    }
     .list-item-title {
         font-weight: 500;
         font-size: 0.95rem;
@@ -290,12 +303,37 @@
                 </div>
                 <div class="list-container">
                     @forelse($dev_projects as $proj)
+                        @php
+                            $today = \Carbon\Carbon::today();
+                            $tglAkhir = $proj->tanggal_akhir ? \Carbon\Carbon::parse($proj->tanggal_akhir)->startOfDay() : null;
+                            if ($tglAkhir) {
+                                $diffDays = (int) $today->diffInDays($tglAkhir, false);
+                                if ($diffDays > 0) {
+                                    $statusJatuhTempo = $diffDays . " hari lagi";
+                                    $colorJatuhTempo = "#34d399";
+                                } elseif ($diffDays === 0) {
+                                    $statusJatuhTempo = "Hari ini";
+                                    $colorJatuhTempo = "#fbbf24";
+                                } else {
+                                    $statusJatuhTempo = "Terlambat " . abs($diffDays) . " hari";
+                                    $colorJatuhTempo = "#f87171";
+                                }
+                                $infoJatuhTempo = $tglAkhir->format('d-m-Y') . " (" . $statusJatuhTempo . ")";
+                            } else {
+                                $infoJatuhTempo = "-";
+                                $colorJatuhTempo = "var(--text-muted)";
+                            }
+                        @endphp
                         <div class="list-item" title="{{ $proj->project_name }}">
-                            <div style="display: flex; flex-direction: column; overflow: hidden;">
+                            <div style="display: flex; flex-direction: column; overflow: hidden; gap: 0.2rem;">
                                 <span class="list-item-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $proj->project_name }}</span>
                                 <span style="font-size: 0.75rem; color: var(--text-muted);">{{ $proj->direktorat }} - {{ $proj->pic_name }}</span>
+                                <span style="font-size: 0.75rem; color: {{ $colorJatuhTempo }}; font-weight: 500;">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; vertical-align: -1px; margin-right: 2px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    Jatuh Tempo: {{ $infoJatuhTempo }}
+                                </span>
                             </div>
-                            <span class="list-item-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">DEV</span>
+                            <span class="list-item-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; align-self: flex-start;">DEV</span>
                         </div>
                     @empty
                         <div class="empty-state">Tidak ada project Development.</div>
@@ -311,12 +349,27 @@
                 </div>
                 <div class="list-container">
                     @forelse($qa_projects as $proj)
-                        <div class="list-item" title="{{ $proj->project_name }}">
-                            <div style="display: flex; flex-direction: column; overflow: hidden;">
+                        @php
+                            $today = \Carbon\Carbon::today();
+                            $tglUpdate = $proj->tgl_update ? \Carbon\Carbon::parse($proj->tgl_update)->startOfDay() : null;
+                            $durasiHari = $tglUpdate ? (int) $tglUpdate->diffInDays($today) : 0;
+                            $isOver14Days = $durasiHari > 14;
+                            $tglUpdateFormatted = $tglUpdate ? $tglUpdate->format('d-m-Y') : '-';
+                        @endphp
+                        <div class="list-item {{ $isOver14Days ? 'danger-row' : '' }}" title="{{ $proj->project_name }}">
+                            <div style="display: flex; flex-direction: column; overflow: hidden; gap: 0.2rem;">
                                 <span class="list-item-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $proj->project_name }}</span>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">{{ $proj->direktorat }} - {{ $proj->pic_name }}</span>
+                                <span style="font-size: 0.75rem; {{ $isOver14Days ? 'color: rgba(255,255,255,0.9);' : 'color: var(--text-muted);' }}">
+                                    {{ $proj->direktorat }} - {{ $proj->pic_name }}
+                                </span>
+                                <span style="font-size: 0.75rem; font-weight: 500; {{ $isOver14Days ? 'color: #ffffff;' : 'color: #fde68a;' }}">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; vertical-align: -1px; margin-right: 2px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    Durasi: {{ $durasiHari }} hari (Tgl Update: {{ $tglUpdateFormatted }})
+                                </span>
                             </div>
-                            <span class="list-item-badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">QA</span>
+                            <span class="list-item-badge" style="align-self: flex-start; {{ $isOver14Days ? 'background: rgba(255,255,255,0.25); color: #ffffff; border: 1px solid rgba(255,255,255,0.4);' : 'background: rgba(245, 158, 11, 0.15); color: #fbbf24;' }}">
+                                QA
+                            </span>
                         </div>
                     @empty
                         <div class="empty-state">Tidak ada project QA / UAT.</div>
