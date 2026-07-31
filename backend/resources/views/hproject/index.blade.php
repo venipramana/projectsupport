@@ -146,6 +146,119 @@
     </div>
 </div>
 
+<!-- Evidence Section: Project Files in MinIO -->
+<div class="evidence-section master-section" style="margin-top: 2.5rem; margin-bottom: 2.5rem;">
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+        <div>
+            <h2 style="font-size: 1.2rem; font-weight: 600; color: var(--primary); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
+                Evidence Project (MinIO Storage)
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.3rem 0 0 0;">Folder Bucket: <span style="font-family: monospace; color: #8c734e;">ises / {{ $project->folder_evidence ?: ('evidence_project_' . $project->id) }}</span></p>
+        </div>
+        <button class="btn btn-primary" onclick="openUploadEvidenceModal()" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Upload Evidence
+        </button>
+    </div>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 50%;">Nama File</th>
+                    <th style="width: 20%;">Ukuran</th>
+                    <th style="width: 20%;">Terakhir Diperbarui</th>
+                    <th style="width: 130px; text-align: center;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($evidenceFiles ?? [] as $ev)
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; background: rgba(117, 95, 62, 0.15); color: var(--primary);">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                            </span>
+                            <span style="font-weight: 500; color: var(--text-main);">{{ $ev['name'] }}</span>
+                        </div>
+                    </td>
+                    <td><span class="badge" style="background: rgba(117, 95, 62, 0.1); color: var(--text-muted); border: 1px solid var(--glass-border);">{{ $ev['size'] }}</span></td>
+                    <td style="color: var(--text-muted); font-size: 0.9rem;">{{ $ev['date'] }}</td>
+                    <td>
+                        <div class="action-buttons" style="justify-content: center; gap: 0.5rem;">
+                            <!-- View Button -->
+                            <a href="{{ route('hproject.evidence.view', ['project_id' => $project->id, 'filename' => $ev['name']]) }}" target="_blank" class="btn-icon" title="View / Preview" style="color: #3b82f6; background: rgba(59, 130, 246, 0.1); display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; text-decoration: none;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </a>
+                            <!-- Download Button -->
+                            <a href="{{ route('hproject.evidence.download', ['project_id' => $project->id, 'filename' => $ev['name']]) }}" class="btn-icon" title="Download" style="color: #10b981; background: rgba(16, 185, 129, 0.1); display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; text-decoration: none;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            </a>
+                            <!-- Delete Button -->
+                            <form action="{{ route('hproject.evidence.destroy', ['project_id' => $project->id, 'filename' => $ev['name']]) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus file evidence \'' + '{{ $ev['name'] }}' + '\'?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-icon btn-delete" title="Delete" style="color: #ef4444; background: rgba(239, 68, 68, 0.1); display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; border: none; cursor: pointer;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="4" class="text-center" style="padding: 3.5rem 2rem; color: var(--text-muted);">
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="rgba(117, 95, 62, 0.3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            <span>Belum ada file evidence untuk project ini di dalam bucket MinIO.</span>
+                            <button type="button" onclick="openUploadEvidenceModal()" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 1rem; margin-top: 0.25rem;">
+                                Upload Sekarang
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Upload Evidence Modal -->
+<div id="uploadEvidenceModal" class="modal">
+    <div class="modal-content" style="max-width: 550px; border: 1px solid var(--glass-border); border-radius: 20px; background: #ffffff; padding: 1.5rem 2rem;">
+        <div class="modal-header" style="border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="display: flex; align-items: center; gap: 0.5rem; color: var(--primary); font-size: 1.25rem; margin: 0;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Upload File Evidence
+            </h2>
+            <button type="button" class="btn-close" onclick="closeModal('uploadEvidenceModal')" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+        <form action="{{ route('hproject.evidence.store', $project->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-body" style="padding: 1.5rem 0;">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="color: var(--text-main); margin-bottom: 0.75rem; display: block; font-weight: 500;">Pilih File (Bisa upload banyak file sekaligus):</label>
+                    <div class="file-drop-area" style="position: relative; padding: 2.5rem 1.5rem; border: 2px dashed rgba(117, 95, 62, 0.4); border-radius: 14px; background: rgba(244, 240, 234, 0.6); text-align: center; transition: all 0.2s ease; cursor: pointer;">
+                        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#755f3e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.75rem; opacity: 0.9;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                        <p style="margin: 0; color: var(--text-main); font-weight: 500; font-size: 1rem;">Klik daerah ini untuk memilih file dari komputer Anda</p>
+                        <p style="margin: 0.4rem 0 0 0; color: var(--text-muted); font-size: 0.85rem;">Mendukung upload multiple file sekaligus (Max 50MB per file)</p>
+                        <input type="file" name="evidences[]" multiple class="form-control" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;" required onchange="updateFileList(this)">
+                    </div>
+                    <div id="selectedFilesList" style="margin-top: 1.2rem; font-size: 0.85rem; color: var(--text-muted); max-height: 160px; overflow-y: auto; background: rgba(255, 255, 255, 0.8); border: 1px solid var(--glass-border); border-radius: 10px; padding: 0.8rem 1rem; display: none;"></div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding-top: 1.2rem; border-top: 1px solid var(--glass-border); display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('uploadEvidenceModal')">Batal</button>
+                <button type="submit" class="btn btn-primary" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    Mulai Upload ke MinIO
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Edit Modal -->
 <div id="editModal" class="modal">
     <div class="modal-content">
@@ -200,12 +313,13 @@
     }
 
     .master-section {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        background: rgba(255, 255, 255, 0.65);
         border: 1px solid var(--glass-border);
         border-radius: 20px;
         padding: 2rem;
         margin-bottom: 2rem;
         backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(117, 95, 62, 0.05);
     }
     
     .detail-section {
@@ -246,7 +360,7 @@
         width: 100%;
         padding: 0.8rem 1rem;
         border-radius: 10px;
-        background: rgba(15, 23, 42, 0.5);
+        background: rgba(255, 255, 255, 0.95);
         border: 1px solid var(--glass-border);
         color: var(--text-main);
         font-family: inherit;
@@ -257,7 +371,7 @@
     .form-control:focus {
         outline: none;
         border-color: var(--primary);
-        box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        box-shadow: 0 0 0 2px rgba(117, 95, 62, 0.2);
     }
 
     .btn {
@@ -277,22 +391,22 @@
     .btn-primary {
         background: linear-gradient(135deg, var(--primary), var(--secondary));
         color: white;
-        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        box-shadow: 0 4px 15px rgba(117, 95, 62, 0.25);
     }
 
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+        box-shadow: 0 6px 20px rgba(117, 95, 62, 0.35);
     }
 
     .btn-secondary {
-        background: var(--glass-bg);
+        background: rgba(255, 255, 255, 0.8);
         color: var(--text-main);
         border: 1px solid var(--glass-border);
     }
 
     .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(117, 95, 62, 0.1);
     }
 
     .alert {
@@ -305,21 +419,22 @@
     .alert-success {
         background: rgba(16, 185, 129, 0.1);
         border: 1px solid rgba(16, 185, 129, 0.3);
-        color: #6ee7b7;
+        color: #059669;
     }
 
     .alert-danger {
         background: rgba(239, 68, 68, 0.1);
         border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #fca5a5;
+        color: #dc2626;
     }
 
     .table-container {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+        background: rgba(255, 255, 255, 0.75);
         border: 1px solid var(--glass-border);
         border-radius: 20px;
         overflow: hidden;
         backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(117, 95, 62, 0.06);
     }
 
     .data-table {
@@ -334,9 +449,9 @@
     }
 
     .data-table th {
-        background: rgba(255, 255, 255, 0.02);
+        background: rgba(117, 95, 62, 0.07);
         font-weight: 600;
-        color: var(--text-muted);
+        color: var(--text-main);
         text-transform: uppercase;
         font-size: 0.8rem;
         letter-spacing: 0.5px;
@@ -351,7 +466,7 @@
     }
 
     .data-table tbody tr:hover {
-        background: rgba(255, 255, 255, 0.02);
+        background: rgba(117, 95, 62, 0.04);
     }
 
     .badge {
@@ -364,7 +479,7 @@
     .progress-bar-container {
         width: 100%;
         height: 8px;
-        background: rgba(255,255,255,0.1);
+        background: rgba(117, 95, 62, 0.15);
         border-radius: 10px;
         position: relative;
         margin-top: 10px;
@@ -400,15 +515,15 @@
         justify-content: center;
         cursor: pointer;
         transition: all 0.2s ease;
-        background: var(--glass-bg);
+        background: rgba(255, 255, 255, 0.8);
         border: 1px solid var(--glass-border);
     }
 
-    .btn-edit { color: #60a5fa; }
-    .btn-edit:hover { background: rgba(96, 165, 250, 0.15); border-color: rgba(96, 165, 250, 0.3); }
+    .btn-edit { color: #3b82f6; }
+    .btn-edit:hover { background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3); }
 
-    .btn-delete { color: #f87171; }
-    .btn-delete:hover { background: rgba(248, 113, 113, 0.15); border-color: rgba(248, 113, 113, 0.3); }
+    .btn-delete { color: #ef4444; }
+    .btn-delete:hover { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); }
 
     .text-center { text-align: center; }
 
@@ -417,7 +532,7 @@
         display: none;
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(15, 23, 42, 0.8);
+        background: rgba(44, 39, 33, 0.5);
         backdrop-filter: blur(8px);
         z-index: 1000;
         align-items: center;
@@ -432,12 +547,12 @@
     }
 
     .modal-content {
-        background: #1e293b;
+        background: #ffffff;
         border: 1px solid var(--glass-border);
         border-radius: 20px;
         width: 100%;
         max-width: 600px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 25px 50px -12px rgba(117, 95, 62, 0.25);
         transform: translateY(20px);
         transition: transform 0.3s ease;
     }
@@ -543,6 +658,30 @@
         document.getElementById('edit_catatan').value = data.catatan || '';
 
         openModal('editModal');
+    }
+
+    function openUploadEvidenceModal() {
+        openModal('uploadEvidenceModal');
+    }
+
+    function updateFileList(input) {
+        const container = document.getElementById('selectedFilesList');
+        if (input.files && input.files.length > 0) {
+            let html = '<div style="font-weight: 600; color: #a78bfa; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> File terpilih (' + input.files.length + ' file):</div>';
+            html += '<ul style="margin: 0; padding-left: 1.2rem; list-style: disc;">';
+            for (let i = 0; i < input.files.length; i++) {
+                let sizeKB = (input.files[i].size / 1024).toFixed(1) + ' KB';
+                if (input.files[i].size >= 1024 * 1024) {
+                    sizeKB = (input.files[i].size / (1024 * 1024)).toFixed(2) + ' MB';
+                }
+                html += '<li style="margin-bottom: 0.25rem; color: var(--text-main); font-weight: 400;">' + input.files[i].name + ' <span style="color: #64748b; font-size: 0.8rem;">(' + sizeKB + ')</span></li>';
+            }
+            html += '</ul>';
+            container.innerHTML = html;
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
     }
 
     window.onclick = function(event) {

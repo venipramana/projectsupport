@@ -15,7 +15,7 @@ class Project extends Model
         'project_name', 'tanggal_awal', 'tanggal_akhir', 'catatan',
         'rproject', 'leadby', 'supportby', 'tgl_update', 'token',
         'vul_passed', 'id_catalog', 'catalog_version', 'byvendor',
-        'vendorname', 'rkap', 'bsurkap'
+        'vendorname', 'rkap', 'bsurkap', 'folder_evidence'
     ];
 
     /**

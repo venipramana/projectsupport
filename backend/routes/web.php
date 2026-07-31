@@ -38,5 +38,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/hproject/{id}', [HprojectController::class, 'update'])->name('hproject.update');
     Route::delete('/hproject/{id}', [HprojectController::class, 'destroy'])->name('hproject.destroy');
 
+    // Evidence MinIO Routes
+    Route::post('/hproject/{project_id}/evidence', [HprojectController::class, 'storeEvidence'])->name('hproject.evidence.store');
+    Route::get('/hproject/{project_id}/evidence/{filename}/view', [HprojectController::class, 'viewEvidence'])->where('filename', '.*')->name('hproject.evidence.view');
+    Route::get('/hproject/{project_id}/evidence/{filename}/download', [HprojectController::class, 'downloadEvidence'])->where('filename', '.*')->name('hproject.evidence.download');
+    Route::delete('/hproject/{project_id}/evidence/{filename}', [HprojectController::class, 'destroyEvidence'])->where('filename', '.*')->name('hproject.evidence.destroy');
+
     Route::get('/laporan/progress', [LaporanController::class, 'progressIndex'])->name('laporan.progress');
 });

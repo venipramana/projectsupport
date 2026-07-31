@@ -9,14 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary: #8b5cf6;
-            --secondary: #3b82f6;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --input-bg: rgba(15, 23, 42, 0.6);
+            --bg-color: #faf7f2;
+            --text-main: #2c2721;
+            --text-muted: #6e665d;
+            --primary: #755f3e;
+            --secondary: #54422b;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(117, 95, 62, 0.2);
+            --input-bg: rgba(255, 255, 255, 0.9);
         }
 
         * {
@@ -42,7 +42,7 @@
             border-radius: 50%;
             filter: blur(100px);
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.3;
         }
         .light-1 {
             top: -10%; left: -10%;
@@ -52,18 +52,18 @@
         .light-2 {
             bottom: -20%; right: -10%;
             width: 60vw; height: 60vw;
-            background: radial-gradient(circle, var(--secondary), transparent 60%);
+            background: radial-gradient(circle, #b59c77, transparent 60%);
         }
 
         .login-container {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+            background: rgba(255, 255, 255, 0.85);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 3rem;
             width: 100%;
             max-width: 450px;
             backdrop-filter: blur(20px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 50px rgba(117, 95, 62, 0.12);
             animation: fadeInUp 0.8s ease-out;
         }
 
@@ -121,7 +121,7 @@
             border-radius: 12px;
             background: var(--input-bg);
             border: 1px solid var(--glass-border);
-            color: white;
+            color: var(--text-main);
             font-size: 1rem;
             transition: all 0.3s ease;
         }
@@ -129,7 +129,7 @@
         input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+            box-shadow: 0 0 0 3px rgba(117, 95, 62, 0.2);
         }
 
         .btn-submit {
@@ -148,7 +148,7 @@
 
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+            box-shadow: 0 10px 25px rgba(117, 95, 62, 0.35);
         }
 
         .error-message {
@@ -181,14 +181,14 @@
     <div class="login-container">
         <a href="/" class="logo">
             <svg viewBox="0 0 100 100" width="70" height="70" style="margin-bottom: 10px;">
-                <!-- Top-Left (Pink) -->
-                <path d="M 50 45 Q 15 45 15 25 A 20 20 0 0 1 45 10 Q 50 20 50 45 Z" fill="#e879f9" />
-                <!-- Top-Right (Purple) -->
-                <path d="M 50 45 Q 85 45 85 25 A 20 20 0 0 0 55 10 Q 50 20 50 45 Z" fill="#a855f7" />
-                <!-- Bottom-Left (Blue) -->
-                <path d="M 50 55 Q 15 55 15 75 A 20 20 0 0 0 45 90 Q 50 80 50 55 Z" fill="#3b82f6" />
-                <!-- Bottom-Right (Cyan) -->
-                <path d="M 50 55 Q 85 55 85 75 A 20 20 0 0 1 55 90 Q 50 80 50 55 Z" fill="#0ea5e9" />
+                <!-- Top-Left -->
+                <path d="M 50 45 Q 15 45 15 25 A 20 20 0 0 1 45 10 Q 50 20 50 45 Z" fill="#c4aa82" />
+                <!-- Top-Right -->
+                <path d="M 50 45 Q 85 45 85 25 A 20 20 0 0 0 55 10 Q 50 20 50 45 Z" fill="#755f3e" />
+                <!-- Bottom-Left -->
+                <path d="M 50 55 Q 15 55 15 75 A 20 20 0 0 0 45 90 Q 50 80 50 55 Z" fill="#54422b" />
+                <!-- Bottom-Right -->
+                <path d="M 50 55 Q 85 55 85 75 A 20 20 0 0 1 55 90 Q 50 80 50 55 Z" fill="#9c815c" />
             </svg>
             <span class="logo-text-primary">Project</span>
             <span class="logo-text-secondary">Support</span>

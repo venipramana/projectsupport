@@ -41,19 +41,19 @@
 
     /* Universal Card Styles */
     .card {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+        background: rgba(255, 255, 255, 0.65);
         border: 1px solid var(--glass-border);
         border-radius: 20px;
         padding: 1.5rem;
         backdrop-filter: blur(10px);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 20px rgba(117, 95, 62, 0.05);
         display: flex;
         flex-direction: column;
         transition: transform 0.3s ease, border-color 0.3s ease;
     }
     
     .card:hover {
-        border-color: rgba(139, 92, 246, 0.3);
+        border-color: rgba(117, 95, 62, 0.35);
     }
 
     .card-header {
@@ -64,7 +64,7 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid var(--glass-border);
         padding-bottom: 0.75rem;
     }
 
@@ -73,8 +73,8 @@
         justify-content: center;
         align-items: center;
         text-align: center;
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
-        border: 1px solid rgba(139, 92, 246, 0.3);
+        background: linear-gradient(135deg, rgba(117, 95, 62, 0.12), rgba(156, 130, 94, 0.18));
+        border: 1px solid rgba(117, 95, 62, 0.3);
     }
     .total-title {
         color: var(--text-muted);
@@ -87,7 +87,7 @@
     .total-value {
         font-size: 4rem;
         font-weight: 800;
-        background: linear-gradient(to right, #a855f7, #3b82f6);
+        background: linear-gradient(to right, var(--primary), var(--secondary));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         line-height: 1;
@@ -115,15 +115,15 @@
         width: 6px;
     }
     .list-container::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.02);
+        background: rgba(117, 95, 62, 0.05);
         border-radius: 10px;
     }
     .list-container::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(117, 95, 62, 0.25);
         border-radius: 10px;
     }
     .list-container::-webkit-scrollbar-thumb:hover {
-        background: rgba(139, 92, 246, 0.5);
+        background: rgba(117, 95, 62, 0.5);
     }
 
     .list-item {
@@ -132,20 +132,20 @@
         align-items: center;
         padding: 0.75rem 1rem;
         border-radius: 10px;
-        background: rgba(255, 255, 255, 0.03);
+        background: rgba(255, 255, 255, 0.5);
         margin-bottom: 0.5rem;
         cursor: pointer;
         transition: all 0.2s ease;
         border: 1px solid transparent;
     }
     .list-item:hover {
-        background: rgba(139, 92, 246, 0.1);
-        border-color: rgba(139, 92, 246, 0.2);
+        background: rgba(117, 95, 62, 0.12);
+        border-color: rgba(117, 95, 62, 0.25);
         transform: translateX(3px);
     }
     .list-item.interactive:hover {
-        background: rgba(59, 130, 246, 0.15);
-        border-color: rgba(59, 130, 246, 0.3);
+        background: rgba(117, 95, 62, 0.15);
+        border-color: rgba(117, 95, 62, 0.35);
     }
     .list-item.danger-row {
         background: #dc2626 !important;
@@ -166,8 +166,8 @@
         color: var(--text-main);
     }
     .list-item-badge {
-        background: rgba(139, 92, 246, 0.2);
-        color: #c4b5fd;
+        background: rgba(117, 95, 62, 0.15);
+        color: var(--primary);
         padding: 0.2rem 0.6rem;
         border-radius: 20px;
         font-size: 0.8rem;
@@ -177,9 +177,10 @@
     /* Detil Section */
     .table-container {
         overflow-x: auto;
-        background: rgba(15, 23, 42, 0.6);
+        background: rgba(255, 255, 255, 0.75);
         border-radius: 12px;
         border: 1px solid var(--glass-border);
+        box-shadow: 0 4px 20px rgba(117, 95, 62, 0.05);
     }
     table {
         width: 100%;
@@ -187,8 +188,8 @@
         font-size: 0.9rem;
     }
     th {
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--text-muted);
+        background: rgba(117, 95, 62, 0.07);
+        color: var(--text-main);
         font-weight: 600;
         text-align: left;
         padding: 1rem;
@@ -196,23 +197,23 @@
     }
     td {
         padding: 1rem;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid var(--glass-border);
         color: var(--text-main);
     }
     tr:hover td {
-        background: rgba(255, 255, 255, 0.02);
+        background: rgba(117, 95, 62, 0.04);
     }
     .status-badge {
         padding: 0.25rem 0.75rem;
         border-radius: 20px;
         font-size: 0.75rem;
         font-weight: 600;
-        background: rgba(139, 92, 246, 0.15);
-        color: #c4b5fd;
-        border: 1px solid rgba(139, 92, 246, 0.3);
+        background: rgba(117, 95, 62, 0.15);
+        color: var(--primary);
+        border: 1px solid rgba(117, 95, 62, 0.3);
     }
     #detil-title {
-        color: #60a5fa;
+        color: var(--primary);
     }
     
     /* Empty state */
@@ -260,7 +261,7 @@
             <!-- Block 2: Donut Chart -->
             <div class="card">
                 <div class="card-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #8b5cf6;"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>
                     Summary Project Per-Direktorat
                 </div>
                 <div class="chart-container">
@@ -274,7 +275,7 @@
             <!-- Block 3: Summary This Year -->
             <div class="card">
                 <div class="card-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #3b82f6;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--secondary);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                     Summary Direktorat ({{ $currentYear }})
                 </div>
                 <div class="list-container">
@@ -298,7 +299,7 @@
             <!-- Block 4: Development Projects -->
             <div class="card">
                 <div class="card-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #10b981;"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #059669;"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
                     Status Development ({{ $dev_projects->count() }})
                 </div>
                 <div class="list-container">
@@ -310,13 +311,13 @@
                                 $diffDays = (int) $today->diffInDays($tglAkhir, false);
                                 if ($diffDays > 0) {
                                     $statusJatuhTempo = $diffDays . " hari lagi";
-                                    $colorJatuhTempo = "#34d399";
+                                    $colorJatuhTempo = "#059669";
                                 } elseif ($diffDays === 0) {
                                     $statusJatuhTempo = "Hari ini";
-                                    $colorJatuhTempo = "#fbbf24";
+                                    $colorJatuhTempo = "#d97706";
                                 } else {
                                     $statusJatuhTempo = "Terlambat " . abs($diffDays) . " hari";
-                                    $colorJatuhTempo = "#f87171";
+                                    $colorJatuhTempo = "#dc2626";
                                 }
                                 $infoJatuhTempo = $tglAkhir->format('d-m-Y') . " (" . $statusJatuhTempo . ")";
                             } else {
@@ -333,7 +334,7 @@
                                     Jatuh Tempo: {{ $infoJatuhTempo }}
                                 </span>
                             </div>
-                            <span class="list-item-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; align-self: flex-start;">DEV</span>
+                            <span class="list-item-badge" style="background: rgba(5, 150, 105, 0.15); color: #059669; align-self: flex-start;">DEV</span>
                         </div>
                     @empty
                         <div class="empty-state">Tidak ada project Development.</div>
@@ -344,7 +345,7 @@
             <!-- Block 5: QA Projects -->
             <div class="card">
                 <div class="card-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f59e0b;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #d97706;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                     Status QA / UAT ({{ $qa_projects->count() }})
                 </div>
                 <div class="list-container">
@@ -362,12 +363,12 @@
                                 <span style="font-size: 0.75rem; {{ $isOver14Days ? 'color: rgba(255,255,255,0.9);' : 'color: var(--text-muted);' }}">
                                     {{ $proj->direktorat }} - {{ $proj->pic_name }}
                                 </span>
-                                <span style="font-size: 0.75rem; font-weight: 500; {{ $isOver14Days ? 'color: #ffffff;' : 'color: #fde68a;' }}">
+                                <span style="font-size: 0.75rem; font-weight: 500; {{ $isOver14Days ? 'color: #ffffff;' : 'color: #d97706;' }}">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; vertical-align: -1px; margin-right: 2px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                                     Durasi: {{ $durasiHari }} hari (Tgl Update: {{ $tglUpdateFormatted }})
                                 </span>
                             </div>
-                            <span class="list-item-badge" style="align-self: flex-start; {{ $isOver14Days ? 'background: rgba(255,255,255,0.25); color: #ffffff; border: 1px solid rgba(255,255,255,0.4);' : 'background: rgba(245, 158, 11, 0.15); color: #fbbf24;' }}">
+                            <span class="list-item-badge" style="align-self: flex-start; {{ $isOver14Days ? 'background: rgba(255,255,255,0.25); color: #ffffff; border: 1px solid rgba(255,255,255,0.4);' : 'background: rgba(217, 119, 6, 0.15); color: #d97706;' }}">
                                 QA
                             </span>
                         </div>
@@ -384,7 +385,7 @@
     <div class="section-detil">
         <div class="card">
             <div class="card-header">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ec4899;"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
                 Section Detil: <span id="detil-title" style="margin-left: 0.5rem;">Pilih Direktorat pada Chart atau List di atas</span>
                 <button onclick="showAllProjects()" style="margin-left: auto; background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.25rem 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; transition: background 0.2s;">Tampilkan Semua</button>
             </div>
@@ -499,9 +500,9 @@
         
         // Generate nice vibrant colors
         const colors = [
-            '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
-            '#ec4899', '#6366f1', '#14b8a6', '#f97316', '#84cc16',
-            '#06b6d4', '#d946ef', '#f43f5e', '#0ea5e9'
+            '#755f3e', '#54422b', '#9c825e', '#b59c77', '#c7ab83', 
+            '#3f3526', '#87704e', '#d8c2a3', '#614d33', '#ab9471',
+            '#4a3c28', '#8f7754', '#e2d1ba', '#5e4e37'
         ];
         
         const chart = new Chart(ctx, {
@@ -522,19 +523,19 @@
                     legend: {
                         position: 'right',
                         labels: {
-                            color: '#94a3b8',
+                            color: '#6e665d',
                             font: { family: "'Inter', sans-serif", size: 11 },
                             padding: 15,
                             boxWidth: 12
                         }
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        backgroundColor: 'rgba(44, 39, 33, 0.95)',
                         titleFont: { family: "'Inter', sans-serif" },
                         bodyFont: { family: "'Inter', sans-serif" },
                         padding: 12,
                         cornerRadius: 8,
-                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderColor: 'rgba(117, 95, 62, 0.2)',
                         borderWidth: 1
                     }
                 },

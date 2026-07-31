@@ -10,13 +10,13 @@
     @yield('custom-head')
     <style>
         :root {
-            --bg-color: #0f172a;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary: #8b5cf6;
-            --secondary: #3b82f6;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --bg-color: #faf7f2;
+            --text-main: #2c2721;
+            --text-muted: #6e665d;
+            --primary: #755f3e;
+            --secondary: #54422b;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(117, 95, 62, 0.18);
             --sidebar-width: 280px;
         }
 
@@ -37,12 +37,13 @@
         /* Sidebar */
         aside {
             width: var(--sidebar-width);
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(244, 240, 234, 0.85);
             border-right: 1px solid var(--glass-border);
             padding: 2rem 1.5rem;
             display: flex;
             flex-direction: column;
             backdrop-filter: blur(12px);
+            box-shadow: 2px 0 10px rgba(117, 95, 62, 0.04);
         }
 
         .logo {
@@ -131,9 +132,9 @@
         }
 
         .nav-item.active, .nav-item:hover {
-            background: rgba(139, 92, 246, 0.1);
+            background: rgba(117, 95, 62, 0.12);
             color: var(--text-main);
-            border: 1px solid rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(117, 95, 62, 0.25);
         }
 
         .spacer {
@@ -142,7 +143,7 @@
 
         .user-profile {
             padding: 1rem;
-            background: var(--glass-bg);
+            background: rgba(255, 255, 255, 0.7);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             display: flex;
@@ -150,11 +151,12 @@
             gap: 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(117, 95, 62, 0.06);
         }
         
         .user-profile:hover {
-            background: rgba(139, 92, 246, 0.1);
-            border-color: rgba(139, 92, 246, 0.3);
+            background: rgba(117, 95, 62, 0.12);
+            border-color: rgba(117, 95, 62, 0.35);
         }
 
         .avatar {
@@ -165,6 +167,7 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            color: #ffffff;
         }
 
         .user-info {
@@ -181,22 +184,22 @@
             padding: 0.8rem;
             border-radius: 12px;
             background: transparent;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
-            font-weight: 500;
+            border: 1px solid rgba(220, 38, 38, 0.4);
+            color: #dc2626;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(220, 38, 38, 0.1);
         }
 
         /* Password Modal Styles */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(44, 39, 33, 0.5);
             backdrop-filter: blur(4px);
             display: flex;
             align-items: center;
@@ -211,7 +214,7 @@
             pointer-events: auto;
         }
         .password-modal {
-            background: var(--bg-color);
+            background: #ffffff;
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             padding: 2rem;
@@ -219,7 +222,7 @@
             max-width: 400px;
             transform: translateY(20px);
             transition: transform 0.3s ease;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 40px rgba(117, 95, 62, 0.15);
         }
         .modal-overlay.active .password-modal {
             transform: translateY(0);
@@ -233,6 +236,7 @@
         .modal-header h3 {
             font-size: 1.25rem;
             font-weight: 600;
+            color: var(--text-main);
         }
         .modal-close {
             background: none;
@@ -254,9 +258,9 @@
             width: 100%;
             padding: 0.75rem;
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            color: white;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(117, 95, 62, 0.25);
+            color: var(--text-main);
             font-size: 0.9rem;
         }
         .pw-form-group input:focus {
@@ -313,14 +317,14 @@
     <aside>
         <div class="logo">
             <svg viewBox="0 0 100 100" width="40" height="40">
-                <!-- Top-Left (Pink) -->
-                <path d="M 50 45 Q 15 45 15 25 A 20 20 0 0 1 45 10 Q 50 20 50 45 Z" fill="#e879f9" />
-                <!-- Top-Right (Purple) -->
-                <path d="M 50 45 Q 85 45 85 25 A 20 20 0 0 0 55 10 Q 50 20 50 45 Z" fill="#a855f7" />
-                <!-- Bottom-Left (Blue) -->
-                <path d="M 50 55 Q 15 55 15 75 A 20 20 0 0 0 45 90 Q 50 80 50 55 Z" fill="#3b82f6" />
-                <!-- Bottom-Right (Cyan) -->
-                <path d="M 50 55 Q 85 55 85 75 A 20 20 0 0 1 55 90 Q 50 80 50 55 Z" fill="#0ea5e9" />
+                <!-- Top-Left -->
+                <path d="M 50 45 Q 15 45 15 25 A 20 20 0 0 1 45 10 Q 50 20 50 45 Z" fill="#c4aa82" />
+                <!-- Top-Right -->
+                <path d="M 50 45 Q 85 45 85 25 A 20 20 0 0 0 55 10 Q 50 20 50 45 Z" fill="#755f3e" />
+                <!-- Bottom-Left -->
+                <path d="M 50 55 Q 15 55 15 75 A 20 20 0 0 0 45 90 Q 50 80 50 55 Z" fill="#54422b" />
+                <!-- Bottom-Right -->
+                <path d="M 50 55 Q 85 55 85 75 A 20 20 0 0 1 55 90 Q 50 80 50 55 Z" fill="#9c815c" />
             </svg>
             <div class="logo-text-container">
                 <span class="logo-text-primary">Project</span>

@@ -103,7 +103,17 @@ class ProjectController extends Controller
             $data['bsurkap'] = preg_replace('/[.,]/', '', $data['bsurkap']);
         }
 
-        Project::create($data);
+        $project = Project::create($data);
+
+        // Otomatis buat folder di bucket MinIO dan hubungkan atribut folder_evidence
+        $folderName = "evidence_project_" . $project->id;
+        try {
+            \Illuminate\Support\Facades\Storage::disk('minio')->put("{$folderName}/.keep", "");
+            $project->folder_evidence = $folderName;
+            $project->save();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("MinIO error during project creation: " . $e->getMessage());
+        }
 
         return redirect()->route('project.index')->with('success', 'Project berhasil ditambahkan.');
     }
