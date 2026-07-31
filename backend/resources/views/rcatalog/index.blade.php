@@ -7,7 +7,7 @@
 <div class="actions-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
     <form action="{{ route('rcatalog.index') }}" method="GET" style="display: flex; gap: 1rem; align-items: center;">
         <label for="filter_direktorat" style="color: var(--text-muted); font-weight: 500;">Filter Direktorat:</label>
-        <select name="filter_direktorat" id="filter_direktorat" class="form-control" style="width: auto; background-color: rgba(15, 23, 42, 0.8);" onchange="this.form.submit()">
+        <select name="filter_direktorat" id="filter_direktorat" class="form-control" style="width: auto; background-color: #ffffff;" onchange="this.form.submit()">
             <option value="">-- Semua Direktorat --</option>
             @foreach($direktorats as $dir)
                 <option value="{{ $dir->id }}" {{ $selectedDirektorat == $dir->id ? 'selected' : '' }}>{{ $dir->deskripsi }}</option>
@@ -359,7 +359,7 @@
         display: none;
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(15, 23, 42, 0.8);
+        background: rgba(44, 39, 33, 0.5);
         backdrop-filter: blur(8px);
         z-index: 1000;
         align-items: center;
@@ -374,12 +374,12 @@
     }
 
     .modal-content {
-        background: #1e293b;
+        background: #ffffff;
         border: 1px solid var(--glass-border);
         border-radius: 20px;
         width: 100%;
         max-width: 600px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 25px 50px -12px rgba(117, 95, 62, 0.25);
         transform: translateY(20px);
         transition: transform 0.3s ease;
         max-height: 90vh;
@@ -399,7 +399,7 @@
         align-items: center;
     }
 
-    .modal-header h2 { font-size: 1.25rem; font-weight: 600; }
+    .modal-header h2 { font-size: 1.25rem; font-weight: 600; color: var(--text-main); }
 
     .btn-close {
         background: transparent;
@@ -440,7 +440,7 @@
         width: 100%;
         padding: 0.8rem 1rem;
         border-radius: 10px;
-        background: rgba(15, 23, 42, 0.5);
+        background: #ffffff;
         border: 1px solid var(--glass-border);
         color: var(--text-main);
         font-family: inherit;
@@ -449,26 +449,26 @@
     }
     
     .form-control[type="date"]::-webkit-calendar-picker-indicator {
-        filter: invert(1);
+        filter: none;
     }
 
     .form-control:focus {
         outline: none;
         border-color: var(--primary);
-        box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        box-shadow: 0 0 0 2px rgba(117, 95, 62, 0.2);
     }
     
     select.form-control {
         appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23755f3e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 1rem center;
         background-size: 1em;
     }
     
     select.form-control option {
-        background: #1e293b;
-        color: #f8fafc;
+        background: #ffffff;
+        color: var(--text-main);
     }
     .master-section::-webkit-scrollbar {
         width: 8px;

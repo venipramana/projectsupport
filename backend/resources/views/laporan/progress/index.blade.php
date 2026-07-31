@@ -213,7 +213,7 @@
                 @endforelse
             </tbody>
             <tfoot>
-                <tr style="background: rgba(15, 23, 42, 0.8); font-weight: bold;">
+                <tr style="background: rgba(117, 95, 62, 0.1); font-weight: bold;">
                     <td colspan="29" style="text-align: right; color: var(--text-main);">TOTAL BSU RKAP</td>
                     <td style="text-align: right; color: var(--primary);">Rp {{ number_format($total_bsurkap, 0, ',', '.') }}</td>
                 </tr>
@@ -310,7 +310,7 @@
         width: 100%;
         padding: 0.7rem 1rem;
         border-radius: 10px;
-        background: rgba(15, 23, 42, 0.5);
+        background: #ffffff;
         border: 1px solid var(--glass-border);
         color: var(--text-main);
         font-family: inherit;
@@ -348,7 +348,7 @@
         color: var(--text-main);
         border: 1px solid var(--glass-border);
     }
-    .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.8); }
 
     .btn-success {
         background: linear-gradient(135deg, #10b981, #059669);
@@ -361,7 +361,7 @@
     }
 
     .table-container {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+        background: rgba(255, 255, 255, 0.65);
         border: 1px solid var(--glass-border);
         border-radius: 20px;
         overflow: hidden;
@@ -381,14 +381,14 @@
         height: 10px;
     }
     .table-responsive::-webkit-scrollbar-track {
-        background: rgba(15, 23, 42, 0.5);
+        background: rgba(117, 95, 62, 0.05);
     }
     .table-responsive::-webkit-scrollbar-thumb {
-        background: rgba(139, 92, 246, 0.5);
+        background: rgba(117, 95, 62, 0.25);
         border-radius: 10px;
     }
     .table-responsive::-webkit-scrollbar-thumb:hover {
-        background: rgba(139, 92, 246, 0.8);
+        background: rgba(117, 95, 62, 0.4);
     }
 
     .data-table {
@@ -405,7 +405,7 @@
     }
 
     .data-table th {
-        background: rgba(30, 41, 59, 0.95);
+        background: rgba(255, 255, 255, 0.95);
         font-weight: 600;
         color: var(--text-muted);
         text-transform: uppercase;
@@ -423,7 +423,7 @@
     }
 
     .data-table tbody tr:hover {
-        background: rgba(255, 255, 255, 0.04);
+        background: rgba(117, 95, 62, 0.06);
     }
 
     .badge {
