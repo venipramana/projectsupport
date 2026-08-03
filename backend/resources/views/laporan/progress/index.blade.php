@@ -73,6 +73,18 @@
         </div>
 
         <div class="form-group">
+            <label>Bulan (Tanggal Awal)</label>
+            <select name="bulan" class="form-control" onchange="this.form.submit()">
+                <option value="">Semua Bulan</option>
+                @foreach($bulanOptions as $num => $name)
+                    <option value="{{ $num }}" {{ request('bulan') == $num ? 'selected' : '' }}>
+                        {{ $name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group">
             <label>RKAP</label>
             <select name="rkap" class="form-control" onchange="this.form.submit()">
                 <option value="">Semua Pembiayaan</option>
