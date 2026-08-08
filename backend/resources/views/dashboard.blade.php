@@ -34,6 +34,26 @@
         gap: 1.5rem;
     }
 
+    /* Lead By Row: Block 6 */
+    .leadby-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .leadby-widget-content {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 1.5rem;
+        align-items: center;
+    }
+
+    @media (max-width: 992px) {
+        .leadby-widget-content {
+            grid-template-columns: 1fr;
+        }
+    }
+
     /* Section Detil */
     .section-detil {
         margin-top: 1rem;
@@ -215,6 +235,29 @@
     #detil-title {
         color: var(--primary);
     }
+
+    /* Export Excel Button */
+    .btn-export-excel {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.3rem 0.65rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #059669;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    .btn-export-excel:hover {
+        background: rgba(16, 185, 129, 0.22);
+        border-color: rgba(16, 185, 129, 0.5);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+    }
     
     /* Empty state */
     .empty-state {
@@ -274,9 +317,15 @@
 
             <!-- Block 3: Summary This Year -->
             <div class="card">
-                <div class="card-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--secondary);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    Summary Direktorat ({{ $currentYear }})
+                <div class="card-header" style="justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--secondary);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        Summary Direktorat ({{ $currentYear }})
+                    </div>
+                    <button type="button" class="btn-export-excel" onclick="exportDirektoratExcel()" title="Save to Excel">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Excel
+                    </button>
                 </div>
                 <div class="list-container">
                     @forelse($projects_this_year as $item)
@@ -298,9 +347,15 @@
         <div class="middle-row">
             <!-- Block 4: Development Projects -->
             <div class="card">
-                <div class="card-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #059669;"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                    Status Development ({{ $dev_projects->count() }})
+                <div class="card-header" style="justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #059669;"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                        Status Development ({{ $dev_projects->count() }})
+                    </div>
+                    <button type="button" class="btn-export-excel" onclick="exportDevProjectsExcel()" title="Save to Excel">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Excel
+                    </button>
                 </div>
                 <div class="list-container">
                     @forelse($dev_projects as $proj)
@@ -344,9 +399,15 @@
 
             <!-- Block 5: QA Projects -->
             <div class="card">
-                <div class="card-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #d97706;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                    Status QA / UAT ({{ $qa_projects->count() }})
+                <div class="card-header" style="justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #d97706;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        Status QA / UAT ({{ $qa_projects->count() }})
+                    </div>
+                    <button type="button" class="btn-export-excel" onclick="exportQaProjectsExcel()" title="Save to Excel">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Excel
+                    </button>
                 </div>
                 <div class="list-container">
                     @forelse($qa_projects as $proj)
@@ -364,7 +425,7 @@
                                     {{ $proj->direktorat }} - {{ $proj->pic_name }}
                                 </span>
                                 <span style="font-size: 0.75rem; font-weight: 500; {{ $isOver14Days ? 'color: #ffffff;' : 'color: #d97706;' }}">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; vertical-align: -1px; margin-right: 2px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; vertical-align: -1px; margin-right: 2px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
                                     Durasi: {{ $durasiHari }} hari (Tgl Update: {{ $tglUpdateFormatted }})
                                 </span>
                             </div>
@@ -379,15 +440,66 @@
             </div>
         </div>
         
+        <!-- ROW 3: Project Berdasarkan Lead By -->
+        <div class="leadby-row" style="margin-top: 1.5rem;">
+            <div class="card">
+                <div class="card-header" style="justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Jumlah Project Berdasarkan Lead By
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">
+                            *Klik item list/grafik untuk detil
+                        </span>
+                        <button type="button" class="btn-export-excel" onclick="exportLeadByExcel()" title="Save to Excel">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            Excel
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="leadby-widget-content">
+                    <!-- Format List -->
+                    <div class="list-container" style="max-height: 260px;">
+                        @forelse($projects_by_lead as $item)
+                            <div class="list-item interactive" data-lead="{{ $item->lead_by }}" onclick="filterDetilByLead(this.getAttribute('data-lead'))">
+                                <span class="list-item-title">{{ $item->lead_by }}</span>
+                                <span class="list-item-badge">{{ $item->total }} Project</span>
+                            </div>
+                        @empty
+                            <div class="empty-state">Data Lead By kosong.</div>
+                        @endforelse
+                    </div>
+
+                    <!-- Format Grafik Batang (Bar Chart) -->
+                    <div class="chart-container" style="height: 260px;">
+                        <canvas id="leadByChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- SECTION DETIL -->
     <div class="section-detil">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header" style="flex-wrap: wrap; gap: 0.5rem;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                Section Detil: <span id="detil-title" style="margin-left: 0.5rem;">Pilih Direktorat pada Chart atau List di atas</span>
-                <button onclick="showAllProjects()" style="margin-left: auto; background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.25rem 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; transition: background 0.2s;">Tampilkan Semua</button>
+                Section Detil: <span id="detil-title" style="margin-left: 0.5rem;">Pilih Direktorat / Lead By pada Chart atau List di atas</span>
+                <div style="margin-left: auto; display: flex; gap: 0.5rem; align-items: center;">
+                    <button onclick="showAllProjects()" style="background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.25rem 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; transition: background 0.2s;">Tampilkan Semua</button>
+                    <button type="button" class="btn-export-excel" onclick="exportDetilExcel()" title="Save to Excel">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Save to Excel
+                    </button>
+                </div>
             </div>
             
             <div class="table-container">
@@ -422,6 +534,133 @@
     // Data dari Controller
     const allProjects = @json($all_projects);
     const chartData = @json($projects_by_direktorat);
+    const projectsThisYear = @json($projects_this_year);
+    const leadByData = @json($projects_by_lead);
+    const devProjects = @json($dev_projects);
+    const qaProjects = @json($qa_projects);
+
+    let currentDetilData = allProjects;
+    let currentDetilTitle = 'Semua Project';
+
+    // Excel Exporter Helper
+    function exportToExcelHTML(headers, dataRows, filename) {
+        let tableHTML = '<table border="1"><thead><tr>';
+        headers.forEach(h => {
+            tableHTML += `<th style="background:#755f3e;color:#ffffff;font-weight:bold;padding:6px;">${h}</th>`;
+        });
+        tableHTML += '</tr></thead><tbody>';
+        
+        dataRows.forEach(row => {
+            tableHTML += '<tr>';
+            row.forEach(cell => {
+                tableHTML += `<td style="padding:5px;">${cell !== null && cell !== undefined ? cell : '-'}</td>`;
+            });
+            tableHTML += '</tr>';
+        });
+        tableHTML += '</tbody></table>';
+
+        const dataType = 'application/vnd.ms-excel';
+        const xTag = '<x' + ':';
+        const htmlTemplate = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml>${xTag}ExcelWorkbook>${xTag}ExcelWorksheets>${xTag}ExcelWorksheet>${xTag}Name>Sheet1</${xTag}Name>${xTag}WorksheetOptions>${xTag}DisplayGridlines/></${xTag}WorksheetOptions></${xTag}ExcelWorksheet></${xTag}ExcelWorksheets></${xTag}ExcelWorkbook></xml><![endif]--></head><body>${tableHTML}</body></html>`;
+
+        const downloadLink = document.createElement("a");
+        document.body.appendChild(downloadLink);
+        const fileNameWithExt = (filename || 'export') + '.xls';
+
+        if (navigator.msSaveOrOpenBlob) {
+            const blob = new Blob(['\ufeff', htmlTemplate], { type: dataType });
+            navigator.msSaveOrOpenBlob(blob, fileNameWithExt);
+        } else {
+            downloadLink.href = 'data:' + dataType + ', ' + encodeURIComponent(htmlTemplate);
+            downloadLink.download = fileNameWithExt;
+            downloadLink.click();
+        }
+        document.body.removeChild(downloadLink);
+    }
+
+    window.exportDirektoratExcel = function() {
+        const headers = ['No', 'Direktorat', 'Jumlah Project'];
+        const rows = projectsThisYear.map((item, idx) => [idx + 1, item.direktorat, item.total]);
+        exportToExcelHTML(headers, rows, 'Summary_Project_Per_Direktorat_' + (new Date().getFullYear()));
+    };
+
+    window.exportLeadByExcel = function() {
+        const headers = ['No', 'Lead By', 'Jumlah Project'];
+        const rows = leadByData.map((item, idx) => [idx + 1, item.lead_by, item.total]);
+        exportToExcelHTML(headers, rows, 'Summary_Project_Per_Lead_By');
+    };
+
+    window.exportDevProjectsExcel = function() {
+        const headers = ['No', 'ID Project', 'Nama Project', 'Direktorat', 'PIC Name', 'Status Jatuh Tempo'];
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        
+        const rows = devProjects.map((item, idx) => {
+            let infoJatuhTempo = '-';
+            if (item.tanggal_akhir) {
+                const tglAkhir = new Date(item.tanggal_akhir);
+                tglAkhir.setHours(0,0,0,0);
+                const diffDays = Math.round((tglAkhir - today) / (1000 * 60 * 60 * 24));
+                const formattedDate = formatDate(item.tanggal_akhir);
+                if (diffDays > 0) {
+                    infoJatuhTempo = `${formattedDate} (${diffDays} hari lagi)`;
+                } else if (diffDays === 0) {
+                    infoJatuhTempo = `${formattedDate} (Hari ini)`;
+                } else {
+                    infoJatuhTempo = `${formattedDate} (Terlambat ${Math.abs(diffDays)} hari)`;
+                }
+            }
+            return [
+                idx + 1,
+                item.idproject || '-',
+                item.project_name || '-',
+                item.direktorat || '-',
+                item.pic_name || '-',
+                infoJatuhTempo
+            ];
+        });
+        exportToExcelHTML(headers, rows, 'Project_Status_Development');
+    };
+
+    window.exportQaProjectsExcel = function() {
+        const headers = ['No', 'ID Project', 'Nama Project', 'Direktorat', 'PIC Name', 'Tgl Update', 'Durasi (Hari)'];
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        
+        const rows = qaProjects.map((item, idx) => {
+            let durasi = 0;
+            if (item.tgl_update) {
+                const tglUpdate = new Date(item.tgl_update);
+                tglUpdate.setHours(0,0,0,0);
+                durasi = Math.floor((today - tglUpdate) / (1000 * 60 * 60 * 24));
+            }
+            return [
+                idx + 1,
+                item.idproject || '-',
+                item.project_name || '-',
+                item.direktorat || '-',
+                item.pic_name || '-',
+                formatDate(item.tgl_update),
+                durasi + ' hari'
+            ];
+        });
+        exportToExcelHTML(headers, rows, 'Project_Status_QA_UAT');
+    };
+
+    window.exportDetilExcel = function() {
+        const headers = ['No', 'ID Project', 'Nama Project', 'Direktorat', 'Lead By', 'Tanggal Awal', 'Status Project'];
+        const rows = currentDetilData.map((item, idx) => [
+            idx + 1,
+            item.idproject || '-',
+            item.project_name || '-',
+            item.direktorat || '-',
+            item.assign_to_name || '-',
+            formatDate(item.tanggal_awal),
+            item.status_project || '-'
+        ]);
+        const safeTitle = (currentDetilTitle || 'Semua_Project').replace(/[^a-zA-Z0-9]/g, '_');
+        exportToExcelHTML(headers, rows, 'Detil_Project_' + safeTitle);
+    };
     
     // Formatting date
     function formatDate(dateString) {
@@ -432,6 +671,8 @@
 
     // Function to render table
     function renderDetilTable(data, title) {
+        currentDetilData = data;
+        currentDetilTitle = title;
         document.getElementById('detil-title').innerText = title;
         const tbody = document.getElementById('detil-tbody');
         const emptyState = document.getElementById('detil-empty');
@@ -481,10 +722,22 @@
         // Scroll to detil section smoothly
         document.querySelector('.section-detil').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+
+    // Filter Function by Lead By
+    function filterDetilByLead(leadName) {
+        let filtered;
+        if (leadName === 'Belum Ditugaskan') {
+            filtered = allProjects.filter(p => !p.assign_to_name || p.assign_to_name.trim() === '');
+        } else {
+            filtered = allProjects.filter(p => p.assign_to_name === leadName);
+        }
+        renderDetilTable(filtered, "Lead By: " + leadName);
+        document.querySelector('.section-detil').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     
     // Show All
     window.showAllProjects = function() {
-        renderDetilTable(allProjects, 'Semua Direktorat');
+        renderDetilTable(allProjects, 'Semua Project');
     }
 
     // Initialize Chart.js
@@ -492,7 +745,7 @@
         // Initial render: show all
         showAllProjects();
 
-        // Chart implementation
+        // Chart implementation: Donut Chart Direktorat
         const ctx = document.getElementById('direktoratChart').getContext('2d');
         
         const labels = chartData.map(d => d.direktorat);
@@ -545,6 +798,71 @@
                         const index = activeElements[0].index;
                         const selectedDirektorat = labels[index];
                         filterDetil(selectedDirektorat);
+                    }
+                }
+            }
+        });
+
+        // Chart implementation: Bar Chart Lead By
+        const leadCtx = document.getElementById('leadByChart').getContext('2d');
+        const leadLabels = leadByData.map(d => d.lead_by);
+        const leadValues = leadByData.map(d => d.total);
+
+        const leadChart = new Chart(leadCtx, {
+            type: 'bar',
+            data: {
+                labels: leadLabels,
+                datasets: [{
+                    label: 'Jumlah Project',
+                    data: leadValues,
+                    backgroundColor: 'rgba(117, 95, 62, 0.75)',
+                    borderColor: '#755f3e',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    hoverBackgroundColor: 'rgba(117, 95, 62, 0.95)'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(44, 39, 33, 0.95)',
+                        titleFont: { family: "'Inter', sans-serif" },
+                        bodyFont: { family: "'Inter', sans-serif" },
+                        padding: 12,
+                        cornerRadius: 8,
+                        borderColor: 'rgba(117, 95, 62, 0.2)',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                            color: '#6e665d',
+                            font: { family: "'Inter', sans-serif", size: 11 }
+                        },
+                        grid: {
+                            color: 'rgba(117, 95, 62, 0.08)'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#6e665d',
+                            font: { family: "'Inter', sans-serif", size: 11 }
+                        },
+                        grid: { display: false }
+                    }
+                },
+                onClick: (e, activeElements) => {
+                    if (activeElements.length > 0) {
+                        const index = activeElements[0].index;
+                        const selectedLead = leadLabels[index];
+                        filterDetilByLead(selectedLead);
                     }
                 }
             }

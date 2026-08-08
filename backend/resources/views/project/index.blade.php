@@ -571,13 +571,13 @@
                         <select name="id_catalog" class="form-control">
                             <option value="">-- Pilih Catalog --</option>
                             @foreach($rcatalogs as $cat)
-                                <option value="{{ $cat->id }}">{{ $cat->description }} - {{ $cat->current_version }}</option>
+                                <option value="{{ $cat->id }}">--- ({{ $cat->id }}) -> {{ $cat->description }} - last version : {{ $cat->max_version }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Catalog Version</label>
-                        <input type="text" name="catalog_version" class="form-control">
+                        <label>Catalog Version *</label>
+                        <input type="text" name="catalog_version" class="form-control" required>
                     </div>
 
                     <div class="form-group">
@@ -718,13 +718,13 @@
                         <select id="edit_id_catalog" name="id_catalog" class="form-control">
                             <option value="">-- Pilih Catalog --</option>
                             @foreach($rcatalogs as $cat)
-                                <option value="{{ $cat->id }}">{{ $cat->description }} - {{ $cat->current_version }}</option>
+                                <option value="{{ $cat->id }}">--- ({{ $cat->id }}) -> {{ $cat->description }} - last version : {{ $cat->max_version }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Catalog Version</label>
-                        <input type="text" id="edit_catalog_version" name="catalog_version" class="form-control">
+                        <label>Catalog Version *</label>
+                        <input type="text" id="edit_catalog_version" name="catalog_version" class="form-control" required>
                     </div>
                     
                     <div class="form-group">

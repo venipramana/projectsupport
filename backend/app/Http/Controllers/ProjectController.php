@@ -55,7 +55,26 @@ class ProjectController extends Controller
         $penggunas = Pengguna::all();
         $vulnerabilities = Rvulnerability::all();
         $rrkaps = Rrkap::all();
-        $rcatalogs = Rcatalog::all();
+
+        // Get max catalog_version per id_catalog from project table using version_compare
+        $projectCatalogVersions = Project::whereNotNull('id_catalog')
+            ->whereNotNull('catalog_version')
+            ->where('catalog_version', '!=', '')
+            ->where('catalog_version', '!=', '-')
+            ->get()
+            ->groupBy('id_catalog');
+
+        $maxVersions = [];
+        foreach ($projectCatalogVersions as $idCatalog => $group) {
+            $versions = $group->pluck('catalog_version')->unique()->toArray();
+            usort($versions, 'version_compare');
+            $maxVersions[$idCatalog] = end($versions);
+        }
+
+        $rcatalogs = Rcatalog::orderBy('id', 'asc')->get();
+        foreach ($rcatalogs as $cat) {
+            $cat->max_version = $maxVersions[$cat->id] ?? $cat->current_version ?? '-';
+        }
 
         // Extract distinct years from 'tanggal' field
         $tahunList = Project::selectRaw('YEAR(tanggal) as year')
@@ -78,6 +97,12 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'catalog_version' => 'required',
+        ], [
+            'catalog_version.required' => 'Catalog Version mandatory harus diisi.'
+        ]);
+
         $data = $request->all();
 
         // Convert dates from dd-mm-yyyy to Y-m-d
@@ -120,6 +145,12 @@ class ProjectController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'catalog_version' => 'required',
+        ], [
+            'catalog_version.required' => 'Catalog Version mandatory harus diisi.'
+        ]);
+
         $project = Project::findOrFail($id);
         $data = $request->all();
 

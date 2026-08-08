@@ -29,6 +29,15 @@ class DashboardController extends Controller
             ->orderByDesc('total')
             ->get();
 
+        // Summary project per Lead By (assign_to_name)
+        $projects_by_lead = ViewProgress::select(
+                DB::raw("CASE WHEN assign_to_name IS NULL OR TRIM(assign_to_name) = '' THEN 'Belum Ditugaskan' ELSE assign_to_name END as lead_by"),
+                DB::raw('count(*) as total')
+            )
+            ->groupBy('lead_by')
+            ->orderByDesc('total')
+            ->get();
+
         // 4: List project dengan status development (rproject = 1)
         $dev_projects = ViewProgress::where('rproject', 1)
             ->orderBy('tgl_update', 'desc')
@@ -46,6 +55,7 @@ class DashboardController extends Controller
             'total_projects',
             'projects_by_direktorat',
             'projects_this_year',
+            'projects_by_lead',
             'dev_projects',
             'qa_projects',
             'all_projects',
