@@ -52,7 +52,7 @@ class ProjectController extends Controller
         // Get data for dropdowns
         $direktorats = Rdirektorat::all();
         $rprojects = Rproject::all();
-        $penggunas = Pengguna::all();
+        $penggunas = Pengguna::where('status', 1)->orderBy('nama', 'asc')->get();
         $vulnerabilities = Rvulnerability::all();
         $rrkaps = Rrkap::all();
 

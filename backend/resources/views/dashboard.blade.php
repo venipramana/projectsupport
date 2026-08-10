@@ -197,23 +197,48 @@
     /* Detil Section */
     .table-container {
         overflow-x: auto;
+        overflow-y: auto;
+        max-height: 520px;
         background: rgba(255, 255, 255, 0.75);
         border-radius: 12px;
         border: 1px solid var(--glass-border);
         box-shadow: 0 4px 20px rgba(117, 95, 62, 0.05);
     }
+    
+    /* Custom Scrollbar for Detil Table */
+    .table-container::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    .table-container::-webkit-scrollbar-track {
+        background: rgba(117, 95, 62, 0.05);
+        border-radius: 10px;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+        background: rgba(117, 95, 62, 0.25);
+        border-radius: 10px;
+    }
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(117, 95, 62, 0.5);
+    }
+
     table {
         width: 100%;
-        border-collapse: collapse;
+        border-collapse: separate;
+        border-spacing: 0;
         font-size: 0.9rem;
     }
     th {
-        background: rgba(117, 95, 62, 0.07);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #f3efe6;
         color: var(--text-main);
         font-weight: 600;
         text-align: left;
         padding: 1rem;
         white-space: nowrap;
+        border-bottom: 1px solid var(--glass-border);
     }
     td {
         padding: 1rem;

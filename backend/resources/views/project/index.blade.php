@@ -543,7 +543,7 @@
                     <div class="form-group">
                         <label>Lead By</label>
                         <select name="leadby" class="form-control">
-                            <option value="">-- Pilih Pengguna --</option>
+                            <option value="">-- Pilih Leader --</option>
                             @foreach($penggunas as $p)
                                 <option value="{{ $p->idpengguna }}">{{ $p->nama }} ({{ $p->idpengguna }})</option>
                             @endforeach
@@ -552,7 +552,7 @@
                     <div class="form-group">
                         <label>Support By</label>
                         <select name="supportby" class="form-control">
-                            <option value="">-- Pilih Pengguna --</option>
+                            <option value="">-- Pilih Support --</option>
                             @foreach($penggunas as $p)
                                 <option value="{{ $p->idpengguna }}">{{ $p->nama }} ({{ $p->idpengguna }})</option>
                             @endforeach
@@ -571,7 +571,7 @@
                         <select name="id_catalog" class="form-control">
                             <option value="">-- Pilih Catalog --</option>
                             @foreach($rcatalogs as $cat)
-                                <option value="{{ $cat->id }}">--- ({{ $cat->id }}) -> {{ $cat->description }} - last version : {{ $cat->max_version }}</option>
+                                <option value="{{ $cat->id }}"> {{ $cat->description }} - last version : {{ $cat->max_version }}</option>
                             @endforeach
                         </select>
                     </div>

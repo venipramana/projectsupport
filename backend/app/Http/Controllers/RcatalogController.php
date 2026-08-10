@@ -23,7 +23,20 @@ class RcatalogController extends Controller
         
         $selectedDirektorat = $request->filter_direktorat ?? '';
 
-        return view('rcatalog.index', compact('rcatalogs', 'direktorats', 'selectedDirektorat'));
+        // Summary catalog per-direktorat untuk Donut Chart
+        $catalogs_by_direktorat = Rcatalog::with('direktorat')
+            ->selectRaw('id_direktorat, count(*) as total')
+            ->groupBy('id_direktorat')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id_direktorat' => $item->id_direktorat,
+                    'direktorat' => $item->direktorat ? $item->direktorat->deskripsi : 'Lainnya',
+                    'total' => (int) $item->total,
+                ];
+            });
+
+        return view('rcatalog.index', compact('rcatalogs', 'direktorats', 'selectedDirektorat', 'catalogs_by_direktorat'));
     }
 
     public function store(Request $request)

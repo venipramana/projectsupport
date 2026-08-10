@@ -16,7 +16,7 @@
             <p>{{ number_format($total_projects, 0, ',', '.') }}</p>
         </div>
     </div>
-    <div class="summary-card">
+    <!--div class="summary-card">
         <div class="summary-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
         </div>
@@ -24,7 +24,7 @@
             <h3>Total BSU RKAP</h3>
             <p>Rp {{ number_format($total_bsurkap, 0, ',', '.') }}</p>
         </div>
-    </div>
+    </div-->
 </div>
 
 <!-- Filter Section -->

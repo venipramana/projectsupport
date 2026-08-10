@@ -8,6 +8,7 @@ use App\Http\Controllers\RprojectController;
 use App\Http\Controllers\RrkapController;
 use App\Http\Controllers\RcatalogController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\NonprojectController;
 use App\Http\Controllers\HprojectController;
 use App\Http\Controllers\LaporanController;
 
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('rcatalog', RcatalogController::class);
         Route::get('rcatalog/{id}/projects', [RcatalogController::class, 'getProjects']);
         Route::resource('project', ProjectController::class);
+        Route::resource('nonproject', NonprojectController::class);
     });
 
     Route::get('/hproject/{project_id}', [HprojectController::class, 'index'])->name('hproject.index');
@@ -45,4 +47,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/hproject/{project_id}/evidence/{filename}', [HprojectController::class, 'destroyEvidence'])->where('filename', '.*')->name('hproject.evidence.destroy');
 
     Route::get('/laporan/progress', [LaporanController::class, 'progressIndex'])->name('laporan.progress');
+    Route::get('/laporan/nonproject', [LaporanController::class, 'nonprojectIndex'])->name('laporan.nonproject');
 });

@@ -3,9 +3,48 @@
 @section('title', 'Katalog Administration')
 @section('header-title', 'Katalog Administration')
 
+@section('custom-head')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@endsection
+
 @section('content')
-<div class="actions-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <form action="{{ route('rcatalog.index') }}" method="GET" style="display: flex; gap: 1rem; align-items: center;">
+<!-- SECTION DONUT CHART SUMMARY -->
+<div class="summary-section" style="margin-bottom: 2rem;">
+    <div class="card" style="background: rgba(255, 255, 255, 0.65); border: 1px solid var(--glass-border); border-radius: 20px; padding: 1.5rem; backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(117, 95, 62, 0.05);">
+        <div class="card-header" style="font-size: 1.1rem; font-weight: 600; color: var(--text-main); margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>
+                Summary Jumlah Katalog Per-Direktorat
+            </div>
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--primary); background: rgba(117, 95, 62, 0.12); padding: 0.25rem 0.75rem; border-radius: 20px;">
+                Total: {{ $rcatalogs->count() }} Katalog
+            </span>
+        </div>
+        
+        <div class="summary-grid">
+            <!-- Chart Container -->
+            <div class="chart-container" style="position: relative; height: 240px; width: 100%; display: flex; justify-content: center;">
+                <canvas id="catalogDirektoratChart"></canvas>
+            </div>
+            
+            <!-- List Container -->
+            <div class="list-container" style="max-height: 240px; overflow-y: auto; padding-right: 0.5rem;">
+                @forelse($catalogs_by_direktorat as $item)
+                    <div class="list-item interactive" onclick="filterByDirektoratId('{{ $item['id_direktorat'] }}')" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-radius: 10px; background: rgba(255, 255, 255, 0.5); margin-bottom: 0.5rem; cursor: pointer; transition: all 0.2s ease; border: 1px solid transparent;">
+                        <span style="font-weight: 500; font-size: 0.95rem; color: var(--text-main);">{{ $item['direktorat'] }}</span>
+                        <span style="background: rgba(117, 95, 62, 0.15); color: var(--primary); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">{{ $item['total'] }} Katalog</span>
+                    </div>
+                @empty
+                    <div class="empty-state" style="padding: 2rem; text-align: center; color: var(--text-muted); font-style: italic;">Tidak ada data katalog.</div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ACTIONS BAR -->
+<div class="actions-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <form action="{{ route('rcatalog.index') }}" method="GET" id="filterForm" style="display: flex; gap: 1rem; align-items: center;">
         <label for="filter_direktorat" style="color: var(--text-muted); font-weight: 500;">Filter Direktorat:</label>
         <select name="filter_direktorat" id="filter_direktorat" class="form-control" style="width: auto; background-color: #ffffff;" onchange="this.form.submit()">
             <option value="">-- Semua Direktorat --</option>
@@ -15,10 +54,16 @@
         </select>
     </form>
 
-    <button class="btn btn-primary" onclick="openModal('createModal')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        Tambah Katalog
-    </button>
+    <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <button type="button" class="btn-export-excel" onclick="exportCatalogExcel()" title="Save to Excel">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Save to Excel
+        </button>
+        <button class="btn btn-primary" onclick="openModal('createModal')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Tambah Katalog
+        </button>
+    </div>
 </div>
 
 @if(session('success'))
@@ -37,7 +82,7 @@
     </div>
 @endif
 
-<div class="master-section" style="height: 60vh; overflow-y: auto; padding-right: 10px; margin-bottom: 2rem;">
+<div class="master-section" style="margin-bottom: 2rem;">
     <div class="table-container">
         <table class="data-table">
             <thead>
@@ -56,7 +101,7 @@
                 <tr>
                     <td style="display: none;">{{ $cat->id }}</td>
                     <td>
-                        <span style="color: #60a5fa; cursor: pointer; text-decoration: underline;" onclick="loadProjects({{ $cat->id }}, '{{ addslashes($cat->description) }}')">
+                        <span style="color: var(--primary); cursor: pointer; font-weight: 500; text-decoration: underline;" onclick="loadProjects({{ $cat->id }}, '{{ addslashes($cat->description) }}')">
                             {{ $cat->description }}
                         </span>
                     </td>
@@ -71,7 +116,7 @@
                     <td>{{ $cat->last_update ? date('d-m-Y', strtotime($cat->last_update)) : '-' }}</td>
                     <td>
                         @if($cat->url_base)
-                            <a href="{{ $cat->url_base }}" target="_blank" style="color: #60a5fa; text-decoration: none;">Link &nearr;</a>
+                            <a href="{{ $cat->url_base }}" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 500;">Link &nearr;</a>
                         @else
                             -
                         @endif
@@ -79,7 +124,7 @@
                     <td>
                         <div class="action-buttons">
                             <button class="btn-icon btn-edit" onclick="openEditModal({{ $cat->id }}, '{{ addslashes($cat->description ?? '') }}', '{{ addslashes($cat->current_version ?? '') }}', '{{ addslashes($cat->last_update ?? '') }}', '{{ $cat->id_direktorat ?? '' }}', '{{ addslashes($cat->url_base ?? '') }}')" title="Edit">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                             </button>
                             <form action="{{ route('rcatalog.destroy', $cat->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus katalog ini?');">
                                 @csrf
@@ -104,9 +149,15 @@
 </div>
 
 <!-- Detail Section -->
-<div class="detail-section" id="detailSection" style="display: none; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
-    <h3 style="margin-bottom: 1rem; font-weight: 600; color: #6ee7b7;">Projects untuk Katalog: <span id="detailCatalogName"></span></h3>
-    <div class="table-container">
+<div class="detail-section" id="detailSection" style="display: none; padding-top: 1rem; border-top: 1px solid var(--glass-border); margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+        <h3 style="font-weight: 600; color: var(--primary); font-size: 1.1rem;">Projects untuk Katalog: <span id="detailCatalogName"></span></h3>
+        <button type="button" class="btn-export-excel" onclick="exportDetailProjectsExcel()" title="Save to Excel">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Save Detail to Excel
+        </button>
+    </div>
+    <div class="table-container" style="max-height: 350px;">
         <table class="data-table">
             <thead>
                 <tr>
@@ -219,10 +270,22 @@
 
 @section('custom-styles')
 <style>
-    .actions-bar {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 2rem;
+    .summary-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 1.5rem;
+        align-items: center;
+    }
+    @media (max-width: 768px) {
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .list-item.interactive:hover {
+        background: rgba(117, 95, 62, 0.12) !important;
+        border-color: rgba(117, 95, 62, 0.25) !important;
+        transform: translateX(3px);
     }
 
     .btn {
@@ -242,12 +305,12 @@
     .btn-primary {
         background: linear-gradient(135deg, var(--primary), var(--secondary));
         color: white;
-        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        box-shadow: 0 4px 15px rgba(117, 95, 62, 0.25);
     }
 
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+        box-shadow: 0 6px 20px rgba(117, 95, 62, 0.4);
     }
 
     .btn-secondary {
@@ -260,6 +323,29 @@
         background: rgba(255, 255, 255, 0.08);
     }
 
+    /* Save to Excel Button */
+    .btn-export-excel {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.55rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #059669;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    .btn-export-excel:hover {
+        background: rgba(16, 185, 129, 0.22);
+        border-color: rgba(16, 185, 129, 0.5);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+    }
+
     .alert {
         padding: 1rem 1.5rem;
         border-radius: 12px;
@@ -270,45 +356,70 @@
     .alert-success {
         background: rgba(16, 185, 129, 0.1);
         border: 1px solid rgba(16, 185, 129, 0.3);
-        color: #6ee7b7;
+        color: #059669;
     }
 
     .alert-danger {
         background: rgba(239, 68, 68, 0.1);
         border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #fca5a5;
+        color: #dc2626;
     }
 
     .table-container {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: 520px;
+        background: rgba(255, 255, 255, 0.75);
         border: 1px solid var(--glass-border);
-        border-radius: 20px;
-        overflow: hidden;
+        border-radius: 16px;
         backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(117, 95, 62, 0.05);
+    }
+
+    /* Custom Scrollbar for table-container & list-container */
+    .table-container::-webkit-scrollbar,
+    .list-container::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    .table-container::-webkit-scrollbar-track,
+    .list-container::-webkit-scrollbar-track {
+        background: rgba(117, 95, 62, 0.05);
+        border-radius: 10px;
+    }
+    .table-container::-webkit-scrollbar-thumb,
+    .list-container::-webkit-scrollbar-thumb {
+        background: rgba(117, 95, 62, 0.25);
+        border-radius: 10px;
+    }
+    .table-container::-webkit-scrollbar-thumb:hover,
+    .list-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(117, 95, 62, 0.5);
     }
 
     .data-table {
         width: 100%;
-        border-collapse: collapse;
+        border-collapse: separate;
+        border-spacing: 0;
     }
 
     .data-table th, .data-table td {
-        padding: 1.2rem 1.5rem;
+        padding: 1rem 1.25rem;
         text-align: left;
         border-bottom: 1px solid var(--glass-border);
     }
 
     .data-table th {
-        background: rgba(255, 255, 255, 0.02);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #f3efe6;
         font-weight: 600;
-        color: var(--text-muted);
+        color: var(--text-main);
         text-transform: uppercase;
         font-size: 0.8rem;
         letter-spacing: 0.5px;
-    }
-
-    .data-table tr:last-child td {
-        border-bottom: none;
+        border-bottom: 1px solid var(--glass-border);
     }
 
     .data-table tbody tr {
@@ -316,14 +427,7 @@
     }
 
     .data-table tbody tr:hover {
-        background: rgba(255, 255, 255, 0.02);
-    }
-
-    .badge {
-        padding: 0.3rem 0.8rem;
-        border-radius: 50px;
-        font-size: 0.8rem;
-        font-weight: 600;
+        background: rgba(117, 95, 62, 0.04);
     }
 
     .action-buttons {
@@ -345,11 +449,11 @@
         border: 1px solid var(--glass-border);
     }
 
-    .btn-edit { color: #60a5fa; }
-    .btn-edit:hover { background: rgba(96, 165, 250, 0.15); border-color: rgba(96, 165, 250, 0.3); }
+    .btn-edit { color: var(--primary); }
+    .btn-edit:hover { background: rgba(117, 95, 62, 0.15); border-color: rgba(117, 95, 62, 0.3); }
 
-    .btn-delete { color: #f87171; }
-    .btn-delete:hover { background: rgba(248, 113, 113, 0.15); border-color: rgba(248, 113, 113, 0.3); }
+    .btn-delete { color: #dc2626; }
+    .btn-delete:hover { background: rgba(220, 38, 38, 0.15); border-color: rgba(220, 38, 38, 0.3); }
 
     .text-center { text-align: center; }
     .text-muted { color: var(--text-muted); font-size: 0.85rem; font-weight: normal; }
@@ -447,10 +551,6 @@
         font-size: 0.95rem;
         transition: all 0.2s ease;
     }
-    
-    .form-control[type="date"]::-webkit-calendar-picker-indicator {
-        filter: none;
-    }
 
     .form-control:focus {
         outline: none;
@@ -470,25 +570,16 @@
         background: #ffffff;
         color: var(--text-main);
     }
-    .master-section::-webkit-scrollbar {
-        width: 8px;
-    }
-    .master-section::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.02);
-        border-radius: 4px;
-    }
-    .master-section::-webkit-scrollbar-thumb {
-        background: rgba(139, 92, 246, 0.3);
-        border-radius: 4px;
-    }
-    .master-section::-webkit-scrollbar-thumb:hover {
-        background: rgba(139, 92, 246, 0.5);
-    }
 </style>
 @endsection
 
 @section('custom-scripts')
 <script>
+    const catalogData = @json($rcatalogs);
+    const catalogDirektoratData = @json($catalogs_by_direktorat);
+    let currentDetailProjectsData = [];
+    let currentDetailCatalogName = '';
+
     function openModal(id) {
         document.getElementById(id).classList.add('active');
     }
@@ -498,41 +589,172 @@
     }
 
     function openEditModal(id, description, current_version, last_update, id_direktorat, url_base) {
-        // Set form action dynamically
         const form = document.getElementById('editForm');
         form.action = `/rcatalog/${id}`;
 
-        // Populate fields
         document.getElementById('edit_description').value = description;
         document.getElementById('edit_current_version').value = current_version;
         document.getElementById('edit_last_update').value = last_update;
         document.getElementById('edit_id_direktorat').value = id_direktorat;
         document.getElementById('edit_url_base').value = url_base;
 
-        // Open Modal
         openModal('editModal');
     }
 
-    // Close modal when clicking outside
     window.onclick = function(event) {
         if (event.target.classList.contains('modal')) {
             event.target.classList.remove('active');
         }
     }
 
+    function filterByDirektoratId(dirId) {
+        const select = document.getElementById('filter_direktorat');
+        select.value = dirId || '';
+        document.getElementById('filterForm').submit();
+    }
+
+    // Initialize Chart.js
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('catalogDirektoratChart').getContext('2d');
+        const labels = catalogDirektoratData.map(d => d.direktorat);
+        const dataValues = catalogDirektoratData.map(d => d.total);
+        
+        const colors = [
+            '#755f3e', '#54422b', '#9c825e', '#b59c77', '#c7ab83', 
+            '#3f3526', '#87704e', '#d8c2a3', '#614d33', '#ab9471'
+        ];
+        
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: dataValues,
+                    backgroundColor: colors,
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: '#6e665d',
+                            font: { family: "'Inter', sans-serif", size: 11 },
+                            padding: 12,
+                            boxWidth: 12
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(44, 39, 33, 0.95)',
+                        titleFont: { family: "'Inter', sans-serif" },
+                        bodyFont: { family: "'Inter', sans-serif" },
+                        padding: 12,
+                        cornerRadius: 8,
+                        borderColor: 'rgba(117, 95, 62, 0.2)',
+                        borderWidth: 1
+                    }
+                },
+                cutout: '65%',
+                onClick: (e, activeElements) => {
+                    if (activeElements.length > 0) {
+                        const index = activeElements[0].index;
+                        const selectedItem = catalogDirektoratData[index];
+                        if (selectedItem && selectedItem.id_direktorat) {
+                            filterByDirektoratId(selectedItem.id_direktorat);
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+    // Excel Exporter Helper
+    function exportToExcelHTML(headers, dataRows, filename) {
+        let tableHTML = '<table border="1"><thead><tr>';
+        headers.forEach(h => {
+            tableHTML += `<th style="background:#755f3e;color:#ffffff;font-weight:bold;padding:6px;">${h}</th>`;
+        });
+        tableHTML += '</tr></thead><tbody>';
+        
+        dataRows.forEach(row => {
+            tableHTML += '<tr>';
+            row.forEach(cell => {
+                tableHTML += `<td style="padding:5px;">${cell !== null && cell !== undefined ? cell : '-'}</td>`;
+            });
+            tableHTML += '</tr>';
+        });
+        tableHTML += '</tbody></table>';
+
+        const dataType = 'application/vnd.ms-excel';
+        const xTag = '<x' + ':';
+        const htmlTemplate = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml>${xTag}ExcelWorkbook>${xTag}ExcelWorksheets>${xTag}ExcelWorksheet>${xTag}Name>Sheet1</${xTag}Name>${xTag}WorksheetOptions>${xTag}DisplayGridlines/></${xTag}WorksheetOptions></${xTag}ExcelWorksheet></${xTag}ExcelWorksheets></${xTag}ExcelWorkbook></xml><![endif]--></head><body>${tableHTML}</body></html>`;
+
+        const downloadLink = document.createElement("a");
+        document.body.appendChild(downloadLink);
+        const fileNameWithExt = (filename || 'export') + '.xls';
+
+        if (navigator.msSaveOrOpenBlob) {
+            const blob = new Blob(['\ufeff', htmlTemplate], { type: dataType });
+            navigator.msSaveOrOpenBlob(blob, fileNameWithExt);
+        } else {
+            downloadLink.href = 'data:' + dataType + ', ' + encodeURIComponent(htmlTemplate);
+            downloadLink.download = fileNameWithExt;
+            downloadLink.click();
+        }
+        document.body.removeChild(downloadLink);
+    }
+
+    window.exportCatalogExcel = function() {
+        const headers = ['No', 'Deskripsi Katalog', 'Direktorat', 'Versi', 'Update Terakhir', 'Base URL'];
+        const rows = catalogData.map((cat, idx) => [
+            idx + 1,
+            cat.description || '-',
+            cat.direktorat ? cat.direktorat.deskripsi : '-',
+            cat.current_version || '-',
+            cat.last_update ? formatDate(cat.last_update) : '-',
+            cat.url_base || '-'
+        ]);
+        exportToExcelHTML(headers, rows, 'List_Katalog_Administration');
+    };
+
+    window.exportDetailProjectsExcel = function() {
+        const headers = ['No', 'Nama Project', 'Tanggal', 'Versi Katalog', 'Project (Direktorat)'];
+        const rows = currentDetailProjectsData.map((p, idx) => [
+            idx + 1,
+            p.project_name || '-',
+            p.tanggal || '-',
+            p.catalog_version || '-',
+            p.rproject_deskripsi || '-'
+        ]);
+        const safeTitle = (currentDetailCatalogName || 'Katalog').replace(/[^a-zA-Z0-9]/g, '_');
+        exportToExcelHTML(headers, rows, 'Detail_Projects_' + safeTitle);
+    };
+
+    function formatDate(dateString) {
+        if (!dateString) return '-';
+        const d = new Date(dateString);
+        if (isNaN(d.getTime())) return dateString;
+        return ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear();
+    }
+
     async function loadProjects(catalogId, catalogName) {
-        // Show detail section
         const detailSection = document.getElementById('detailSection');
         const detailCatalogName = document.getElementById('detailCatalogName');
         const tbody = document.getElementById('detailTableBody');
         
         detailSection.style.display = 'block';
         detailCatalogName.textContent = catalogName;
+        currentDetailCatalogName = catalogName;
         tbody.innerHTML = '<tr><td colspan="4" class="text-center">Loading...</td></tr>';
         
         try {
             const response = await fetch(`/rcatalog/${catalogId}/projects`);
             const projects = await response.json();
+            currentDetailProjectsData = projects;
             
             if (projects.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada data project untuk katalog ini.</td></tr>';
@@ -552,10 +774,11 @@
             });
             
             tbody.innerHTML = rows;
+            detailSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             
         } catch (error) {
             console.error("Error fetching projects:", error);
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center" style="color: #fca5a5;">Gagal memuat data project.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center" style="color: #dc2626;">Gagal memuat data project.</td></tr>';
         }
     }
 </script>
