@@ -23,7 +23,7 @@ class NonprojectController extends Controller
             });
         }
 
-        $nonprojects = $query->get();
+        $nonprojects = $query->paginate(25)->withQueryString();
         $penggunas = Pengguna::where('status', 1)->orderBy('nama', 'asc')->get();
         $searchKeyword = $request->search ?? '';
 

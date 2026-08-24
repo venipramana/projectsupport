@@ -548,6 +548,7 @@
                     Tidak ada data yang sesuai.
                 </div>
             </div>
+            <div id="detil-pagination" class="pagination-container" style="display: none; margin-top: 1rem;"></div>
         </div>
     </div>
 
@@ -566,6 +567,8 @@
 
     let currentDetilData = allProjects;
     let currentDetilTitle = 'Semua Project';
+    let detilCurrentPage = 1;
+    const detilPageSize = 10; // 10 data per halaman pada Section Detil
 
     // Excel Exporter Helper
     function exportToExcelHTML(headers, dataRows, filename) {
@@ -672,6 +675,7 @@
         exportToExcelHTML(headers, rows, 'Project_Status_QA_UAT');
     };
 
+    // Save to Excel: Selalu mengeksport SELURUH data terfilter (currentDetilData), tidak terpengaruh paginasi
     window.exportDetilExcel = function() {
         const headers = ['No', 'ID Project', 'Nama Project', 'Direktorat', 'Lead By', 'Tanggal Awal', 'Status Project'];
         const rows = currentDetilData.map((item, idx) => [
@@ -694,30 +698,44 @@
         return ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear();
     }
 
-    // Function to render table
-    function renderDetilTable(data, title) {
+    // Function to render table dengan client-side pagination
+    function renderDetilTable(data, title, page = 1) {
         currentDetilData = data;
         currentDetilTitle = title;
+        detilCurrentPage = page;
+
         document.getElementById('detil-title').innerText = title;
         const tbody = document.getElementById('detil-tbody');
         const emptyState = document.getElementById('detil-empty');
         const table = document.getElementById('detil-table');
+        const paginationContainer = document.getElementById('detil-pagination');
         
         tbody.innerHTML = '';
         
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             table.style.display = 'none';
             emptyState.style.display = 'block';
+            if (paginationContainer) paginationContainer.style.display = 'none';
             return;
         }
         
         table.style.display = 'table';
         emptyState.style.display = 'none';
         
-        data.forEach((proj, index) => {
+        const totalItems = data.length;
+        const totalPages = Math.ceil(totalItems / detilPageSize);
+        const currentPage = Math.max(1, Math.min(page, totalPages));
+        detilCurrentPage = currentPage;
+
+        const startIndex = (currentPage - 1) * detilPageSize;
+        const endIndex = Math.min(startIndex + detilPageSize, totalItems);
+        const pageData = data.slice(startIndex, endIndex);
+
+        pageData.forEach((proj, idx) => {
             const tr = document.createElement('tr');
+            const rowNumber = startIndex + idx + 1;
             tr.innerHTML = `
-                <td>${index + 1}</td>
+                <td>${rowNumber}</td>
                 <td>${proj.idproject || '-'}</td>
                 <td>
                     <a href="/hproject/${proj.idproject || ''}" style="color: var(--primary); text-decoration: none; font-weight: 500;">
@@ -731,7 +749,53 @@
             `;
             tbody.appendChild(tr);
         });
+
+        // Controls Paginasi Section Detil
+        if (paginationContainer) {
+            if (totalPages > 1) {
+                paginationContainer.style.display = 'flex';
+                let pagHTML = `
+                    <div class="pagination-info">
+                        Menampilkan ${startIndex + 1} - ${endIndex} dari ${totalItems} total data (${title})
+                    </div>
+                    <ul class="pagination">
+                `;
+
+                if (currentPage > 1) {
+                    pagHTML += `<li><a href="javascript:void(0)" onclick="changeDetilPage(${currentPage - 1})">&laquo; Prev</a></li>`;
+                } else {
+                    pagHTML += `<li class="disabled"><span>&laquo; Prev</span></li>`;
+                }
+
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                        if (i === currentPage) {
+                            pagHTML += `<li class="active"><span>${i}</span></li>`;
+                        } else {
+                            pagHTML += `<li><a href="javascript:void(0)" onclick="changeDetilPage(${i})">${i}</a></li>`;
+                        }
+                    } else if (i === currentPage - 2 || i === currentPage + 2) {
+                        pagHTML += `<li class="disabled"><span>...</span></li>`;
+                    }
+                }
+
+                if (currentPage < totalPages) {
+                    pagHTML += `<li><a href="javascript:void(0)" onclick="changeDetilPage(${currentPage + 1})">Next &raquo;</a></li>`;
+                } else {
+                    pagHTML += `<li class="disabled"><span>Next &raquo;</span></li>`;
+                }
+
+                pagHTML += `</ul>`;
+                paginationContainer.innerHTML = pagHTML;
+            } else {
+                paginationContainer.style.display = 'none';
+            }
+        }
     }
+
+    window.changeDetilPage = function(page) {
+        renderDetilTable(currentDetilData, currentDetilTitle, page);
+    };
 
     // Filter Function
     function filterDetil(direktorat, year = null) {
@@ -743,7 +807,7 @@
             title = direktorat + " (" + year + ")";
         }
         
-        renderDetilTable(filtered, title);
+        renderDetilTable(filtered, title, 1);
         // Scroll to detil section smoothly
         document.querySelector('.section-detil').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -756,13 +820,13 @@
         } else {
             filtered = allProjects.filter(p => p.assign_to_name === leadName);
         }
-        renderDetilTable(filtered, "Lead By: " + leadName);
+        renderDetilTable(filtered, "Lead By: " + leadName, 1);
         document.querySelector('.section-detil').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     
     // Show All
     window.showAllProjects = function() {
-        renderDetilTable(allProjects, 'Semua Project');
+        renderDetilTable(allProjects, 'Semua Project', 1);
     }
 
     // Initialize Chart.js

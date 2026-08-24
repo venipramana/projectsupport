@@ -119,6 +119,16 @@
             </tbody>
         </table>
     </div>
+    @if($data->hasPages())
+    <div class="pagination-container">
+        <div class="pagination-info">
+            Menampilkan {{ $data->firstItem() ?? 0 }} - {{ $data->lastItem() ?? 0 }} dari {{ $data->total() }} total data
+        </div>
+        <div>
+            {{ $data->links('pagination::bootstrap-4') }}
+        </div>
+    </div>
+    @endif
 </div>
 
 @endsection
@@ -264,7 +274,8 @@
 
 @section('custom-scripts')
 <script>
-    const laporanData = @json($data);
+    const rawLaporanData = @json($allData);
+    const laporanData = Array.isArray(rawLaporanData) ? rawLaporanData : (rawLaporanData.data || []);
 
     function exportToExcelHTML(headers, dataRows, filename) {
         let tableHTML = '<table border="1"><thead><tr>';

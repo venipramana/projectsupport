@@ -110,7 +110,7 @@
 
         <div class="form-actions">
             <a href="{{ route('laporan.progress') }}" class="btn btn-secondary">Reset Filter</a>
-            <button type="button" class="btn btn-success" onclick="exportToExcel('laporanTable', 'Laporan_Progres_Project')">
+            <button type="button" class="btn btn-success" onclick="exportLaporanProgressExcel()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 Export Excel
             </button>
@@ -232,6 +232,16 @@
             </tfoot>
         </table>
     </div>
+    @if($data->hasPages())
+    <div class="pagination-container">
+        <div class="pagination-info">
+            Menampilkan {{ $data->firstItem() ?? 0 }} - {{ $data->lastItem() ?? 0 }} dari {{ $data->total() }} total data
+        </div>
+        <div>
+            {{ $data->links('pagination::bootstrap-4') }}
+        </div>
+    </div>
+    @endif
 </div>
 @endsection
 
@@ -451,32 +461,115 @@
 
 @section('custom-scripts')
 <script>
-    function exportToExcel(tableID, filename = ''){
-        var downloadLink;
-        var dataType = 'application/vnd.ms-excel';
-        var tableSelect = document.getElementById(tableID);
-        var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-        
-        var htmlTemplate = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x`+`:ExcelWorkbook><x`+`:ExcelWorksheets><x`+`:ExcelWorksheet><x`+`:Name>{worksheet}</x`+`:Name><x`+`:WorksheetOptions><x`+`:DisplayGridlines/></x`+`:WorksheetOptions></x`+`:ExcelWorksheet></x`+`:ExcelWorksheets></x`+`:ExcelWorkbook></xml><![endif]--></head><body>${tableHTML}</body></html>`;
-        
-        htmlTemplate = htmlTemplate.replace(/ /g, '%20');
+    const exportProgressData = @json($allData);
+    const totalBsurkapValue = {{ (float) $total_bsurkap }};
 
-        filename = filename ? filename + '.xls' : 'excel_data.xls';
+    function formatDate(dateStr) {
+        if (!dateStr) return '-';
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        return ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear();
+    }
+
+    function formatDateTime(dateStr) {
+        if (!dateStr) return '-';
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        return ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear() + ' ' +
+               ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
+    }
+
+    function exportToExcelHTML(headers, dataRows, filename, summaryTotal) {
+        let tableHTML = '<table border="1"><thead><tr>';
+        headers.forEach(h => {
+            tableHTML += `<th style="background:#755f3e;color:#ffffff;font-weight:bold;padding:6px;">${h}</th>`;
+        });
+        tableHTML += '</tr></thead><tbody>';
         
-        downloadLink = document.createElement("a");
-        document.body.appendChild(downloadLink);
-        
-        if(navigator.msSaveOrOpenBlob){
-            var blob = new Blob(['\ufeff', htmlTemplate], {
-                type: dataType
+        dataRows.forEach(row => {
+            tableHTML += '<tr>';
+            row.forEach((cell, idx) => {
+                const align = idx === row.length - 1 ? 'right' : 'left';
+                tableHTML += `<td style="padding:5px;text-align:${align};">${cell !== null && cell !== undefined ? cell : '-'}</td>`;
             });
-            navigator.msSaveOrOpenBlob( blob, filename);
+            tableHTML += '</tr>';
+        });
+
+        if (summaryTotal !== undefined && summaryTotal !== null) {
+            const formattedTotal = Number(summaryTotal).toLocaleString('id-ID');
+            tableHTML += `
+                <tr style="background: #f4f0ea; font-weight: bold;">
+                    <td colspan="${headers.length - 1}" style="text-align: right; padding: 6px; color: #2c2721;">TOTAL BSU RKAP</td>
+                    <td style="text-align: right; color: #755f3e; padding: 6px;">Rp ${formattedTotal}</td>
+                </tr>
+            `;
+        }
+
+        tableHTML += '</tbody></table>';
+
+        const dataType = 'application/vnd.ms-excel;charset=utf-8';
+        const xTag = '<x' + ':';
+        const htmlTemplate = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml>${xTag}ExcelWorkbook>${xTag}ExcelWorksheets>${xTag}ExcelWorksheet>${xTag}Name>Progres Project</${xTag}Name>${xTag}WorksheetOptions>${xTag}DisplayGridlines/></${xTag}WorksheetOptions></${xTag}ExcelWorksheet></${xTag}ExcelWorksheets></${xTag}ExcelWorkbook></xml><![endif]--></head><body>${tableHTML}</body></html>`;
+
+        const downloadLink = document.createElement("a");
+        document.body.appendChild(downloadLink);
+        const fileNameWithExt = (filename || 'Laporan_Progres_Project') + '.xls';
+
+        if (navigator.msSaveOrOpenBlob) {
+            const blob = new Blob(['\ufeff', htmlTemplate], { type: dataType });
+            navigator.msSaveOrOpenBlob(blob, fileNameWithExt);
         } else {
-            downloadLink.href = 'data:' + dataType + ', ' + htmlTemplate;
-            downloadLink.download = filename;
+            downloadLink.href = 'data:' + dataType + ', ' + encodeURIComponent(htmlTemplate);
+            downloadLink.download = fileNameWithExt;
             downloadLink.click();
         }
         document.body.removeChild(downloadLink);
     }
+
+    window.exportLaporanProgressExcel = function() {
+        const headers = [
+            'Icon', 'ID', 'ID Project', 'Nama Project', 'Direktorat', 'Bagian',
+            'PIC Name', 'No Surat', 'Tgl Surat', 'Tgl Awal', 'Tgl Akhir',
+            'Rproject', 'Status Project', 'Assign To', 'Assign To Name', 'Support To',
+            'Support To Name', 'Telpon', 'Tgl Update', 'Token', 'Durasi Permintaan',
+            'Vul Passed', 'ID Catalog', 'Nama Katalog', 'Catalog Version',
+            'By Vendor', 'Vendor Name', 'URL Base', 'RKAP', 'BSU RKAP'
+        ];
+
+        const rows = exportProgressData.map(row => [
+            row.icon || '-',
+            row.id || '-',
+            row.idproject || '-',
+            row.project_name || '-',
+            row.direktorat || '-',
+            row.bagian || '-',
+            row.pic_name || '-',
+            row.no_surat || '-',
+            formatDate(row.tgl_surat),
+            formatDate(row.tanggal_awal),
+            formatDate(row.tanggal_akhir),
+            row.rproject || '-',
+            row.status_project || '-',
+            row.assign_to || '-',
+            row.assign_to_name || '-',
+            row.support_to || '-',
+            row.support_to_name || '-',
+            row.telpon || '-',
+            formatDateTime(row.tgl_update),
+            row.token || '-',
+            row.durasipermintaan || '-',
+            row.vul_passed || '-',
+            row.id_catalog || '-',
+            row.nama_katalog || '-',
+            row.catalog_version || '-',
+            row.byvendor || '-',
+            row.vendorname || '-',
+            row.url_base || '-',
+            row.rkap || '-',
+            row.bsurkap ? Number(row.bsurkap).toLocaleString('id-ID') : '-'
+        ]);
+
+        exportToExcelHTML(headers, rows, 'Laporan_Progres_Project', totalBsurkapValue);
+    };
 </script>
 @endsection

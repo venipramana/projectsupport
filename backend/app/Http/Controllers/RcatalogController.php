@@ -6,6 +6,7 @@ use App\Models\Rcatalog;
 use App\Models\Rdirektorat;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class RcatalogController extends Controller
 {
@@ -17,26 +18,31 @@ class RcatalogController extends Controller
             $query->where('id_direktorat', $request->filter_direktorat);
         }
 
-        $rcatalogs = $query->get();
+        // Data lengkap terfilter untuk Excel export seluruh baris
+        $allCatalogs = (clone $query)->get();
+
+        $rcatalogs = $query->paginate(25)->withQueryString();
         // Ambil data direktorat untuk opsi dropdown di modal create/edit dan filter
         $direktorats = Rdirektorat::all();
         
         $selectedDirektorat = $request->filter_direktorat ?? '';
 
-        // Summary catalog per-direktorat untuk Donut Chart
-        $catalogs_by_direktorat = Rcatalog::with('direktorat')
-            ->selectRaw('id_direktorat, count(*) as total')
-            ->groupBy('id_direktorat')
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'id_direktorat' => $item->id_direktorat,
-                    'direktorat' => $item->direktorat ? $item->direktorat->deskripsi : 'Lainnya',
-                    'total' => (int) $item->total,
-                ];
-            });
+        // Summary catalog per-direktorat untuk Donut Chart (Cached)
+        $catalogs_by_direktorat = Cache::remember('rcatalog_by_direktorat', 300, function () {
+            return Rcatalog::with('direktorat')
+                ->selectRaw('id_direktorat, count(*) as total')
+                ->groupBy('id_direktorat')
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id_direktorat' => $item->id_direktorat,
+                        'direktorat' => $item->direktorat ? $item->direktorat->deskripsi : 'Lainnya',
+                        'total' => (int) $item->total,
+                    ];
+                });
+        });
 
-        return view('rcatalog.index', compact('rcatalogs', 'direktorats', 'selectedDirektorat', 'catalogs_by_direktorat'));
+        return view('rcatalog.index', compact('rcatalogs', 'allCatalogs', 'direktorats', 'selectedDirektorat', 'catalogs_by_direktorat'));
     }
 
     public function store(Request $request)

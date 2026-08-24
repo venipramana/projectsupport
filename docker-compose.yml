@@ -1,8 +1,7 @@
-
 services:
   nginx:
     image: nginx:alpine
-    container_name: pm_nginx
+    restart: always
     ports:
       - "${NGINX_PORT:-8000}:80"
     volumes:
@@ -13,12 +12,13 @@ services:
       - php
     networks:
       - pm-network
+      - external_default
 
   php:
     build:
       context: ./docker/php
       dockerfile: Dockerfile
-    container_name: pm_php
+    restart: always
     volumes:
       - ./backend:/var/www/backend
       - ./docker/php/uploads.ini:/usr/local/etc/php/conf.d/99-uploads.ini
@@ -29,15 +29,30 @@ services:
       - DB_DATABASE=${DB_DATABASE}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - SESSION_DRIVER=${SESSION_DRIVER:-redis}
+      - CACHE_STORE=${CACHE_STORE:-redis}
+      - QUEUE_CONNECTION=${QUEUE_CONNECTION:-redis}
+    depends_on:
+      - redis
     networks:
       - pm-network
       - external_default
+
+  redis:
+    image: redis:alpine
+    restart: always
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    networks:
+      - pm-network
 
 networks:
   pm-network:
     driver: bridge
 
-  # Network untuk terhubung ke container MySQL di luar environment ini
+  # Network untuk terhubung ke container MySQL & MinIO di luar environment ini
   external_default:
     name: db_default 
     external: true

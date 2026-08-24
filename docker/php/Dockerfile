@@ -10,13 +10,21 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nodejs \
-    npm
+    npm \
+    $PHPIZE_DEPS
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions required by Laravel
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd opcache
+
+# Install Redis extension via PECL
+RUN pecl install redis && docker-php-ext-enable redis
+
+# Copy PHP-FPM and OPCache custom configurations
+COPY www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

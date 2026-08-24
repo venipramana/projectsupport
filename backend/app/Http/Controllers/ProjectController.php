@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Hproject;
 use App\Models\Rdirektorat;
 use App\Models\Rproject;
 use App\Models\Pengguna;
@@ -47,7 +48,7 @@ class ProjectController extends Controller
             $query->whereYear('tanggal', $request->filter_tahun);
         }
 
-        $projects = $query->get();
+        $projects = $query->paginate(25)->withQueryString();
 
         // Get data for dropdowns
         $direktorats = Rdirektorat::all();
@@ -128,6 +129,14 @@ class ProjectController extends Controller
             $data['bsurkap'] = preg_replace('/[.,]/', '', $data['bsurkap']);
         }
 
+        // Status Development ID (default 1)
+        $devStatus = Rproject::where('deskripsi', 'like', 'DEVELOPMENT')->first();
+        $devStatusId = $devStatus ? $devStatus->id : 1;
+
+        if (empty($data['rproject'])) {
+            $data['rproject'] = $devStatusId;
+        }
+
         $project = Project::create($data);
 
         // Otomatis buat folder di bucket MinIO dan hubungkan atribut folder_evidence
@@ -139,6 +148,15 @@ class ProjectController extends Controller
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error("MinIO error during project creation: " . $e->getMessage());
         }
+
+        // Otomatis insert 1 row ke tabel hproject dengan status Development
+        Hproject::create([
+            'idproject' => $project->id,
+            'rproject'  => $devStatusId,
+            'tanggal'   => $project->tanggal ?? date('Y-m-d'),
+            'catatan'   => !empty($project->catatan) ? substr($project->catatan, 0, 150) : 'Development',
+            'progress'  => 0,
+        ]);
 
         return redirect()->route('project.index')->with('success', 'Project berhasil ditambahkan.');
     }

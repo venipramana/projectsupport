@@ -17,7 +17,7 @@
                 Summary Jumlah Katalog Per-Direktorat
             </div>
             <span style="font-size: 0.85rem; font-weight: 600; color: var(--primary); background: rgba(117, 95, 62, 0.12); padding: 0.25rem 0.75rem; border-radius: 20px;">
-                Total: {{ $rcatalogs->count() }} Katalog
+                Total: {{ $allCatalogs->count() }} Katalog
             </span>
         </div>
         
@@ -146,6 +146,16 @@
             </tbody>
         </table>
     </div>
+    @if($rcatalogs->hasPages())
+    <div class="pagination-container">
+        <div class="pagination-info">
+            Menampilkan {{ $rcatalogs->firstItem() ?? 0 }} - {{ $rcatalogs->lastItem() ?? 0 }} dari {{ $rcatalogs->total() }} total data
+        </div>
+        <div>
+            {{ $rcatalogs->links('pagination::bootstrap-4') }}
+        </div>
+    </div>
+    @endif
 </div>
 
 <!-- Detail Section -->
@@ -575,7 +585,8 @@
 
 @section('custom-scripts')
 <script>
-    const catalogData = @json($rcatalogs);
+    const rawCatalogData = @json($allCatalogs);
+    const catalogData = Array.isArray(rawCatalogData) ? rawCatalogData : (rawCatalogData.data || []);
     const catalogDirektoratData = @json($catalogs_by_direktorat);
     let currentDetailProjectsData = [];
     let currentDetailCatalogName = '';
@@ -624,6 +635,32 @@
             '#3f3526', '#87704e', '#d8c2a3', '#614d33', '#ab9471'
         ];
         
+        const centerTextPlugin = {
+            id: 'centerText',
+            beforeDraw(chart) {
+                const { ctx } = chart;
+                ctx.save();
+                const total = dataValues.reduce((a, b) => a + (Number(b) || 0), 0);
+                const meta = chart.getDatasetMeta(0);
+                if (meta && meta.data && meta.data.length > 0) {
+                    const x = meta.data[0].x;
+                    const y = meta.data[0].y;
+                    
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    
+                    ctx.font = '600 11px "Inter", sans-serif';
+                    ctx.fillStyle = '#6e665d';
+                    ctx.fillText('Total Katalog', x, y - 10);
+                    
+                    ctx.font = 'bold 20px "Inter", sans-serif';
+                    ctx.fillStyle = '#755f3e';
+                    ctx.fillText(total.toLocaleString('id-ID'), x, y + 10);
+                }
+                ctx.restore();
+            }
+        };
+
         new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -650,8 +687,7 @@
                     },
                     tooltip: {
                         backgroundColor: 'rgba(44, 39, 33, 0.95)',
-                        titleFont: { family: "'Inter', sans-serif" },
-                        bodyFont: { family: "'Inter', sans-serif" },
+                        titleFont: { family: "'Inter', sans-serif" }, bodyFont: { family: "'Inter', sans-serif" },
                         padding: 12,
                         cornerRadius: 8,
                         borderColor: 'rgba(117, 95, 62, 0.2)',
@@ -668,7 +704,8 @@
                         }
                     }
                 }
-            }
+            },
+            plugins: [centerTextPlugin]
         });
     });
 

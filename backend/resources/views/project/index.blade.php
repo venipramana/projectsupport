@@ -464,6 +464,16 @@
             </tbody>
         </table>
     </div>
+    @if($projects->hasPages())
+    <div class="pagination-container">
+        <div class="pagination-info">
+            Menampilkan {{ $projects->firstItem() ?? 0 }} - {{ $projects->lastItem() ?? 0 }} dari {{ $projects->total() }} total data
+        </div>
+        <div>
+            {{ $projects->links('pagination::bootstrap-4') }}
+        </div>
+    </div>
+    @endif
 </div>
 
 <!-- Create Modal -->

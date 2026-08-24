@@ -46,10 +46,14 @@ class LaporanController extends Controller
             $query->where('assign_to_name', $request->pic);
         }
 
-        $data = $query->orderBy('tgl_update', 'desc')->get();
+        // Hitung total agregat dari seluruh data terfilter sebelum paginasi
+        $total_projects = (clone $query)->count();
+        $total_bsurkap = (clone $query)->sum('bsurkap');
 
-        $total_projects = $data->count();
-        $total_bsurkap = $data->sum('bsurkap');
+        // Data lengkap terfilter untuk Excel export seluruh baris
+        $allData = (clone $query)->orderBy('tgl_update', 'desc')->get();
+
+        $data = $query->orderBy('tgl_update', 'desc')->paginate(25)->withQueryString();
 
         $direktoratOptions = Rdirektorat::orderBy('deskripsi')->get();
         $progressOptions = Rproject::orderBy('deskripsi')->get();
@@ -78,7 +82,7 @@ class LaporanController extends Controller
         ];
 
         return view('laporan.progress.index', compact(
-            'data', 'total_projects', 'total_bsurkap',
+            'data', 'allData', 'total_projects', 'total_bsurkap',
             'direktoratOptions', 'progressOptions', 'rkapOptions', 'picOptions', 'tahunOptions', 'bulanOptions'
         ));
     }
@@ -97,15 +101,15 @@ class LaporanController extends Controller
             });
         }
 
-        // Filter Tahun (extract from YYYYMMDD string format)
-        if ($request->filled('tahun')) {
-            $query->whereRaw("SUBSTRING(tanggal, 1, 4) = ?", [$request->tahun]);
-        }
-
-        // Filter Bulan (extract from YYYYMMDD string format)
-        if ($request->filled('bulan')) {
+        // Filter Tahun & Bulan dengan Indexed Prefix LIKE (memanfaatkan B-Tree Index)
+        if ($request->filled('tahun') && $request->filled('bulan')) {
             $bulanPad = sprintf('%02d', $request->bulan);
-            $query->whereRaw("SUBSTRING(tanggal, 5, 2) = ?", [$bulanPad]);
+            $query->where('tanggal', 'like', $request->tahun . $bulanPad . '%');
+        } elseif ($request->filled('tahun')) {
+            $query->where('tanggal', 'like', $request->tahun . '%');
+        } elseif ($request->filled('bulan')) {
+            $bulanPad = sprintf('%02d', $request->bulan);
+            $query->where('tanggal', 'like', '____' . $bulanPad . '%');
         }
 
         // Filter PIC
@@ -113,8 +117,13 @@ class LaporanController extends Controller
             $query->where('pic', $request->pic);
         }
 
-        $data = $query->orderBy('tanggal', 'desc')->orderBy('id', 'desc')->get();
-        $total_kegiatan = $data->count();
+        // Hitung total dari keseluruhan data terfilter sebelum paginasi
+        $total_kegiatan = (clone $query)->count();
+
+        // Data lengkap terfilter untuk Excel export seluruh baris
+        $allData = (clone $query)->orderBy('tanggal', 'desc')->orderBy('id', 'desc')->get();
+
+        $data = $query->orderBy('tanggal', 'desc')->orderBy('id', 'desc')->paginate(25)->withQueryString();
 
         // Extract list of years available in nonproject table
         $tahunOptions = DB::table('nonproject')
@@ -142,7 +151,7 @@ class LaporanController extends Controller
         $picOptions = Pengguna::where('status', 1)->orderBy('nama', 'asc')->get();
 
         return view('laporan.nonproject.index', compact(
-            'data', 'total_kegiatan', 'tahunOptions', 'bulanOptions', 'picOptions'
+            'data', 'allData', 'total_kegiatan', 'tahunOptions', 'bulanOptions', 'picOptions'
         ));
     }
 }
