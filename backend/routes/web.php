@@ -39,7 +39,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/hproject', [HprojectController::class, 'store'])->name('hproject.store');
     Route::put('/hproject/{id}', [HprojectController::class, 'update'])->name('hproject.update');
     Route::delete('/hproject/{id}', [HprojectController::class, 'destroy'])->name('hproject.destroy');
-
+    Route::post('/hproject/parse-nde', [HprojectController::class, 'parseNde'])->name('hproject.parse_nde');
+    
     // Evidence MinIO Routes
     Route::post('/hproject/{project_id}/evidence', [HprojectController::class, 'storeEvidence'])->name('hproject.evidence.store');
     Route::get('/hproject/{project_id}/evidence/{filename}/view', [HprojectController::class, 'viewEvidence'])->where('filename', '.*')->name('hproject.evidence.view');

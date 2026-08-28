@@ -309,6 +309,269 @@
             grid-column: span 1;
         }
     }
+    /* Calendar Widget Styles */
+    .calendar-card {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .calendar-month-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-main);
+        min-width: 160px;
+        text-align: center;
+    }
+
+    .btn-cal-nav {
+        background: rgba(117, 95, 62, 0.1);
+        border: 1px solid var(--glass-border);
+        color: var(--primary);
+        border-radius: 8px;
+        padding: 0.35rem 0.75rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    .btn-cal-nav:hover {
+        background: rgba(117, 95, 62, 0.2);
+        transform: translateY(-1px);
+    }
+
+    .calendar-legend {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .legend-dot.available { background-color: #10b981; }
+    .legend-dot.due-normal { background-color: #0284c7; }
+    .legend-dot.due-urgent { background-color: #d97706; }
+    .legend-dot.due-overdue { background-color: #dc2626; }
+
+    /* Calendar Grid */
+    .calendar-grid-container {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.35);
+        padding: 0.75rem;
+        border-radius: 14px;
+        border: 1px solid var(--glass-border);
+    }
+
+    .cal-day-header {
+        text-align: center;
+        font-weight: 700;
+        font-size: 0.8rem;
+        color: var(--primary);
+        padding: 0.4rem 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .cal-day-cell {
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(117, 95, 62, 0.12);
+        border-radius: 10px;
+        min-height: 95px;
+        padding: 0.4rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .cal-day-cell:hover {
+        background: rgba(255, 255, 255, 0.98);
+        border-color: var(--primary);
+        box-shadow: 0 4px 12px rgba(117, 95, 62, 0.12);
+        transform: translateY(-2px);
+    }
+    .cal-day-cell.other-month {
+        opacity: 0.35;
+        background: rgba(240, 237, 230, 0.2);
+        cursor: default;
+    }
+    .cal-day-cell.other-month:hover {
+        transform: none;
+        box-shadow: none;
+        border-color: rgba(117, 95, 62, 0.12);
+    }
+    .cal-day-cell.today {
+        border: 2px solid var(--primary);
+        background: rgba(117, 95, 62, 0.08);
+    }
+    .cal-day-cell.past-date {
+        background: rgba(226, 232, 240, 0.65) !important;
+        border-color: rgba(203, 213, 225, 0.6) !important;
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+    .cal-day-cell.past-date:hover {
+        transform: none !important;
+        box-shadow: none !important;
+        background: rgba(226, 232, 240, 0.8) !important;
+    }
+    .cal-day-cell.past-date .cal-day-num {
+        color: #94a3b8;
+    }
+    .cal-day-badge-past {
+        font-size: 0.6rem;
+        font-weight: 600;
+        color: #64748b;
+        background: rgba(148, 163, 184, 0.15);
+        padding: 1px 4px;
+        border-radius: 4px;
+        border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .cal-day-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .cal-day-num {
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--text-main);
+    }
+    .cal-day-cell.today .cal-day-num {
+        background: var(--primary);
+        color: #ffffff;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+    }
+
+    .cal-day-badge-avail {
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: #059669;
+        background: rgba(16, 185, 129, 0.12);
+        padding: 1px 5px;
+        border-radius: 4px;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .cal-events-list {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        margin-top: 4px;
+        overflow-y: auto;
+        max-height: 58px;
+    }
+    .cal-event-pill {
+        font-size: 0.68rem;
+        font-weight: 600;
+        padding: 2px 5px;
+        border-radius: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        transition: filter 0.2s;
+    }
+    .cal-event-pill:hover {
+        filter: brightness(0.95);
+    }
+    .cal-event-pill.normal {
+        background: #e0f2fe;
+        color: #0369a1;
+        border-left: 3px solid #0284c7;
+    }
+    .cal-event-pill.today-due {
+        background: #fef3c7;
+        color: #b45309;
+        border-left: 3px solid #d97706;
+    }
+    .cal-event-pill.overdue {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-left: 3px solid #dc2626;
+    }
+
+    /* Modal Detil Kalender */
+    .cal-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+    }
+    .cal-modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .cal-modal-card {
+        background: #faf7f2;
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        width: 90%;
+        max-width: 520px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        transform: translateY(20px);
+        transition: transform 0.25s ease;
+    }
+    .cal-modal-overlay.active .cal-modal-card {
+        transform: translateY(0);
+    }
+    .cal-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--glass-border);
+        padding-bottom: 0.75rem;
+    }
+    .cal-modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--text-muted);
+        line-height: 1;
+    }
+    .cal-modal-close:hover { color: var(--text-main); }
 </style>
 @endsection
 
@@ -507,9 +770,94 @@
                         <canvas id="leadByChart"></canvas>
                     </div>
                 </div>
+        <!-- ROW 4: Kalender Jatuh Tempo Project Development & Available Slot -->
+        <div class="calendar-row" style="margin-top: 1.5rem;">
+            <div class="card calendar-card">
+                <div class="card-header" style="justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #059669;">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span style="font-weight: 700;">Kalender Jatuh Tempo Project Development (Available Dates)</span>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                        <!-- Filter Cepat Lead By -->
+                        <div style="display: flex; align-items: center; gap: 0.35rem;">
+                            <label for="calLeadFilter" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">Filter Lead:</label>
+                            <select id="calLeadFilter" onchange="onCalLeadFilterChange(this.value)" style="background: rgba(255,255,255,0.8); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.25rem 0.5rem; font-size: 0.75rem; color: var(--text-main); outline: none;">
+                                <option value="ALL">Semua Lead By</option>
+                                @foreach($projects_by_lead as $lead)
+                                    <option value="{{ $lead->lead_by }}">{{ $lead->lead_by }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Month Navigation -->
+                        <div class="calendar-nav-group">
+                            <button type="button" class="btn-cal-nav" onclick="changeCalMonth(-1)" title="Bulan Sebelumnya">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                Prev
+                            </button>
+                            <span id="calendarMonthTitle" class="calendar-month-title">Agustus 2026</span>
+                            <button type="button" class="btn-cal-nav" onclick="changeCalMonth(1)" title="Bulan Selanjutnya">
+                                Next
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </button>
+                            <button type="button" class="btn-cal-nav" onclick="jumpCalToday()" style="margin-left: 0.25rem;">
+                                Hari Ini
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subheader & Legend -->
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(117, 95, 62, 0.05); border-radius: 10px;">
+                    <div class="calendar-legend">
+                        <span class="legend-item">
+                            <span class="legend-dot" style="background-color: #94a3b8;"></span> Un-available (Tanggal Berlalu)
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-dot available"></span> Available (Siap Request Project)
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-dot" style="background: linear-gradient(135deg, #3b82f6, #d97706, #10b981);"></span> Rentang Project Dev (Warna Unik per Project)
+                        </span>
+                    </div>
+                    <div id="calMonthSummaryBadge" style="font-size: 0.75rem; font-weight: 600; color: var(--primary);">
+                        <!-- Dynamic text populated via JS -->
+                    </div>
+                </div>
+
+                <!-- Grid Kalender -->
+                <div id="calendarGridContainer" class="calendar-grid-container">
+                    <!-- Rendered dynamically by JavaScript -->
+                </div>
             </div>
         </div>
 
+    </div>
+
+    <!-- Modal Detil Tanggal Kalender -->
+    <div id="calDateModal" class="cal-modal-overlay" onclick="closeCalModalOutside(event)">
+        <div class="cal-modal-card">
+            <div class="cal-modal-header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span id="calModalTitle" style="font-weight: 700; font-size: 1rem; color: var(--text-main);">Detil Tanggal</span>
+                </div>
+                <button type="button" class="cal-modal-close" onclick="closeCalModal()">&times;</button>
+            </div>
+            <div id="calModalBody" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 380px; overflow-y: auto;">
+                <!-- Dynamic content injected here -->
+            </div>
+            <div style="text-align: right; border-top: 1px solid var(--glass-border); padding-top: 0.75rem;">
+                <button type="button" onclick="closeCalModal()" style="background: var(--primary); color: #ffffff; border: none; padding: 0.4rem 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.85rem;">Tutup</button>
+            </div>
+        </div>
     </div>
 
     <!-- SECTION DETIL -->
@@ -829,10 +1177,353 @@
         renderDetilTable(allProjects, 'Semua Project', 1);
     }
 
-    // Initialize Chart.js
+    // ==========================================
+    // KALENDER JATUH TEMPO PROJECT DEVELOPMENT
+    // ==========================================
+    let calCurrentYear = new Date().getFullYear();
+    let calCurrentMonth = new Date().getMonth(); // 0-indexed
+    let selectedCalLeadFilter = 'ALL';
+
+    function parseYMD(dateStr) {
+        if (!dateStr) return null;
+        const str = String(dateStr).trim();
+        if (str.length >= 10 && str.charAt(4) === '-' && str.charAt(7) === '-') {
+            return str.substring(0, 10);
+        }
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return null;
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+
+    function getTodayYMD() {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+
+    // Preset Palette Warna Unik per Project
+    const projectColorPalette = [
+        { bg: '#dbeafe', border: '#3b82f6', text: '#1e40af' }, // Blue
+        { bg: '#fef3c7', border: '#d97706', text: '#92400e' }, // Gold/Amber
+        { bg: '#d1fae5', border: '#10b981', text: '#065f46' }, // Emerald
+        { bg: '#ede9fe', border: '#8b5cf6', text: '#5b21b6' }, // Purple
+        { bg: '#fce7f3', border: '#ec4899', text: '#9d174d' }, // Pink
+        { bg: '#cffaff', border: '#06b6d4', text: '#155e75' }, // Cyan
+        { bg: '#ffedd5', border: '#f97316', text: '#9a3412' }, // Orange
+        { bg: '#e0e7ff', border: '#6366f1', text: '#3730a3' }, // Indigo
+        { bg: '#ccfbf1', border: '#14b8a6', text: '#115e59' }, // Teal
+        { bg: '#fae8ff', border: '#d946ef', text: '#86198f' }  // Fuchsia
+    ];
+
+    function getProjectColor(project, index) {
+        const idStr = String(project.idproject || project.id || index || '0');
+        let hash = 0;
+        for (let i = 0; i < idStr.length; i++) {
+            hash = idStr.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const paletteIndex = Math.abs(hash) % projectColorPalette.length;
+        return projectColorPalette[paletteIndex];
+    }
+
+    function renderDevelopmentCalendar() {
+        const gridContainer = document.getElementById('calendarGridContainer');
+        const monthTitle = document.getElementById('calendarMonthTitle');
+        const monthSummaryBadge = document.getElementById('calMonthSummaryBadge');
+        if (!gridContainer) return;
+
+        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        const dayHeaderNames = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+
+        monthTitle.innerText = `${monthNames[calCurrentMonth]} ${calCurrentYear}`;
+
+        const todayYMD = getTodayYMD();
+
+        // Filter & siapkan data devProjects
+        const activeDevProjects = devProjects.filter(p => {
+            if (!p.tanggal_akhir) return false;
+            if (selectedCalLeadFilter !== 'ALL') {
+                const leadName = (p.assign_to_name && p.assign_to_name.trim()) ? p.assign_to_name.trim() : 'Belum Ditugaskan';
+                if (leadName !== selectedCalLeadFilter) return false;
+            }
+            return true;
+        }).map((p, idx) => {
+            const endYMD = parseYMD(p.tanggal_akhir);
+            const rawStartYMD = parseYMD(p.tanggal_awal);
+            const startYMD = (rawStartYMD && rawStartYMD > todayYMD) ? rawStartYMD : todayYMD;
+            const color = getProjectColor(p, idx);
+            return {
+                ...p,
+                startYMD,
+                endYMD,
+                rawStartYMD,
+                color
+            };
+        });
+
+        const firstDay = new Date(calCurrentYear, calCurrentMonth, 1).getDay();
+        const totalDays = new Date(calCurrentYear, calCurrentMonth + 1, 0).getDate();
+        const prevMonthDays = new Date(calCurrentYear, calCurrentMonth, 0).getDate();
+
+        let html = '';
+
+        // Headers
+        dayHeaderNames.forEach(h => {
+            html += `<div class="cal-day-header">${h}</div>`;
+        });
+
+        // Filler bulan sebelumnya
+        for (let i = firstDay - 1; i >= 0; i--) {
+            const pDay = prevMonthDays - i;
+            html += `
+                <div class="cal-day-cell other-month">
+                    <div class="cal-day-top">
+                        <span class="cal-day-num">${pDay}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        let devDueThisMonthCount = 0;
+        let availableDaysCount = 0;
+
+        // Sel untuk bulan ini
+        for (let d = 1; d <= totalDays; d++) {
+            const monthStr = String(calCurrentMonth + 1).padStart(2, '0');
+            const dayStr = String(d).padStart(2, '0');
+            const cellYMD = `${calCurrentYear}-${monthStr}-${dayStr}`;
+            const cellDate = new Date(calCurrentYear, calCurrentMonth, d);
+            const dayOfWeek = cellDate.getDay();
+            const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+            const isToday = (cellYMD === todayYMD);
+            const isPast = (cellYMD < todayYMD);
+
+            if (isPast) {
+                // Tanggal < current_date: state un-available / disable
+                html += `
+                    <div class="cal-day-cell past-date" onclick="openCalModal('${cellYMD}')" title="Tanggal telah berlalu (Un-available)">
+                        <div class="cal-day-top">
+                            <span class="cal-day-num">${d}</span>
+                            <span class="cal-day-badge-past">Un-available</span>
+                        </div>
+                        <div style="margin-top:auto; font-size:0.6rem; color:#94a3b8; font-weight:500;">
+                            Past Date
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Tanggal >= current_date
+                // Cari project yang aktif pada tanggal ini (startYMD <= cellYMD && cellYMD <= endYMD)
+                const runningProjects = activeDevProjects.filter(p => p.startYMD <= cellYMD && cellYMD <= p.endYMD);
+                
+                // Cari project yang jatuh tempo persis pada tanggal ini
+                const dueProjectsOnDate = activeDevProjects.filter(p => p.endYMD === cellYMD);
+                if (dueProjectsOnDate.length > 0) {
+                    devDueThisMonthCount += dueProjectsOnDate.length;
+                }
+
+                let cellClasses = 'cal-day-cell';
+                if (isToday) cellClasses += ' today';
+
+                html += `<div class="${cellClasses}" onclick="openCalModal('${cellYMD}')">`;
+                html += `
+                    <div class="cal-day-top">
+                        <span class="cal-day-num">${d}</span>
+                        ${runningProjects.length === 0 
+                            ? `<span class="cal-day-badge-avail" title="Tanggal ini bebas beban project (Siap pengembangan)">Available</span>` 
+                            : `<span style="font-size:0.65rem; font-weight:700; color:var(--primary); background:rgba(117,95,62,0.12); padding:1px 5px; border-radius:4px;">${runningProjects.length} Active</span>`}
+                    </div>
+                `;
+
+                if (runningProjects.length > 0) {
+                    html += `<div class="cal-events-list">`;
+                    runningProjects.slice(0, 3).forEach(p => {
+                        const isDueDate = (p.endYMD === cellYMD);
+                        const c = p.color;
+                        html += `
+                            <div class="cal-event-pill" style="background:${c.bg}; border-left:3px solid ${c.border}; color:${c.text}; font-size:0.65rem; padding:2px 4px; border-radius:4px; display:flex; justify-content:space-between; align-items:center;" title="${p.project_name} (Jatuh Tempo: ${formatDate(p.endYMD)})">
+                                <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.project_name || 'Project'}</span>
+                                ${isDueDate ? `<span style="font-size:0.55rem; font-weight:800; background:${c.border}; color:#ffffff; padding:0 3px; border-radius:3px; margin-left:2px;">DUE</span>` : ''}
+                            </div>
+                        `;
+                    });
+                    if (runningProjects.length > 3) {
+                        html += `<div style="font-size:0.62rem; font-weight:700; color:var(--primary); margin-top:1px;">+${runningProjects.length - 3} project lagi...</div>`;
+                    }
+                    html += `</div>`;
+                } else {
+                    if (!isWeekend) availableDaysCount++;
+                    html += `
+                        <div style="margin-top:auto; font-size:0.65rem; color:#059669; font-weight:600; opacity:0.9; display:flex; align-items:center; gap:2px;">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 12 12 14 14"></polyline></svg>
+                            Available
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
+            }
+        }
+
+        // Filler bulan selanjutnya
+        const totalRenderedSoFar = firstDay + totalDays;
+        const remainder = (7 - (totalRenderedSoFar % 7)) % 7;
+        for (let n = 1; n <= remainder; n++) {
+            html += `
+                <div class="cal-day-cell other-month">
+                    <div class="cal-day-top">
+                        <span class="cal-day-num">${n}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        gridContainer.innerHTML = html;
+
+        monthSummaryBadge.innerHTML = `
+            Bulan Ini: <strong>${devDueThisMonthCount}</strong> Project Dev Jatuh Tempo | <strong>${availableDaysCount}</strong> Hari Kerja Available
+        `;
+    }
+
+    window.openCalModal = function(cellYMD) {
+        const modal = document.getElementById('calDateModal');
+        const titleEl = document.getElementById('calModalTitle');
+        const bodyEl = document.getElementById('calModalBody');
+        if (!modal || !titleEl || !bodyEl) return;
+
+        const todayYMD = getTodayYMD();
+        const formattedDate = formatDate(cellYMD);
+
+        titleEl.innerText = `Detil Tanggal: ${formattedDate}`;
+
+        let bodyHTML = '';
+
+        if (cellYMD < todayYMD) {
+            bodyHTML = `
+                <div style="background: rgba(148, 163, 184, 0.12); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; padding: 1.25rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <div style="width: 40px; height: 40px; background: rgba(148, 163, 184, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #475569;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    </div>
+                    <div style="font-weight: 700; font-size: 1rem; color: #475569;">Un-available / Tanggal Berlalu</div>
+                    <div style="font-size: 0.825rem; color: var(--text-muted); max-width: 420px; line-height: 1.4;">
+                        Tanggal <strong>${formattedDate}</strong> sudah berlalu sebelum tanggal hari ini (${formatDate(todayYMD)}). Tanggal ini tidak dapat dialokasikan untuk permintaan pengembangan baru.
+                    </div>
+                </div>
+            `;
+        } else {
+            // Tanggal >= todayYMD
+            const activeDevProjects = devProjects.filter(p => {
+                if (!p.tanggal_akhir) return false;
+                if (selectedCalLeadFilter !== 'ALL') {
+                    const leadName = (p.assign_to_name && p.assign_to_name.trim()) ? p.assign_to_name.trim() : 'Belum Ditugaskan';
+                    if (leadName !== selectedCalLeadFilter) return false;
+                }
+                return true;
+            }).map((p, idx) => {
+                const endYMD = parseYMD(p.tanggal_akhir);
+                const rawStartYMD = parseYMD(p.tanggal_awal);
+                const startYMD = (rawStartYMD && rawStartYMD > todayYMD) ? rawStartYMD : todayYMD;
+                const color = getProjectColor(p, idx);
+                return { ...p, startYMD, endYMD, color };
+            });
+
+            const runningOnDate = activeDevProjects.filter(p => p.startYMD <= cellYMD && cellYMD <= p.endYMD);
+
+            if (runningOnDate.length > 0) {
+                bodyHTML += `
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                        Terdapat <strong>${runningOnDate.length}</strong> project status <strong>DEVELOPMENT</strong> yang aktif/berjalan pada tanggal ini:
+                    </div>
+                `;
+
+                runningOnDate.forEach(p => {
+                    const isDueDate = (p.endYMD === cellYMD);
+                    const c = p.color;
+
+                    bodyHTML += `
+                        <div style="background: ${c.bg}; border: 1px solid ${c.border}; border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; gap: 0.4rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+                                <a href="/hproject/${p.idproject || ''}" style="font-weight: 700; font-size: 0.95rem; color: ${c.text}; text-decoration: none;">
+                                    ${p.project_name || 'Tanpa Nama Project'}
+                                </a>
+                                ${isDueDate ? `<span style="font-size: 0.7rem; font-weight: 800; background: ${c.border}; color: #ffffff; padding: 0.2rem 0.5rem; border-radius: 20px; white-space: nowrap;">JATUH TEMPO HARI INI</span>` : `<span style="font-size: 0.7rem; font-weight: 700; background: rgba(255,255,255,0.7); color: ${c.text}; border: 1px solid ${c.border}; padding: 0.2rem 0.5rem; border-radius: 20px; white-space: nowrap;">Aktif Dev</span>`}
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-main); display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem 0.75rem; margin-top: 0.25rem;">
+                                <div><strong>ID Project:</strong> ${p.idproject || '-'}</div>
+                                <div><strong>Direktorat:</strong> ${p.direktorat || '-'}</div>
+                                <div><strong>Lead By:</strong> ${p.assign_to_name || 'Belum Ditugaskan'}</div>
+                                <div><strong>Tgl Awal:</strong> ${formatDate(p.tanggal_awal)}</div>
+                            </div>
+                            <div style="font-size: 0.75rem; color: ${c.text}; font-style: italic; margin-top: 0.25rem; border-top: 1px dashed ${c.border}; padding-top: 0.35rem;">
+                                Target Jatuh Tempo: <strong>${formatDate(p.endYMD)}</strong>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                bodyHTML += `
+                    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 1.25rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                        <div style="width: 42px; height: 42px; background: rgba(16, 185, 129, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #059669;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <div style="font-weight: 700; font-size: 1rem; color: #059669;">Slot Available / Tanggal Bebas</div>
+                        <div style="font-size: 0.825rem; color: var(--text-main); max-width: 420px; line-height: 1.4;">
+                            Tidak ada beban project <strong>DEVELOPMENT</strong> yang aktif pada tanggal <strong>${formattedDate}</strong>.
+                            Tanggal ini <strong>Available / Bebas</strong> dan siap dialokasikan untuk <strong>request pengembangan atau project baru</strong>.
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        bodyEl.innerHTML = bodyHTML;
+        modal.classList.add('active');
+    };
+
+    window.closeCalModal = function() {
+        const modal = document.getElementById('calDateModal');
+        if (modal) modal.classList.remove('active');
+    };
+
+    window.closeCalModalOutside = function(e) {
+        if (e.target.id === 'calDateModal') {
+            closeCalModal();
+        }
+    };
+
+    window.changeCalMonth = function(delta) {
+        calCurrentMonth += delta;
+        if (calCurrentMonth > 11) {
+            calCurrentMonth = 0;
+            calCurrentYear++;
+        } else if (calCurrentMonth < 0) {
+            calCurrentMonth = 11;
+            calCurrentYear--;
+        }
+        renderDevelopmentCalendar();
+    };
+
+    window.jumpCalToday = function() {
+        const d = new Date();
+        calCurrentYear = d.getFullYear();
+        calCurrentMonth = d.getMonth();
+        renderDevelopmentCalendar();
+    };
+
+    window.onCalLeadFilterChange = function(val) {
+        selectedCalLeadFilter = val;
+        renderDevelopmentCalendar();
+    };
+
+    // Initialize Chart.js & Calendar
     document.addEventListener("DOMContentLoaded", function() {
-        // Initial render: show all
+        // Initial render: show all detil table & calendar
         showAllProjects();
+        renderDevelopmentCalendar();
 
         // Chart implementation: Donut Chart Direktorat
         const ctx = document.getElementById('direktoratChart').getContext('2d');

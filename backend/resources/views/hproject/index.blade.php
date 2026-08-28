@@ -5,6 +5,7 @@
 
 @section('custom-head')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 @endsection
 
 @section('content')
@@ -36,15 +37,33 @@
     <div class="section-header">
         <h2>Entri Progress Baru</h2>
     </div>
-    <form action="{{ route('hproject.store') }}" method="POST">
+    <form action="{{ route('hproject.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="idproject" value="{{ $project->id }}">
         
         <div class="form-grid">
+            <div class="form-group full-width" style="background: rgba(117, 95, 62, 0.05); padding: 1rem; border-radius: 12px; border: 1px dashed var(--glass-border);">
+                <label style="font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 0.4rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    Upload File Progress (NDE) & Ekstrak Otomatis
+                </label>
+                <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-top: 0.35rem;">
+                    <input type="file" name="progress_file" id="progress_file" accept=".pdf,.png,.jpg,.jpeg,.docx" class="form-control" style="flex: 1; background: #ffffff;" onchange="handleNdeFileSelect(this)">
+                    <button type="button" class="btn btn-secondary" onclick="triggerParseNde()" style="padding: 0.5rem 1rem; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        Scan / Parse NDE
+                    </button>
+                </div>
+                <div id="nde_status_box" style="display: none; margin-top: 0.5rem; font-size: 0.8rem; padding: 0.5rem 0.75rem; border-radius: 8px;"></div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem;">
+                    *Tipe file didukung: <strong>PDF (.pdf)</strong>, <strong>Gambar (.png, .jpg, .jpeg)</strong>, <strong>Word (.docx)</strong>. File otomatis di-scan & di-upload ke MinIO saat progress disimpan.
+                </div>
+            </div>
+
             <div class="form-group">
-                <label>Status Project</label>
+                <label style="font-weight: 600;">Status Project <span style="color:#dc2626;">*</span></label>
                 <select name="rproject" class="form-control" required>
-                    <option value="">-- Pilih Status --</option>
+                    <option value="">-- Pilih Status Project --</option>
                     @foreach($rprojects as $rproj)
                         <option value="{{ $rproj->id }}">{{ $rproj->deskripsi }}</option>
                     @endforeach
@@ -52,18 +71,18 @@
             </div>
             
             <div class="form-group">
-                <label>Tanggal Perubahan Status</label>
-                <input type="text" name="tanggal" class="form-control datepicker default-today" required>
+                <label style="font-weight: 600;">Tanggal Perubahan Status <span style="color:#dc2626;">*</span></label>
+                <input type="text" name="tanggal" id="entry_tanggal" class="form-control datepicker default-today" required>
             </div>
             
             <div class="form-group">
-                <label>Persentase Progress (%)</label>
+                <label style="font-weight: 600;">Persentase Progress (%)</label>
                 <input type="number" name="progress" class="form-control" min="0" max="100" placeholder="0 - 100">
             </div>
 
             <div class="form-group full-width">
-                <label>Catatan</label>
-                <textarea name="catatan" class="form-control" rows="3" maxlength="150" required></textarea>
+                <label style="font-weight: 600;">Catatan <span style="color:#dc2626;">*</span></label>
+                <textarea name="catatan" id="entry_catatan" class="form-control" rows="3" maxlength="500" placeholder="Format otomatis: NDE [Nomor] tanggal [Tanggal] : [Perihal]" required></textarea>
             </div>
         </div>
         
@@ -687,6 +706,233 @@
     window.onclick = function(event) {
         if (event.target.classList.contains('modal')) {
             event.target.classList.remove('active');
+        }
+    }
+
+    // NDE Auto Extraction Logic
+    if (window['pdfjs-dist/build/pdf']) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    }
+
+    function showNdeStatus(type, message) {
+        const box = document.getElementById('nde_status_box');
+        if (!box) return;
+        box.style.display = 'block';
+        if (type === 'loading') {
+            box.style.background = 'rgba(2, 132, 199, 0.12)';
+            box.style.border = '1px solid rgba(2, 132, 199, 0.3)';
+            box.style.color = '#0284c7';
+            box.innerHTML = '⌛ <em>Mengekstrak data NDE (Nomor, Tanggal, Perihal)...</em>';
+        } else if (type === 'success') {
+            box.style.background = 'rgba(16, 185, 129, 0.12)';
+            box.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+            box.style.color = '#059669';
+            box.innerHTML = '✔ ' + message;
+        } else {
+            box.style.background = 'rgba(217, 119, 6, 0.12)';
+            box.style.border = '1px solid rgba(217, 119, 6, 0.3)';
+            box.style.color = '#b45309';
+            box.innerHTML = '⚠️ ' + message;
+        }
+    }
+
+    async function handleNdeFileSelect(input) {
+        if (!input.files || input.files.length === 0) return;
+        const file = input.files[0];
+        showNdeStatus('loading');
+
+        const ext = file.name.split('.').pop().toLowerCase();
+
+        if (ext === 'pdf') {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let fullText = '';
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += pageText + ' ';
+                }
+                if (fullText && fullText.trim().length > 10) {
+                    const parsed = processExtractedText(fullText, file.name);
+                    // If client extraction found the NDE nomor, we apply and finish!
+                    if (parsed && parsed.nomor) {
+                        applyParsedNdeData(parsed.nomor, parsed.tanggalStr, parsed.perihal, parsed.formattedCatatan, parsed.formattedTanggal);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('PDF.js client extraction fallback to server:', e);
+            }
+        }
+
+        // Fallback to Server AJAX Endpoint (extract_pdf.py / HprojectController)
+        triggerParseNdeServer(file);
+    }
+
+    function triggerParseNde() {
+        const input = document.getElementById('progress_file');
+        if (!input.files || input.files.length === 0) {
+            alert('Silakan pilih file progress NDE terlebih dahulu.');
+            return;
+        }
+        handleNdeFileSelect(input);
+    }
+
+    function triggerParseNdeServer(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('_token', '{{ csrf_token() }}');
+
+        fetch('{{ route("hproject.parse_nde") }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                applyParsedNdeData(data.nomor, data.tanggal, data.perihal, data.formatted_catatan, data.formatted_tanggal);
+            } else {
+                showNdeStatus('warning', 'File di-upload. Teks NDE tidak terdeteksi otomatis, silakan lengkapi Catatan NDE jika diperlukan.');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showNdeStatus('warning', 'File siap di-upload. Silakan lengkapi Catatan NDE jika diperlukan.');
+        });
+    }
+
+    function processExtractedText(text, filename) {
+        let nomor = '';
+        let tanggalStr = '';
+        let perihal = '';
+
+        // 1. Extract Nomor (e.g. 74790/DS.02.03/VIII/2026 or 81519/DS.02/VIII/2026)
+        let nomorMatch = text.match(/Nomor\s*[:\=]?\s*([0-9A-Za-z\/\.\_\-\s]+?)(?=\s+(?:Lampiran|Perihal|Kepada|Bandung|Jakarta|$))/i) ||
+                         text.match(/Nomor\s*[:\=]?\s*([0-9A-Za-z\/\.\_\-]+)/i) ||
+                         text.match(/No\.?\s*[:\=]?\s*([0-9A-Za-z\/\.\_\-]+)/i) ||
+                         text.match(/([0-9]{3,}\s*\/\s*[A-Za-z0-9\.\_\-]+\s*\/\s*[IVXLCDM0-9]+\s*\/\s*[0-9]{2,4})/i) ||
+                         text.match(/([0-9]{3,}\s*\/\s*[A-Za-z0-9\.\_\-]+\s*\/\s*[0-9]{2,4})/i) ||
+                         text.match(/([0-9]{3,}\/[A-Za-z0-9\.\_\-]+)/i);
+        if (nomorMatch) {
+            let cand = nomorMatch[1].trim().replace(/\s+(?:Lampiran|Perihal|Kepada).*$/i, '').trim();
+            if (!/^(?:19|20)\d{2}$/.test(cand)) {
+                nomor = cand;
+            }
+        }
+
+        // 2. Extract Tanggal (e.g. Bandung, 6 Agustus 2026 or 6 Agustus 2026)
+        let tglMatch = text.match(/(?:Bandung|Jakarta|Surakarta|Semarang|Surabaya|Yogyakarta|[\w\s]+)?,\s*(\d{1,2}\s+[A-Za-z]+\s+\d{4})/i) ||
+                       text.match(/(\d{1,2}\s+(?:Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember)\s+\d{4})/i) ||
+                       text.match(/(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{4})/);
+        if (tglMatch) {
+            tanggalStr = tglMatch[1].trim();
+        }
+
+        // 3. Extract Perihal
+        let perihalMatch = text.match(/Perihal\s*[:\=]?\s*([^\r\n]+?)(?=\s+(?:Kepada|Menunjuk|Dengan|Sehubungan|Lampiran|Diberitahukan|Bandung|Jakarta|1\.|2\.|3\.|$))/i) ||
+                           text.match(/Perihal\s*[:\=]?\s*([^\r\n]+)/i);
+        if (perihalMatch) {
+            perihal = perihalMatch[1].trim();
+            perihal = perihal.replace(/\s+(?:Kepada|Bandung|Jakarta|Diberitahukan):?.*$/i, '').trim();
+        }
+
+        // Fallback for Nomor & Tanggal from filename if missing
+        const cleanFilename = filename ? filename.replace(/\.[^/.]+$/, "") : "";
+        if (!nomor && cleanFilename) {
+            let fnNomor = cleanFilename.match(/([0-9]{3,}\s*\/\s*[A-Za-z0-9\.\_\-]+\s*\/\s*[IVXLCDM0-9]+\s*\/\s*[0-9]{2,4})/i) ||
+                          cleanFilename.match(/([0-9]{3,}\s*\/\s*[A-Za-z0-9\.\_\-]+\s*\/\s*[0-9]{2,4})/i) ||
+                          cleanFilename.match(/([0-9]{3,}\/[A-Za-z0-9\.\_\-]+)/i);
+            if (fnNomor) {
+                let cand = fnNomor[1].trim();
+                if (!/^(?:19|20)\d{2}$/.test(cand)) {
+                    nomor = cand;
+                }
+            }
+        }
+        if (!tanggalStr && cleanFilename) {
+            let fnTgl = cleanFilename.match(/(\d{1,2}\s+(?:Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember)\s+\d{4})/i);
+            if (fnTgl) tanggalStr = fnTgl[1].trim();
+        }
+
+        // Convert tanggalStr to DMY format if possible, or fallback to today
+        let formattedTanggal = '';
+        if (tanggalStr) {
+            const months = {
+                'januari':'01', 'februari':'02', 'maret':'03', 'april':'04',
+                'mei':'05', 'juni':'06', 'juli':'07', 'agustus':'08',
+                'september':'09', 'oktober':'10', 'november':'11', 'desember':'12'
+            };
+            const dm = tanggalStr.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
+            if (dm) {
+                const day = dm[1].padStart(2, '0');
+                const mName = dm[2].toLowerCase();
+                const year = dm[3];
+                if (months[mName]) {
+                    formattedTanggal = `${day}-${months[mName]}-${year}`;
+                }
+            }
+        }
+
+        if (!formattedTanggal) {
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const year = today.getFullYear();
+            formattedTanggal = `${day}-${month}-${year}`;
+            if (!tanggalStr) {
+                const monthsArr = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+                tanggalStr = `${today.getDate()} ${monthsArr[today.getMonth()]} ${year}`;
+            }
+        }
+
+        let catatanParts = ['NDE'];
+        if (nomor) {
+            catatanParts.push(nomor);
+        } else {
+            catatanParts.push('[Nomor]');
+        }
+        if (tanggalStr) catatanParts.push(`tanggal ${tanggalStr}`);
+        if (perihal) catatanParts.push(`: ${perihal}`);
+
+        const formattedCatatan = catatanParts.join(' ');
+
+        return { nomor, tanggalStr, perihal, formattedCatatan, formattedTanggal };
+    }
+
+    function applyParsedNdeData(nomor, tanggalStr, perihal, formattedCatatan, formattedTanggal) {
+        const catatanEl = document.getElementById('entry_catatan');
+        const tanggalEl = document.getElementById('entry_tanggal');
+
+        if (catatanEl && formattedCatatan) {
+            catatanEl.value = formattedCatatan;
+            if (!nomor) {
+                // Automatically select '[Nomor]' placeholder so user can immediately type the NDE number
+                const idx = formattedCatatan.indexOf('[Nomor]');
+                if (idx !== -1) {
+                    setTimeout(() => {
+                        catatanEl.focus();
+                        catatanEl.setSelectionRange(idx, idx + 7);
+                    }, 100);
+                }
+            }
+        }
+
+        if (tanggalEl && formattedTanggal) {
+            tanggalEl.value = formattedTanggal;
+            if (tanggalEl._flatpickr) {
+                tanggalEl._flatpickr.setDate(formattedTanggal);
+            }
+        }
+
+        if (nomor) {
+            showNdeStatus('success', `Data NDE berhasil diekstrak! <strong>Nomor:</strong> ${nomor}, <strong>Tanggal:</strong> ${tanggalStr || '-'}, <strong>Perihal:</strong> ${perihal || '-'}`);
+        } else {
+            showNdeStatus('warning', `File PDF merupakan dokumen hasil scan (gambar). <strong>Nomor NDE</strong> tidak terdeteksi otomatis, silakan lengkapi Nomor NDE pada Catatan.`);
         }
     }
 </script>
