@@ -409,10 +409,11 @@
             Transaksi
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </div>
-        <div class="nav-submenu {{ request()->routeIs('rrkap.*', 'rcatalog.*', 'project.*', 'nonproject.*') ? 'open' : '' }}" id="menu-transaksi">
+        <div class="nav-submenu {{ request()->routeIs('rrkap.*', 'rcatalog.*', 'project.*', 'nonproject.*', 'kanban.*') ? 'open' : '' }}" id="menu-transaksi">
             <a href="{{ route('rrkap.index') ?? '#' }}" class="nav-item {{ request()->routeIs('rrkap.*') ? 'active' : '' }}">RKAP</a>
             <a href="{{ route('rcatalog.index') ?? '#' }}" class="nav-item {{ request()->routeIs('rcatalog.*') ? 'active' : '' }}">Katalog</a>
-            <a href="{{ route('project.index') ?? '#' }}" class="nav-item {{ request()->routeIs('project.*') ? 'active' : '' }}">Data Project</a>
+            <a href="{{ route('project.index') ?? '#' }}" class="nav-item {{ request()->routeIs('project.*') ? 'active' : '' }}">Project</a>
+            <a href="{{ route('kanban.index') ?? '#' }}" class="nav-item {{ request()->routeIs('kanban.*') ? 'active' : '' }}">Kanban Progress</a>
             <a href="{{ route('nonproject.index') ?? '#' }}" class="nav-item {{ request()->routeIs('nonproject.*') ? 'active' : '' }}">Non Project</a>
         </div>
         @endif
@@ -423,8 +424,8 @@
         </div>
         <div class="nav-submenu {{ request()->routeIs('laporan.*') || request()->routeIs('dashboard') ? 'open' : '' }}" id="menu-laporan">
             <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
-            <a href="{{ route('laporan.progress') }}" class="nav-item {{ request()->routeIs('laporan.progress') ? 'active' : '' }}">Progres Project</a>
-            <a href="{{ route('laporan.nonproject') }}" class="nav-item {{ request()->routeIs('laporan.nonproject') ? 'active' : '' }}">Laporan Non Project</a>
+            <a href="{{ route('laporan.progress') }}" class="nav-item {{ request()->routeIs('laporan.progress') ? 'active' : '' }}">Project</a>
+            <a href="{{ route('laporan.nonproject') }}" class="nav-item {{ request()->routeIs('laporan.nonproject') ? 'active' : '' }}">Non Project</a>
         </div>
         
         <div class="spacer"></div>

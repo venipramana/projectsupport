@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Progres Project')
-@section('header-title', 'Laporan Progres Project')
+@section('title', 'All Project')
+@section('header-title', 'Laporan Project')
 
 @section('content')
 

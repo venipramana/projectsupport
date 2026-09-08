@@ -9,6 +9,7 @@ use App\Http\Controllers\RrkapController;
 use App\Http\Controllers\RcatalogController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\NonprojectController;
+use App\Http\Controllers\KanbanProjectController;
 use App\Http\Controllers\HprojectController;
 use App\Http\Controllers\LaporanController;
 
@@ -33,6 +34,8 @@ Route::middleware('auth')->group(function () {
         Route::get('rcatalog/{id}/projects', [RcatalogController::class, 'getProjects']);
         Route::resource('project', ProjectController::class);
         Route::resource('nonproject', NonprojectController::class);
+        Route::get('/kanban-progress', [KanbanProjectController::class, 'index'])->name('kanban.index');
+        Route::post('/kanban-progress/update-step', [KanbanProjectController::class, 'updateStep'])->name('kanban.update_step');
     });
 
     Route::get('/hproject/{project_id}', [HprojectController::class, 'index'])->name('hproject.index');
