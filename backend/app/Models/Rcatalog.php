@@ -35,4 +35,12 @@ class Rcatalog extends Model
     {
         return $this->belongsTo(Rdirektorat::class, 'id_direktorat', 'id');
     }
+
+    /**
+     * Relasi ke tabel project.
+     */
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'id_catalog', 'id');
+    }
 }

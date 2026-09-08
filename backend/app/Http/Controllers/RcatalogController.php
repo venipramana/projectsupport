@@ -12,7 +12,7 @@ class RcatalogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Rcatalog::with('direktorat')->orderBy('description', 'asc');
+        $query = Rcatalog::with(['direktorat', 'projects.rproject_relation'])->orderBy('description', 'asc');
 
         if ($request->has('filter_direktorat') && $request->filter_direktorat != '') {
             $query->where('id_direktorat', $request->filter_direktorat);

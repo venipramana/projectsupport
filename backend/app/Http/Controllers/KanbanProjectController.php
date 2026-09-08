@@ -85,11 +85,8 @@ class KanbanProjectController extends Controller
 
         // Ringkasan KPI
         $totalProjects = $projects->count();
-        $liveStatusIds = Rproject::where('deskripsi', 'like', '%live%')
-            ->orWhere('deskripsi', 'like', '%selesai%')
-            ->orWhere('deskripsi', 'like', '%closed%')
-            ->pluck('id')
-            ->toArray();
+        // id 6 adalah status LIVE (Selesai/Closed)
+        $liveStatusIds = [6];
         $completedProjects = $projects->whereIn('rproject', $liveStatusIds)->count();
         $inProgressProjects = $totalProjects - $completedProjects;
 

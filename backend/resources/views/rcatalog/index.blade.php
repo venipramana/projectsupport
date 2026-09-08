@@ -101,8 +101,28 @@
                 <tr>
                     <td style="display: none;">{{ $cat->id }}</td>
                     <td>
-                        <span style="color: var(--primary); cursor: pointer; font-weight: 500; text-decoration: underline;" onclick="loadProjects({{ $cat->id }}, '{{ addslashes($cat->description) }}')">
-                            {{ $cat->description }}
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: var(--primary); cursor: pointer; font-weight: 500; text-decoration: underline;" onclick="loadProjects({{ $cat->id }}, '{{ addslashes($cat->description) }}')">
+                                {{ $cat->description }}
+                            </span>
+                            @php
+                                $isDeveloping = false;
+                                if(isset($cat->projects)) {
+                                    foreach($cat->projects as $project) {
+                                        // id 1 di tabel rproject adalah status DEVELOPMENT
+                                        if ($project->rproject == 1) {
+                                            $isDeveloping = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            @endphp
+                            @if($isDeveloping)
+                                <span style="font-size: 0.75rem; background: rgba(245, 158, 11, 0.15); color: #d97706; padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;" title="Ada project dalam tahap pengembangan">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    Pengembangan
+                                </span>
+                            @endif
                         </span>
                     </td>
                     <td>

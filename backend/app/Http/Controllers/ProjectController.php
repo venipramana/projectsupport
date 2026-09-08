@@ -130,11 +130,8 @@ class ProjectController extends Controller
         }
 
         // Status Development ID (default 1)
-        $devStatus = Rproject::where('deskripsi', 'like', 'DEVELOPMENT')->first();
-        $devStatusId = $devStatus ? $devStatus->id : 1;
-
         if (empty($data['rproject'])) {
-            $data['rproject'] = $devStatusId;
+            $data['rproject'] = 1;
         }
 
         $project = Project::create($data);

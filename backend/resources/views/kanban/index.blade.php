@@ -6,6 +6,7 @@
 @section('custom-head')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 @endsection
 
 @section('custom-styles')
@@ -601,14 +602,20 @@
 
 <!-- Kanban Progress Matrix Board -->
 <div class="kanban-board-card">
-    <div class="kanban-board-header">
-        <div class="kanban-board-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
-            Kanban Matrix View
+    <div class="kanban-board-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="kanban-board-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+                Kanban Matrix View
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+                Menampilkan <strong>{{ $projects->count() }}</strong> project
+            </div>
         </div>
-        <div style="font-size: 0.85rem; color: var(--text-muted);">
-            Menampilkan <strong>{{ $projects->count() }}</strong> project
-        </div>
+        <button type="button" class="btn btn-secondary" onclick="saveKanbanToPDF()" style="padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Save to PDF
+        </button>
     </div>
 
     <div class="kanban-table-wrapper">
@@ -841,6 +848,18 @@
 
 @section('custom-scripts')
 <script>
+    function saveKanbanToPDF() {
+        const element = document.querySelector('.kanban-board-card');
+        const opt = {
+            margin:       0.2,
+            filename:     'Kanban_Progress.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'a3', orientation: 'landscape' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         // Init Flatpickr for modal datepicker
         flatpickr("#modal_tanggal", {
