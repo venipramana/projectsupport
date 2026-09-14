@@ -481,27 +481,33 @@ class HprojectController extends Controller
             'evidences.*' => 'required|file|max:51200' // Maks 50MB per file
         ]);
 
-        if (empty($project->folder_evidence)) {
-            $project->folder_evidence = "evidence_project_" . $project->id;
-            $project->save();
-        }
-
-        $disk = Storage::disk('minio');
-        if (!$disk->exists($project->folder_evidence . '/.keep')) {
-            $disk->put($project->folder_evidence . '/.keep', '');
-        }
-
-        $uploadCount = 0;
-        if ($request->hasFile('evidences')) {
-            foreach ($request->file('evidences') as $file) {
-                $filename = $file->getClientOriginalName();
-                $disk->putFileAs($project->folder_evidence, $file, $filename);
-                $uploadCount++;
+        try {
+            if (empty($project->folder_evidence)) {
+                $project->folder_evidence = "evidence_project_" . $project->id;
+                $project->save();
             }
-        }
 
-        return redirect()->route('hproject.index', $project_id)
-            ->with('success', "Berhasil mengupload {$uploadCount} file evidence ke MinIO.");
+            $disk = Storage::disk('minio');
+            if (!$disk->exists($project->folder_evidence . '/.keep')) {
+                $disk->put($project->folder_evidence . '/.keep', '');
+            }
+
+            $uploadCount = 0;
+            if ($request->hasFile('evidences')) {
+                foreach ($request->file('evidences') as $file) {
+                    $filename = $file->getClientOriginalName();
+                    $disk->putFileAs($project->folder_evidence, $file, $filename);
+                    $uploadCount++;
+                }
+            }
+
+            return redirect()->route('hproject.index', $project_id)
+                ->with('success', "Berhasil mengupload {$uploadCount} file evidence ke MinIO.");
+        } catch (\Exception $e) {
+            Log::error("MinIO storeEvidence error for project {$project_id}: " . $e->getMessage());
+            return redirect()->route('hproject.index', $project_id)
+                ->with('error', "Gagal mengupload file ke MinIO Storage. Pastikan layanan MinIO sedang aktif. (" . $e->getMessage() . ")");
+        }
     }
 
     /**
@@ -514,14 +520,21 @@ class HprojectController extends Controller
             abort(403, 'Unauthorized.');
         }
 
-        $path = $project->folder_evidence . '/' . $filename;
-        $disk = Storage::disk('minio');
+        try {
+            $path = $project->folder_evidence . '/' . $filename;
+            $disk = Storage::disk('minio');
 
-        if (!$disk->exists($path)) {
-            abort(404, 'File evidence tidak ditemukan di MinIO.');
+            if (!$disk->exists($path)) {
+                return redirect()->route('hproject.index', $project_id)
+                    ->with('error', 'File evidence tidak ditemukan di MinIO.');
+            }
+
+            return $disk->response($path);
+        } catch (\Exception $e) {
+            Log::error("MinIO viewEvidence error: " . $e->getMessage());
+            return redirect()->route('hproject.index', $project_id)
+                ->with('error', "Gagal membuka file dari MinIO: " . $e->getMessage());
         }
-
-        return $disk->response($path);
     }
 
     /**
@@ -534,14 +547,21 @@ class HprojectController extends Controller
             abort(403, 'Unauthorized.');
         }
 
-        $path = $project->folder_evidence . '/' . $filename;
-        $disk = Storage::disk('minio');
+        try {
+            $path = $project->folder_evidence . '/' . $filename;
+            $disk = Storage::disk('minio');
 
-        if (!$disk->exists($path)) {
-            abort(404, 'File evidence tidak ditemukan di MinIO.');
+            if (!$disk->exists($path)) {
+                return redirect()->route('hproject.index', $project_id)
+                    ->with('error', 'File evidence tidak ditemukan di MinIO.');
+            }
+
+            return $disk->download($path, $filename);
+        } catch (\Exception $e) {
+            Log::error("MinIO downloadEvidence error: " . $e->getMessage());
+            return redirect()->route('hproject.index', $project_id)
+                ->with('error', "Gagal mendownload file dari MinIO: " . $e->getMessage());
         }
-
-        return $disk->download($path, $filename);
     }
 
     /**
@@ -554,24 +574,30 @@ class HprojectController extends Controller
             abort(403, 'Unauthorized.');
         }
 
-        $path = $project->folder_evidence . '/' . $filename;
-        $disk = Storage::disk('minio');
+        try {
+            $path = $project->folder_evidence . '/' . $filename;
+            $disk = Storage::disk('minio');
 
-        if ($disk->exists($path)) {
-            $disk->delete($path);
+            if ($disk->exists($path)) {
+                $disk->delete($path);
 
-            $remainingFiles = $disk->files($project->folder_evidence);
-            if (empty($remainingFiles) || (count($remainingFiles) === 1 && basename($remainingFiles[0]) === '.keep')) {
-                if (!$disk->exists($project->folder_evidence . '/.keep')) {
-                    $disk->put($project->folder_evidence . '/.keep', '');
+                $remainingFiles = $disk->files($project->folder_evidence);
+                if (empty($remainingFiles) || (count($remainingFiles) === 1 && basename($remainingFiles[0]) === '.keep')) {
+                    if (!$disk->exists($project->folder_evidence . '/.keep')) {
+                        $disk->put($project->folder_evidence . '/.keep', '');
+                    }
                 }
+
+                return redirect()->route('hproject.index', $project_id)
+                    ->with('success', "File evidence \"{$filename}\" berhasil dihapus dari MinIO.");
             }
 
             return redirect()->route('hproject.index', $project_id)
-                ->with('success', "File evidence \"{$filename}\" berhasil dihapus dari MinIO.");
+                ->with('error', "File evidence tidak ditemukan di storage.");
+        } catch (\Exception $e) {
+            Log::error("MinIO destroyEvidence error: " . $e->getMessage());
+            return redirect()->route('hproject.index', $project_id)
+                ->with('error', "Gagal menghapus file dari MinIO: " . $e->getMessage());
         }
-
-        return redirect()->route('hproject.index', $project_id)
-            ->with('error', "File evidence tidak ditemukan di storage.");
     }
 }

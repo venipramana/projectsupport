@@ -22,6 +22,12 @@
     </div>
 @endif
 
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
 @if($errors->any())
     <div class="alert alert-danger">
         <ul style="margin-left: 1rem;">

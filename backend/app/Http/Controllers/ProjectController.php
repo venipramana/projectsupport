@@ -149,7 +149,7 @@ class ProjectController extends Controller
         // Otomatis insert 1 row ke tabel hproject dengan status Development
         Hproject::create([
             'idproject' => $project->id,
-            'rproject'  => $devStatusId,
+            'rproject'  => $project->rproject ?? 1,
             'tanggal'   => $project->tanggal ?? date('Y-m-d'),
             'catatan'   => !empty($project->catatan) ? substr($project->catatan, 0, 150) : 'Development',
             'progress'  => 0,
