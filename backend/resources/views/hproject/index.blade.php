@@ -111,6 +111,7 @@
             <thead>
                 <tr>
                     <th>Tanggal</th>
+                    <th>Durasi Status</th>
                     <th>Status Project</th>
                     <th>Progress (%)</th>
                     <th>Catatan</th>
@@ -118,9 +119,56 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($hprojects as $hproj)
+                @forelse($hprojects as $index => $hproj)
+                @php
+                    $durasiStr = '-';
+                    $tooltip = '';
+                    $isOngoing = false;
+
+                    if (!empty($hproj->tanggal)) {
+                        try {
+                            $startDate = \Carbon\Carbon::parse($hproj->tanggal)->startOfDay();
+
+                            // Jika baris teratas (index 0), status ini sedang berjalan sampai hari ini
+                            if ($index === 0) {
+                                $today = \Carbon\Carbon::today();
+                                $durasiHari = (int) $startDate->diffInDays($today);
+                                $durasiStr = $durasiHari . ' hari';
+                                $tooltip = "Status aktif saat ini (" . $startDate->format('d-m-Y') . " s/d Hari Ini)";
+                                $isOngoing = true;
+                            } else {
+                                // Status ini berlangsung dari tanggal baris ini sampai status berikutnya di baris atasnya ($index - 1)
+                                $nextHproj = $hprojects->get($index - 1) ?? ($hprojects[$index - 1] ?? null);
+                                if ($nextHproj && !empty($nextHproj->tanggal)) {
+                                    $endDate = \Carbon\Carbon::parse($nextHproj->tanggal)->startOfDay();
+                                    $durasiHari = (int) $startDate->diffInDays($endDate);
+                                    $durasiStr = $durasiHari . ' hari';
+                                    $tooltip = "Status ini berlangsung selama {$durasiHari} hari (" . $startDate->format('d-m-Y') . " s/d " . $endDate->format('d-m-Y') . ")";
+                                }
+                            }
+                        } catch (\Exception $e) {
+                            $durasiStr = '-';
+                        }
+                    }
+                @endphp
                 <tr>
                     <td>{{ $hproj->tanggal ? date('d-m-Y', strtotime($hproj->tanggal)) : '-' }}</td>
+                    <td>
+                        @if($durasiStr !== '-')
+                            @if($isOngoing)
+                                <span class="badge" title="{{ $tooltip }}" style="background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 600; cursor: help; display: inline-flex; align-items: center; gap: 4px;">
+                                    <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                                    {{ $durasiStr }} <span style="font-size: 0.72rem; opacity: 0.85;">(Aktif)</span>
+                                </span>
+                            @else
+                                <span class="badge" title="{{ $tooltip }}" style="background: rgba(117, 95, 62, 0.08); color: var(--primary); border: 1px solid var(--glass-border); font-weight: 600; cursor: help;">
+                                    {{ $durasiStr }}
+                                </span>
+                            @endif
+                        @else
+                            <span style="color: var(--text-muted);">-</span>
+                        @endif
+                    </td>
                     <td>
                         @if($hproj->rproject_rel)
                             <span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd;">{{ $hproj->rproject_rel->deskripsi }}</span>
@@ -161,7 +209,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center" style="padding: 3rem; color: var(--text-muted);">
+                    <td colspan="6" class="text-center" style="padding: 3rem; color: var(--text-muted);">
                         Belum ada data progress untuk project ini.
                     </td>
                 </tr>

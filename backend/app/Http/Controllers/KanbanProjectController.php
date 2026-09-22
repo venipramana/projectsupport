@@ -21,6 +21,8 @@ class KanbanProjectController extends Controller
         $currentYear = date('Y');
         $selectedTahun = $request->has('filter_tahun') ? $request->filter_tahun : $currentYear;
         $selectedDirektorat = $request->filter_direktorat ?? '';
+        $selectedStatus = $request->filter_status ?? 'all';
+        $selectedSort = $request->sort_by ?? 'dev_first';
         $searchKeyword = $request->search ?? '';
 
         $query = Project::with([
@@ -33,12 +35,12 @@ class KanbanProjectController extends Controller
             'catalog_rel'
         ]);
 
-        // Filter Tahun berdasarkan tanggal_awal (default current year jika tidak ada parameter)
+        // Filter Tahun berdasarkan tanggal_akhir (default current year jika tidak ada parameter)
         if (!empty($selectedTahun) && $selectedTahun !== 'all') {
             $query->where(function($q) use ($selectedTahun) {
-                $q->whereYear('tanggal_awal', $selectedTahun)
+                $q->whereYear('tanggal_akhir', $selectedTahun)
                   ->orWhere(function($sub) use ($selectedTahun) {
-                      $sub->whereNull('tanggal_awal')
+                      $sub->whereNull('tanggal_akhir')
                           ->whereYear('tanggal', $selectedTahun);
                   });
             });
@@ -47,6 +49,19 @@ class KanbanProjectController extends Controller
         // Filter Direktorat
         if (!empty($selectedDirektorat)) {
             $query->where('direktorat', $selectedDirektorat);
+        }
+
+        // Filter Status / Step
+        if (!empty($selectedStatus) && $selectedStatus !== 'all') {
+            if ($selectedStatus === 'dev') {
+                $query->where('rproject', 1);
+            } elseif ($selectedStatus === 'progress') {
+                $query->whereIn('rproject', [1, 2, 3, 4, 5]);
+            } elseif ($selectedStatus === 'live') {
+                $query->where('rproject', 6);
+            } elseif (is_numeric($selectedStatus)) {
+                $query->where('rproject', (int)$selectedStatus);
+            }
         }
 
         // Search Filter
@@ -59,17 +74,42 @@ class KanbanProjectController extends Controller
             });
         }
 
-        $projects = $query->orderBy('id', 'desc')->get();
+        // Sorting: Default 'dev_first' prioritizes DEVELOPMENT (rproject = 1) at the very top
+        if ($selectedSort === 'dev_first') {
+            $query->orderByRaw("CASE 
+                WHEN rproject = 1 THEN 1 
+                WHEN rproject IN (2, 3, 4, 5) THEN 2 
+                WHEN rproject = 6 THEN 4 
+                ELSE 3 
+            END ASC")
+            ->orderBy('id', 'desc');
+        } elseif ($selectedSort === 'progress_first') {
+            $query->orderByRaw("CASE 
+                WHEN rproject IN (1, 2, 3, 4, 5) THEN 1 
+                WHEN rproject = 6 THEN 3 
+                ELSE 2 
+            END ASC")
+            ->orderBy('id', 'desc');
+        } elseif ($selectedSort === 'name_asc') {
+            $query->orderBy('project_name', 'asc');
+        } elseif ($selectedSort === 'oldest') {
+            $query->orderBy('id', 'asc');
+        } else {
+            // latest
+            $query->orderBy('id', 'desc');
+        }
+
+        $projects = $query->get();
 
         // Ambil daftar step dinamis dari rproject
         $rprojects = Rproject::orderBy('id', 'asc')->get();
 
         // Ambil daftar direktorat untuk filter
-        $direktorats = Rdirektorat::all();
+        $direktorats = Rdirektorat::orderBy('deskripsi', 'asc')->get();
 
-        // Ambil list tahun unik dari tanggal_awal & tanggal
-        $tahunAwalList = Project::selectRaw('YEAR(tanggal_awal) as year')
-            ->whereNotNull('tanggal_awal')
+        // Ambil list tahun unik dari tanggal_akhir & tanggal
+        $tahunAkhirList = Project::selectRaw('YEAR(tanggal_akhir) as year')
+            ->whereNotNull('tanggal_akhir')
             ->distinct()
             ->pluck('year')
             ->toArray();
@@ -80,15 +120,37 @@ class KanbanProjectController extends Controller
             ->pluck('year')
             ->toArray();
 
-        $tahunList = array_unique(array_filter(array_merge([$currentYear], $tahunAwalList, $tahunTanggalList)));
+        $tahunList = array_unique(array_filter(array_merge([$currentYear], $tahunAkhirList, $tahunTanggalList)));
         rsort($tahunList);
 
-        // Ringkasan KPI
-        $totalProjects = $projects->count();
-        // id 6 adalah status LIVE (Selesai/Closed)
-        $liveStatusIds = [6];
-        $completedProjects = $projects->whereIn('rproject', $liveStatusIds)->count();
-        $inProgressProjects = $totalProjects - $completedProjects;
+        // Ringkasan KPI dihitung berdasarkan query dasar tahun, direktorat, dan keyword agar konsisten
+        $baseMetricsQuery = Project::query();
+        if (!empty($selectedTahun) && $selectedTahun !== 'all') {
+            $baseMetricsQuery->where(function($q) use ($selectedTahun) {
+                $q->whereYear('tanggal_akhir', $selectedTahun)
+                  ->orWhere(function($sub) use ($selectedTahun) {
+                      $sub->whereNull('tanggal_akhir')
+                          ->whereYear('tanggal', $selectedTahun);
+                  });
+            });
+        }
+        if (!empty($selectedDirektorat)) {
+            $baseMetricsQuery->where('direktorat', $selectedDirektorat);
+        }
+        if (!empty($searchKeyword)) {
+            $baseMetricsQuery->where(function ($q) use ($searchKeyword) {
+                $q->where('project_name', 'like', '%' . $searchKeyword . '%')
+                  ->orWhere('no_surat', 'like', '%' . $searchKeyword . '%')
+                  ->orWhere('pic_name', 'like', '%' . $searchKeyword . '%')
+                  ->orWhere('bagian', 'like', '%' . $searchKeyword . '%');
+            });
+        }
+
+        $totalProjects = (clone $baseMetricsQuery)->count();
+        $devProjectsCount = (clone $baseMetricsQuery)->where('rproject', 1)->count();
+        $otherProgressProjectsCount = (clone $baseMetricsQuery)->whereIn('rproject', [2, 3, 4, 5])->count();
+        $inProgressProjects = $devProjectsCount + $otherProgressProjectsCount;
+        $completedProjects = (clone $baseMetricsQuery)->where('rproject', 6)->count();
 
         return view('kanban.index', compact(
             'projects',
@@ -97,10 +159,14 @@ class KanbanProjectController extends Controller
             'tahunList',
             'selectedTahun',
             'selectedDirektorat',
+            'selectedStatus',
+            'selectedSort',
             'searchKeyword',
             'totalProjects',
-            'completedProjects',
-            'inProgressProjects'
+            'devProjectsCount',
+            'otherProgressProjectsCount',
+            'inProgressProjects',
+            'completedProjects'
         ));
     }
 

@@ -29,12 +29,53 @@
         gap: 1.25rem;
         box-shadow: 0 4px 15px rgba(117, 95, 62, 0.05);
         backdrop-filter: blur(10px);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        text-decoration: none;
+        color: inherit;
+        position: relative;
     }
 
     .kpi-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(117, 95, 62, 0.1);
+    }
+
+    /* KPI Card Dev Focus */
+    .kpi-card.dev-focus {
+        background: linear-gradient(135deg, rgba(254, 243, 199, 0.65), rgba(255, 255, 255, 0.9));
+        border: 2px solid rgba(217, 119, 6, 0.5);
+        box-shadow: 0 6px 20px rgba(217, 119, 6, 0.12);
+        overflow: hidden;
+    }
+
+    .kpi-card.dev-focus::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #d97706, #f59e0b, #b45309);
+    }
+
+    .kpi-card.dev-focus:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(217, 119, 6, 0.2);
+        border-color: #d97706;
+    }
+
+    .kpi-badge-focus {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+        background: #d97706;
+        color: #ffffff;
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.15rem 0.45rem;
+        border-radius: 999px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-top: 0.25rem;
+        width: fit-content;
     }
 
     .kpi-icon {
@@ -52,14 +93,19 @@
         color: var(--primary);
     }
 
-    .kpi-icon.success {
-        background: rgba(34, 197, 94, 0.15);
-        color: #16a34a;
+    .kpi-icon.dev {
+        background: rgba(217, 119, 6, 0.2);
+        color: #d97706;
     }
 
     .kpi-icon.warning {
         background: rgba(245, 158, 11, 0.15);
         color: #d97706;
+    }
+
+    .kpi-icon.success {
+        background: rgba(34, 197, 94, 0.15);
+        color: #16a34a;
     }
 
     .kpi-info {
@@ -78,6 +124,88 @@
         font-size: 0.85rem;
         color: var(--text-muted);
         font-weight: 500;
+    }
+
+    /* Quick Filter Pills */
+    .quick-filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        align-items: center;
+        margin-bottom: 1.25rem;
+    }
+
+    .quick-filter-label {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        margin-right: 0.25rem;
+    }
+
+    .filter-pill {
+        padding: 0.45rem 0.95rem;
+        border-radius: 999px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--text-main);
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid var(--glass-border);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 6px rgba(117, 95, 62, 0.04);
+    }
+
+    .filter-pill:hover {
+        background: #ffffff;
+        border-color: var(--primary);
+        transform: translateY(-1px);
+        color: var(--primary);
+    }
+
+    .filter-pill.active {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 4px 12px rgba(117, 95, 62, 0.25);
+    }
+
+    .filter-pill.dev-pill {
+        background: rgba(254, 243, 199, 0.8);
+        border: 1px solid rgba(217, 119, 6, 0.4);
+        color: #92400e;
+        font-weight: 700;
+    }
+
+    .filter-pill.dev-pill:hover {
+        background: #fef3c7;
+        border-color: #d97706;
+        color: #78350f;
+    }
+
+    .filter-pill.dev-pill.active {
+        background: linear-gradient(135deg, #d97706, #b45309);
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+    }
+
+    .pill-count {
+        background: rgba(0, 0, 0, 0.08);
+        padding: 0.1rem 0.45rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .filter-pill.active .pill-count {
+        background: rgba(255, 255, 255, 0.25);
+        color: #ffffff;
     }
 
     /* Filter & Actions Bar */
@@ -102,12 +230,12 @@
         flex-direction: column;
         gap: 0.35rem;
         flex: 1;
-        min-width: 180px;
+        min-width: 170px;
     }
 
     .filter-group.search-group {
         flex: 2;
-        min-width: 250px;
+        min-width: 230px;
     }
 
     .filter-group label {
@@ -125,6 +253,11 @@
         color: var(--text-main);
         font-size: 0.9rem;
         transition: all 0.2s ease;
+    }
+
+    .form-control option {
+        background-color: #ffffff;
+        color: var(--text-main);
     }
 
     .form-control:focus {
@@ -228,6 +361,40 @@
         background: #d8d0c3;
     }
 
+    /* Column Highlighting for DEVELOPMENT */
+    .kanban-matrix-table th.col-dev-header {
+        background: linear-gradient(180deg, #d4a373 0%, #c48c56 100%) !important;
+        color: #ffffff !important;
+        font-weight: 800;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(180, 83, 9, 0.4) !important;
+        border-top: 3px solid #b45309 !important;
+    }
+
+    .col-dev-tag {
+        display: inline-block;
+        background: #ffffff;
+        color: #8c531b;
+        font-size: 0.65rem;
+        padding: 0.1rem 0.35rem;
+        border-radius: 4px;
+        font-weight: 800;
+        margin-left: 0.35rem;
+        vertical-align: middle;
+        text-shadow: none;
+        letter-spacing: 0.5px;
+    }
+
+    .step-cell.col-dev-cell {
+        background-color: rgba(212, 163, 115, 0.08) !important;
+        border-left: 1.5px solid rgba(180, 83, 9, 0.2) !important;
+        border-right: 1.5px solid rgba(180, 83, 9, 0.2) !important;
+    }
+
+    .step-cell.col-dev-cell:hover {
+        background-color: rgba(212, 163, 115, 0.2) !important;
+    }
+
     .kanban-matrix-table td {
         padding: 0.75rem 0.85rem;
         border: 1px solid rgba(117, 95, 62, 0.18);
@@ -237,6 +404,12 @@
 
     .kanban-matrix-table tr:hover td {
         background-color: #faf8f5;
+    }
+
+    /* Active Development Row Highlight */
+    .kanban-matrix-table tr.row-dev-active td.project-cell {
+        background: #eee5d8 !important;
+        border-left: 4px solid #d97706 !important;
     }
 
     .project-cell {
@@ -261,11 +434,25 @@
         color: var(--text-main);
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
         gap: 0.4rem;
     }
 
     .project-name:hover {
         color: var(--primary);
+    }
+
+    .badge-dev-tag {
+        background: linear-gradient(135deg, #d97706, #b45309);
+        color: #ffffff;
+        padding: 0.15rem 0.45rem;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 0.68rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+        box-shadow: 0 2px 6px rgba(217, 119, 6, 0.25);
     }
 
     .project-meta {
@@ -301,30 +488,34 @@
         background-color: rgba(117, 95, 62, 0.08) !important;
     }
 
-    .step-active-block {
-        background: #5cb85c;
-        background: linear-gradient(135deg, #48bb78, #38a169);
-        color: #ffffff;
-        font-weight: 700;
-        font-size: 0.8rem;
-        border-radius: 8px;
-        padding: 0.6rem 0.75rem;
-        box-shadow: 0 2px 8px rgba(56, 161, 105, 0.3);
+    .step-active-icon {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.35rem;
         height: 100%;
-        animation: pulseGlow 2.5s infinite;
+        width: 100%;
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    @keyframes pulseGlow {
-        0%, 100% {
-            box-shadow: 0 2px 8px rgba(56, 161, 105, 0.3);
-        }
-        50% {
-            box-shadow: 0 3px 12px rgba(56, 161, 105, 0.5);
-        }
+    .step-cell:hover .step-active-icon {
+        transform: scale(1.18);
+    }
+
+    .step-icon-img {
+        width: 32px;
+        height: 32px;
+        max-width: 34px;
+        max-height: 34px;
+        object-fit: contain;
+        display: inline-block;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
+    }
+
+    .step-active-fallback {
+        color: #16a34a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .step-empty-action {
@@ -525,9 +716,32 @@
     </div>
 @endif
 
+@php
+    $buildFilterUrl = function($status) use ($selectedTahun, $selectedDirektorat, $selectedSort, $searchKeyword) {
+        $params = [];
+        if (!empty($status) && $status !== 'all') {
+            $params['filter_status'] = $status;
+        }
+        if (!empty($selectedTahun) && $selectedTahun !== 'all') {
+            $params['filter_tahun'] = $selectedTahun;
+        }
+        if (!empty($selectedDirektorat)) {
+            $params['filter_direktorat'] = $selectedDirektorat;
+        }
+        if (!empty($selectedSort) && $selectedSort !== 'dev_first') {
+            $params['sort_by'] = $selectedSort;
+        }
+        if (!empty($searchKeyword)) {
+            $params['search'] = $searchKeyword;
+        }
+        return route('kanban.index', $params);
+    };
+@endphp
+
 <!-- KPI Summary Cards -->
 <div class="kpi-container">
-    <div class="kpi-card">
+    <!-- Card 1: Total Projects -->
+    <a href="{{ $buildFilterUrl('all') }}" class="kpi-card" title="Klik untuk lihat semua project">
         <div class="kpi-icon primary">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
         </div>
@@ -535,17 +749,36 @@
             <span class="kpi-value">{{ $totalProjects }}</span>
             <span class="kpi-label">Total Projects</span>
         </div>
-    </div>
-    <div class="kpi-card">
+    </a>
+
+    <!-- Card 2: Tahap Development (FOKUS UTAMA) -->
+    <a href="{{ $buildFilterUrl('dev') }}" class="kpi-card dev-focus" title="Klik untuk memfilter khusus tahap Development">
+        <div class="kpi-icon dev">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        </div>
+        <div class="kpi-info">
+            <span class="kpi-value" style="color: #b45309;">{{ $devProjectsCount }}</span>
+            <span class="kpi-label" style="font-weight: 700; color: #92400e;">Tahap Development</span>
+            <span class="kpi-badge-focus">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                Fokus Utama
+            </span>
+        </div>
+    </a>
+
+    <!-- Card 3: Tahap Lain On Progress -->
+    <a href="{{ $buildFilterUrl('progress') }}" class="kpi-card" title="Klik untuk lihat semua project On-Progress">
         <div class="kpi-icon warning">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         </div>
         <div class="kpi-info">
             <span class="kpi-value">{{ $inProgressProjects }}</span>
-            <span class="kpi-label">On Progress</span>
+            <span class="kpi-label">Total On-Progress</span>
         </div>
-    </div>
-    <div class="kpi-card">
+    </a>
+
+    <!-- Card 4: Live / Selesai -->
+    <a href="{{ $buildFilterUrl('live') }}" class="kpi-card" title="Klik untuk lihat project Live / Selesai">
         <div class="kpi-icon success">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
         </div>
@@ -553,7 +786,36 @@
             <span class="kpi-value">{{ $completedProjects }}</span>
             <span class="kpi-label">Live / Selesai</span>
         </div>
+    </a>
+</div>
+
+<!-- Quick Status Filter Pills -->
+<div class="quick-filter-bar">
+    <div class="quick-filter-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+        <span>Akses Cepat:</span>
     </div>
+    
+    <a href="{{ $buildFilterUrl('all') }}" class="filter-pill {{ $selectedStatus === 'all' ? 'active' : '' }}">
+        <span>Semua Project</span>
+        <span class="pill-count">{{ $totalProjects }}</span>
+    </a>
+
+    <a href="{{ $buildFilterUrl('dev') }}" class="filter-pill dev-pill {{ $selectedStatus === 'dev' ? 'active' : '' }}">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        <span>Fokus: Development</span>
+        <span class="pill-count">{{ $devProjectsCount }}</span>
+    </a>
+
+    <a href="{{ $buildFilterUrl('progress') }}" class="filter-pill {{ $selectedStatus === 'progress' ? 'active' : '' }}">
+        <span>Semua On-Progress</span>
+        <span class="pill-count">{{ $inProgressProjects }}</span>
+    </a>
+
+    <a href="{{ $buildFilterUrl('live') }}" class="filter-pill {{ $selectedStatus === 'live' ? 'active' : '' }}">
+        <span>Live / Selesai</span>
+        <span class="pill-count">{{ $completedProjects }}</span>
+    </a>
 </div>
 
 <!-- Filters & Search Bar -->
@@ -565,19 +827,47 @@
         </div>
 
         <div class="filter-group">
+            <label for="filter_status">Status / Tahapan</label>
+            <select name="filter_status" id="filter_status" class="form-control">
+                <option value="all" {{ $selectedStatus === 'all' ? 'selected' : '' }}>Semua Status</option>
+                <option value="dev" {{ $selectedStatus === 'dev' ? 'selected' : '' }}>⚡ Tahap DEVELOPMENT (Fokus)</option>
+                <option value="progress" {{ $selectedStatus === 'progress' ? 'selected' : '' }}>Semua On-Progress (Step 1-5)</option>
+                <option value="live" {{ $selectedStatus === 'live' ? 'selected' : '' }}>Live / Selesai (Step 6)</option>
+                <optgroup label="Pilih Step Spesifik:">
+                    @foreach($rprojects as $rproj)
+                        <option value="{{ $rproj->id }}" {{ $selectedStatus == (string)$rproj->id ? 'selected' : '' }}>
+                            Step {{ $loop->iteration }}: {{ $rproj->deskripsi }}
+                        </option>
+                    @endforeach
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="sort_by">Urutkan</label>
+            <select name="sort_by" id="sort_by" class="form-control">
+                <option value="dev_first" {{ $selectedSort === 'dev_first' ? 'selected' : '' }}>⚡ Tahap Development Teratas (Default)</option>
+                <option value="progress_first" {{ $selectedSort === 'progress_first' ? 'selected' : '' }}>Semua On-Progress Teratas</option>
+                <option value="latest" {{ $selectedSort === 'latest' ? 'selected' : '' }}>Project Terbaru (ID Terakhir)</option>
+                <option value="oldest" {{ $selectedSort === 'oldest' ? 'selected' : '' }}>Project Terlama (ID Pertama)</option>
+                <option value="name_asc" {{ $selectedSort === 'name_asc' ? 'selected' : '' }}>Nama Project (A - Z)</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
             <label for="filter_direktorat">Direktorat</label>
             <select name="filter_direktorat" id="filter_direktorat" class="form-control">
                 <option value="">Semua Direktorat</option>
                 @foreach($direktorats as $dir)
                     <option value="{{ $dir->id }}" {{ $selectedDirektorat == $dir->id ? 'selected' : '' }}>
-                        {{ $dir->direktorat }}
+                        {{ $dir->deskripsi }}
                     </option>
                 @endforeach
             </select>
         </div>
 
         <div class="filter-group">
-            <label for="filter_tahun">Tahun (Tanggal Awal)</label>
+            <label for="filter_tahun">Tahun (Tanggal Akhir)</label>
             <select name="filter_tahun" id="filter_tahun" class="form-control">
                 <option value="all" {{ $selectedTahun === 'all' ? 'selected' : '' }}>Semua Tahun</option>
                 @foreach($tahunList as $thn)
@@ -602,14 +892,19 @@
 
 <!-- Kanban Progress Matrix Board -->
 <div class="kanban-board-card">
-    <div class="kanban-board-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 1rem;">
+    <div class="kanban-board-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div class="kanban-board-title">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
                 Kanban Matrix View
             </div>
-            <div style="font-size: 0.85rem; color: var(--text-muted);">
-                Menampilkan <strong>{{ $projects->count() }}</strong> project
+            <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                <span>Menampilkan <strong>{{ $projects->count() }}</strong> project</span>
+                @if($selectedSort === 'dev_first')
+                    <span style="background: rgba(217, 119, 6, 0.12); color: #b45309; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600; font-size: 0.75rem;">
+                        ⚡ Fokus: Dev Teratas
+                    </span>
+                @endif
             </div>
         </div>
         <button type="button" class="btn btn-secondary" onclick="saveKanbanToPDF()" style="padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
@@ -623,7 +918,7 @@
             <div class="empty-state">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                 <h4>Tidak ada data project yang sesuai filter</h4>
-                <p style="font-size: 0.85rem; margin-top: 0.5rem;">Coba sesuaikan filter Direktorat, Tahun, atau kata kunci pencarian Anda.</p>
+                <p style="font-size: 0.85rem; margin-top: 0.5rem;">Coba sesuaikan filter Status, Direktorat, Tahun, atau kata kunci pencarian Anda.</p>
             </div>
         @else
             <table class="kanban-matrix-table">
@@ -631,29 +926,53 @@
                     <tr>
                         <th class="project-col-th">PROJECT</th>
                         @foreach($rprojects as $rproj)
-                            <th>{{ ($rproj->deskripsi) }}</th>
+                            @php
+                                $isDevCol = ($rproj->id == 1 || strtoupper($rproj->deskripsi) === 'DEVELOPMENT');
+                            @endphp
+                            <th class="{{ $isDevCol ? 'col-dev-header' : '' }}">
+                                @if($isDevCol)
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 0.25rem;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                                        <span>{{ $rproj->deskripsi }}</span>
+                                        <span class="col-dev-tag">FOKUS</span>
+                                    </div>
+                                @else
+                                    {{ $rproj->deskripsi }}
+                                @endif
+                            </th>
                         @endforeach
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($projects as $project)
-                        <tr>
+                        @php
+                            $isProjectInDev = ($project->rproject == 1);
+                        @endphp
+                        <tr class="{{ $isProjectInDev ? 'row-dev-active' : '' }}">
                             <!-- Project Info Column (Clickable to show Project Details) -->
                             <td class="project-cell" onclick="openProjectDetailModal({{ json_encode($project) }})">
                                 <div class="project-title-box">
                                     <div class="project-name" title="Klik untuk lihat detail project">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                                        {{ $project->project_name }}
+                                        <span>{{ $project->project_name }}</span>
+                                        @if($isProjectInDev)
+                                            <span class="badge-dev-tag" title="Project sedang dalam tahap Development">
+                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                                                DEV
+                                            </span>
+                                        @endif
                                     </div>
                                     <div class="project-meta">
                                         @if($project->direktorat_rel)
-                                            <span class="badge-direktorat">{{ $project->direktorat_rel->direktorat }}</span>
+                                             <span class="badge-direktorat">{{ $project->direktorat_rel->direktorat }}</span>
                                         @endif
                                         @if($project->pic_name)
                                             <span>PIC: {{ $project->pic_name }}</span>
                                         @endif
-                                        @if($project->tanggal_awal)
-                                            <span>&bull; {{ \Carbon\Carbon::parse($project->tanggal_awal)->format('d/m/Y') }}</span>
+                                        @if($project->tanggal_akhir)
+                                            <span>&bull; {{ \Carbon\Carbon::parse($project->tanggal_akhir)->format('d/m/Y') }}</span>
+                                        @elseif($project->tanggal)
+                                            <span>&bull; {{ \Carbon\Carbon::parse($project->tanggal)->format('d/m/Y') }}</span>
                                         @endif
                                     </div>
                                 </div>
@@ -663,14 +982,20 @@
                             @foreach($rprojects as $rproj)
                                 @php
                                     $isActive = ($project->rproject == $rproj->id);
+                                    $isDevCol = ($rproj->id == 1 || strtoupper($rproj->deskripsi) === 'DEVELOPMENT');
                                 @endphp
-                                <td class="step-cell" 
+                                <td class="step-cell {{ $isDevCol ? 'col-dev-cell' : '' }}" 
                                     onclick="{{ $isActive ? 'openProjectDetailModal('.json_encode($project).')' : 'openStepChangeModal('.$project->id.', '.json_encode($project->project_name).', '.$project->rproject.', '.json_encode($project->rproject_relation->deskripsi ?? 'Unknown').', '.$rproj->id.', '.json_encode($rproj->deskripsi).')' }}"
                                     title="{{ $isActive ? 'Status saat ini: '.$rproj->deskripsi : 'Klik untuk pindah ke step: '.$rproj->deskripsi }}">
                                     @if($isActive)
-                                        <div class="step-active-block">
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                            <span></span>
+                                        <div class="step-active-icon">
+                                            @if(!empty($rproj->icon))
+                                                <img src="{{ asset('icons/' . $rproj->icon) }}" alt="{{ $rproj->deskripsi }}" class="step-icon-img" title="{{ $rproj->deskripsi }}" crossorigin="anonymous">
+                                            @else
+                                                <div class="step-active-fallback">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
+                                            @endif
                                         </div>
                                     @else
                                         <div class="step-empty-action">

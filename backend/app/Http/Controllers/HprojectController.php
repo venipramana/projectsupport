@@ -26,6 +26,7 @@ class HprojectController extends Controller
         $hprojects = Hproject::with('rproject_rel')
             ->where('idproject', $idproject)
             ->orderBy('tanggal', 'desc')
+            ->orderBy('id', 'desc')
             ->get();
             
         $rprojects = Rproject::all();
@@ -50,9 +51,15 @@ class HprojectController extends Controller
                         'name' => $fileName,
                         'path' => $file,
                         'size' => $sizeStr,
+                        'timestamp' => $lastModified,
                         'date' => date('d-m-Y H:i', $lastModified),
                     ];
                 }
+
+                // Sort files by Terakhir Diperbarui Descending (newest first)
+                usort($evidenceFiles, function ($a, $b) {
+                    return ($b['timestamp'] ?? 0) <=> ($a['timestamp'] ?? 0);
+                });
             } catch (\Exception $e) {
                 Log::error("MinIO error listing evidence: " . $e->getMessage());
             }
