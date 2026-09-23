@@ -17,7 +17,11 @@ class HprojectController extends Controller
      */
     public function index($idproject)
     {
-        $project = Project::with('direktorat_rel', 'rkap_rel')->findOrFail($idproject);
+        // Pastikan status project selalu sinkron dengan status record hproject terbaru
+        Hproject::syncProjectStatus($idproject);
+
+        $project = Project::with(['direktorat_rel', 'rkap_rel', 'rproject_relation', 'leadby_rel'])
+            ->findOrFail($idproject);
         
         if (auth()->user()->levelpengguna == 3 && $project->leadby != auth()->user()->idpengguna) {
             abort(403, 'Unauthorized.');
@@ -89,12 +93,16 @@ class HprojectController extends Controller
 
         $data = $request->except(['progress_file']);
         
-        // Convert dd-mm-yyyy to YYYYMMDD
+        // Convert dd-mm-yyyy to Y-m-d
         if (!empty($data['tanggal'])) {
             try {
-                $data['tanggal'] = Carbon::createFromFormat('d-m-Y', $data['tanggal'])->format('Ymd');
+                $data['tanggal'] = Carbon::createFromFormat('d-m-Y', $data['tanggal'])->format('Y-m-d');
             } catch (\Exception $e) {
-                // Ignore formatting error, let DB handle
+                try {
+                    $data['tanggal'] = Carbon::parse($data['tanggal'])->format('Y-m-d');
+                } catch (\Exception $ex) {
+                    // Ignore formatting error, let DB handle
+                }
             }
         }
 
@@ -123,11 +131,8 @@ class HprojectController extends Controller
             }
         }
 
-        // Update parent project status
-        $project = Project::find($data['idproject']);
-        if ($project) {
-            $project->update(['rproject' => $data['rproject']]);
-        }
+        // Sinkronisasi status dan tgl_update pada tabel project dengan record hproject terbaru
+        Hproject::syncProjectStatus($data['idproject']);
 
         return redirect()->route('hproject.index', $data['idproject'])
             ->with('success', 'Progress project berhasil ditambahkan.' . $uploadedFileMsg);
@@ -425,7 +430,7 @@ class HprojectController extends Controller
         $request->validate([
             'rproject' => 'required|integer',
             'tanggal' => 'required|string',
-            'catatan' => 'required|string|max:150',
+            'catatan' => 'required|string|max:500',
             'progress' => 'nullable|integer'
         ]);
 
@@ -437,22 +442,23 @@ class HprojectController extends Controller
 
         $data = $request->all();
 
-        // Convert dd-mm-yyyy to YYYYMMDD
+        // Convert dd-mm-yyyy to Y-m-d
         if (!empty($data['tanggal'])) {
             try {
-                $data['tanggal'] = Carbon::createFromFormat('d-m-Y', $data['tanggal'])->format('Ymd');
+                $data['tanggal'] = Carbon::createFromFormat('d-m-Y', $data['tanggal'])->format('Y-m-d');
             } catch (\Exception $e) {
-                // Ignore formatting error, let DB handle
+                try {
+                    $data['tanggal'] = Carbon::parse($data['tanggal'])->format('Y-m-d');
+                } catch (\Exception $ex) {
+                    // Ignore formatting error, let DB handle
+                }
             }
         }
 
         $hproject->update($data);
 
-        // Update parent project status
-        $project = Project::find($hproject->idproject);
-        if ($project) {
-            $project->update(['rproject' => $data['rproject']]);
-        }
+        // Sinkronisasi status dan tgl_update pada tabel project dengan record hproject terbaru
+        Hproject::syncProjectStatus($hproject->idproject);
 
         return redirect()->route('hproject.index', $hproject->idproject)->with('success', 'Progress project berhasil diperbarui.');
     }
@@ -469,6 +475,9 @@ class HprojectController extends Controller
         }
         $idproject = $hproject->idproject;
         $hproject->delete();
+
+        // Sinkronisasi status dan tgl_update pada tabel project dengan record hproject terbaru setelah penghapusan
+        Hproject::syncProjectStatus($idproject);
 
         return redirect()->route('hproject.index', $idproject)->with('success', 'Progress project berhasil dihapus.');
     }

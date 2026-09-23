@@ -38,6 +38,41 @@
     </div>
 @endif
 
+<!-- Project Info & Status Summary Card -->
+<div class="project-summary-card">
+    <div class="summary-details">
+        <div class="summary-meta">
+            <span class="project-id-badge">ID Project #{{ $project->id }}</span>
+            <span class="meta-separator">•</span>
+            <span>{{ $project->direktorat_rel ? $project->direktorat_rel->deskripsi : '-' }} / {{ $project->bagian ?: '-' }}</span>
+        </div>
+        <h1 class="project-title">{{ $project->project_name }}</h1>
+        <div class="summary-meta-row">
+            <span>Lead By: <strong>{{ $project->leadby_rel ? $project->leadby_rel->namapeg : ($project->pic_name ?: '-') }}</strong></span>
+            <span>Target Selesai: <strong>{{ $project->tanggal_akhir ? date('d-m-Y', strtotime($project->tanggal_akhir)) : '-' }}</strong></span>
+            <span>Terakhir Diperbarui: <strong>{{ $project->tgl_update ? date('d-m-Y', strtotime($project->tgl_update)) : '-' }}</strong></span>
+        </div>
+    </div>
+    <div class="summary-status-wrapper">
+        <div class="status-label">Status Project Aktif</div>
+        @php
+            $statusColors = [
+                1 => ['bg' => 'rgba(59, 130, 246, 0.12)', 'text' => '#1d4ed8', 'border' => 'rgba(59, 130, 246, 0.3)', 'dot' => '#3b82f6'],
+                2 => ['bg' => 'rgba(234, 88, 12, 0.12)', 'text' => '#c2410c', 'border' => 'rgba(234, 88, 12, 0.3)', 'dot' => '#ea580c'],
+                3 => ['bg' => 'rgba(168, 85, 247, 0.12)', 'text' => '#7e22ce', 'border' => 'rgba(168, 85, 247, 0.3)', 'dot' => '#a855f7'],
+                4 => ['bg' => 'rgba(245, 158, 11, 0.12)', 'text' => '#b45309', 'border' => 'rgba(245, 158, 11, 0.3)', 'dot' => '#f59e0b'],
+                5 => ['bg' => 'rgba(6, 182, 212, 0.12)', 'text' => '#0e7490', 'border' => 'rgba(6, 182, 212, 0.3)', 'dot' => '#06b6d4'],
+                6 => ['bg' => 'rgba(16, 185, 129, 0.12)', 'text' => '#047857', 'border' => 'rgba(16, 185, 129, 0.3)', 'dot' => '#10b981'],
+            ];
+            $color = $statusColors[$project->rproject] ?? ['bg' => 'rgba(107, 114, 128, 0.12)', 'text' => '#374151', 'border' => 'rgba(107, 114, 128, 0.3)', 'dot' => '#6b7280'];
+        @endphp
+        <div class="active-status-badge" style="background: {{ $color['bg'] }}; color: {{ $color['text'] }}; border: 1px solid {{ $color['border'] }};">
+            <span class="status-pulse-dot" style="background: {{ $color['dot'] }};"></span>
+            {{ $project->rproject_relation ? $project->rproject_relation->deskripsi : 'Tidak Diketahui' }}
+        </div>
+    </div>
+</div>
+
 <!-- Master Section: Form Entri Progress -->
 <div class="master-section">
     <div class="section-header">
@@ -382,7 +417,107 @@
 @section('custom-styles')
 <style>
     .actions-bar {
+        margin-bottom: 1.5rem;
+    }
+
+    .project-summary-card {
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
         margin-bottom: 2rem;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 4px 20px rgba(117, 95, 62, 0.06);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.25rem;
+    }
+
+    .summary-details {
+        flex: 1;
+        min-width: 280px;
+    }
+
+    .summary-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.35rem;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .project-id-badge {
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--primary);
+    }
+
+    .meta-separator {
+        color: var(--glass-border);
+    }
+
+    .project-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+    }
+
+    .summary-meta-row {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        flex-wrap: wrap;
+    }
+
+    .summary-meta-row strong {
+        color: var(--text-main);
+    }
+
+    .summary-status-wrapper {
+        text-align: right;
+    }
+
+    .status-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+        margin-bottom: 0.35rem;
+    }
+
+    .active-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1.1rem;
+        border-radius: 9999px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .status-pulse-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        animation: statusPulse 2s infinite ease-in-out;
+    }
+
+    @keyframes statusPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.35); opacity: 0.75; }
     }
 
     .master-section {
