@@ -12,7 +12,6 @@ use App\Http\Controllers\NonprojectController;
 use App\Http\Controllers\KanbanProjectController;
 use App\Http\Controllers\HprojectController;
 use App\Http\Controllers\LaporanController;
-use App\Http\Controllers\BackupController;
 
 Route::redirect('/', '/login');
 
@@ -37,12 +36,6 @@ Route::middleware('auth')->group(function () {
         Route::resource('nonproject', NonprojectController::class);
         Route::get('/kanban-progress', [KanbanProjectController::class, 'index'])->name('kanban.index');
         Route::post('/kanban-progress/update-step', [KanbanProjectController::class, 'updateStep'])->name('kanban.update_step');
-
-        // Backup Database Routes
-        Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');
-        Route::post('/backup/run', [BackupController::class, 'runBackup'])->name('backup.run');
-        Route::get('/backup/download/{filename}', [BackupController::class, 'downloadBackup'])->name('backup.download');
-        Route::delete('/backup/{filename}', [BackupController::class, 'destroyBackup'])->name('backup.destroy');
     });
 
     Route::get('/hproject/{project_id}', [HprojectController::class, 'index'])->name('hproject.index');
