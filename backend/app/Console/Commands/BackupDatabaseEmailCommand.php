@@ -58,3 +58,4 @@ class BackupDatabaseEmailCommand extends Command
         }
     }
 }
+

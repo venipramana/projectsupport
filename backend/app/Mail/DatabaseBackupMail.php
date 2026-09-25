@@ -70,3 +70,4 @@ class DatabaseBackupMail extends Mailable
         return [];
     }
 }
+

@@ -11,3 +11,4 @@ Artisan::command('inspire', function () {
 Schedule::command('db:backup-email')
     ->dailyAt('15:00')
     ->timezone('Asia/Jakarta');
+
