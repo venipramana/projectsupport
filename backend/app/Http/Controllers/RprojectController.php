@@ -54,4 +54,24 @@ class RprojectController extends Controller
 
         return redirect()->route('rproject.index')->with('success', 'Project berhasil dihapus.');
     }
+
+    /**
+     * API list of active rproject statuses for dynamic usage.
+     */
+    public function apiList()
+    {
+        $rprojects = Rproject::where('status', 1)->orderBy('id', 'asc')->get();
+        return response()->json([
+            'success' => true,
+            'data' => $rprojects->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'deskripsi' => $item->deskripsi,
+                    'icon' => $item->icon,
+                    'icon_url' => asset('icons/' . $item->icon),
+                    'status' => $item->status,
+                ];
+            })
+        ]);
+    }
 }

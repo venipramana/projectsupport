@@ -399,7 +399,7 @@
             </thead>
             <tbody>
                 @forelse($projects as $proj)
-                <tr>
+                <tr data-idproject="{{ $proj->id }}" data-rproject="{{ $proj->rproject }}" data-project-name="{{ $proj->project_name }}" title="Klik kanan untuk menu status (Donut Context Menu)">
                     <td style="display:none;">{{ $proj->id }}</td>
                     <td>
                         <a href="{{ route('hproject.index', $proj->id) }}" style="color: var(--primary); text-decoration: none; font-weight: 600;" title="Buka Progress Project">
@@ -408,7 +408,7 @@
                     </td>
                     <td>{{ $proj->tanggal ? date('d-m-Y', strtotime($proj->tanggal)) : '-' }}</td>
                     <td>{{ $proj->direktorat_rel ? $proj->direktorat_rel->deskripsi : '-' }}</td>
-                    <td>{{ $proj->rproject_relation ? $proj->rproject_relation->deskripsi : '-' }}</td>
+                    <td class="status-cell">{{ $proj->rproject_relation ? $proj->rproject_relation->deskripsi : '-' }}</td>
                     <td>{{ $proj->rkap_rel ? $proj->rkap_rel->kode_rkap . ' - ' . $proj->rkap_rel->nama_rkap : '-' }}</td>
                     <td>
                         <div class="action-buttons">

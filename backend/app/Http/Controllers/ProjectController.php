@@ -196,4 +196,69 @@ class ProjectController extends Controller
 
         return redirect()->route('project.index')->with('success', 'Project berhasil dihapus.');
     }
+
+    /**
+     * Quick status update triggered from Donut Context Menu.
+     * Updates project table (rproject field) and inserts a record into hproject table.
+     */
+    public function quickStatusUpdate(Request $request)
+    {
+        $request->validate([
+            'idproject' => 'required|integer|exists:project,id',
+            'rproject' => 'required|integer|exists:rproject,id',
+            'catatan' => 'nullable|string|max:150',
+        ]);
+
+        $project = Project::with('rproject_relation')->findOrFail($request->idproject);
+
+        // Authorization check: if user is level 3 (developer), only allow if they are the leadby
+        if (auth()->check() && auth()->user()->levelpengguna == 3 && $project->leadby != auth()->user()->idpengguna) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki hak akses untuk mengubah status project ini.'
+            ], 403);
+        }
+
+        $targetStatus = Rproject::findOrFail($request->rproject);
+
+        // Get latest progress from previous hproject record if available
+        $latestHproject = Hproject::where('idproject', $project->id)
+            ->orderBy('tanggal', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+        $currentProgress = $latestHproject ? ($latestHproject->progress ?? 0) : 0;
+
+        $catatan = $request->catatan ?: ('Perubahan status ke ' . $targetStatus->deskripsi);
+        $tanggalHariIni = now()->format('Y-m-d');
+
+        // 1. Simpan historis ke tabel hproject
+        $hproject = Hproject::create([
+            'idproject' => $project->id,
+            'rproject' => $targetStatus->id,
+            'tanggal' => $tanggalHariIni,
+            'catatan' => $catatan,
+            'progress' => $currentProgress,
+        ]);
+
+        // 2. Update status dan tgl_update di tabel project
+        $project->update([
+            'rproject' => $targetStatus->id,
+            'tgl_update' => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Status project \"{$project->project_name}\" berhasil diubah menjadi \"{$targetStatus->deskripsi}\".",
+            'data' => [
+                'idproject' => $project->id,
+                'project_name' => $project->project_name,
+                'rproject' => $targetStatus->id,
+                'status_name' => $targetStatus->deskripsi,
+                'status_icon' => $targetStatus->icon,
+                'icon_url' => asset('icons/' . $targetStatus->icon),
+                'tgl_update' => $project->tgl_update ? date('d-m-Y H:i', strtotime($project->tgl_update)) : date('d-m-Y H:i'),
+                'hproject_id' => $hproject->id,
+            ]
+        ]);
+    }
 }

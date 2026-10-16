@@ -948,7 +948,7 @@
                         @php
                             $isProjectInDev = ($project->rproject == 1);
                         @endphp
-                        <tr class="{{ $isProjectInDev ? 'row-dev-active' : '' }}">
+                        <tr class="{{ $isProjectInDev ? 'row-dev-active' : '' }}" data-idproject="{{ $project->id }}" data-rproject="{{ $project->rproject }}" data-project-name="{{ $project->project_name }}" title="Klik kanan untuk menu status (Donut Context Menu)">
                             <!-- Project Info Column (Clickable to show Project Details) -->
                             <td class="project-cell" onclick="openProjectDetailModal({{ json_encode($project) }})">
                                 <div class="project-title-box">
@@ -984,7 +984,7 @@
                                     $isActive = ($project->rproject == $rproj->id);
                                     $isDevCol = ($rproj->id == 1 || strtoupper($rproj->deskripsi) === 'DEVELOPMENT');
                                 @endphp
-                                <td class="step-cell {{ $isDevCol ? 'col-dev-cell' : '' }}" 
+                                <td class="step-cell {{ $isDevCol ? 'col-dev-cell' : '' }}" data-step-id="{{ $rproj->id }}" 
                                     onclick="{{ $isActive ? 'openProjectDetailModal('.json_encode($project).')' : 'openStepChangeModal('.$project->id.', '.json_encode($project->project_name).', '.$project->rproject.', '.json_encode($project->rproject_relation->deskripsi ?? 'Unknown').', '.$rproj->id.', '.json_encode($rproj->deskripsi).')' }}"
                                     title="{{ $isActive ? 'Status saat ini: '.$rproj->deskripsi : 'Klik untuk pindah ke step: '.$rproj->deskripsi }}">
                                     @if($isActive)

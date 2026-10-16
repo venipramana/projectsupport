@@ -25,6 +25,11 @@ Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'ind
 Route::middleware('auth')->group(function () {
     // Profil / Ubah Password
     Route::post('/change-password', [PenggunaController::class, 'changePassword'])->name('change.password');
+
+    // Quick Status Update for Donut Context Menu & API
+    Route::post('/project/quick-status-update', [ProjectController::class, 'quickStatusUpdate'])->name('project.quick_status_update');
+    Route::get('/api/rproject-list', [RprojectController::class, 'apiList'])->name('rproject.api_list');
+
     // Admin Only Routes
     Route::middleware(\App\Http\Middleware\CheckLevelAdmin::class)->group(function () {
         Route::resource('pengguna', PenggunaController::class);

@@ -1081,6 +1081,12 @@
 
         pageData.forEach((proj, idx) => {
             const tr = document.createElement('tr');
+            if (proj.idproject) {
+                tr.setAttribute('data-idproject', proj.idproject);
+                tr.setAttribute('data-project-name', proj.project_name || '');
+                tr.setAttribute('data-rproject', proj.rproject || '');
+                tr.title = 'Klik kanan untuk menu status (Donut Context Menu)';
+            }
             const rowNumber = startIndex + idx + 1;
             tr.innerHTML = `
                 <td>${rowNumber}</td>
@@ -1445,7 +1451,7 @@
                     const c = p.color;
 
                     bodyHTML += `
-                        <div style="background: ${c.bg}; border: 1px solid ${c.border}; border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; gap: 0.4rem;">
+                        <div data-idproject="${p.idproject || ''}" data-project-name="${p.project_name || ''}" title="Klik kanan untuk menu status (Donut Context Menu)" style="background: ${c.bg}; border: 1px solid ${c.border}; border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; gap: 0.4rem; cursor: context-menu;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
                                 <a href="/hproject/${p.idproject || ''}" style="font-weight: 700; font-size: 0.95rem; color: ${c.text}; text-decoration: none;">
                                     ${p.project_name || 'Tanpa Nama Project'}

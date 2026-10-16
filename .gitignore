@@ -19,6 +19,7 @@ backend/node_modules/
 backend/public/build
 backend/public/hot
 backend/public/storage
+backend/public/icons_backup/
 backend/storage/*.key
 backend/storage/pail
 backend/storage/logs/
