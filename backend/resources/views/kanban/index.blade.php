@@ -267,6 +267,8 @@
     }
 
     .btn {
+        width: auto;
+        margin: 0;
         padding: 0.65rem 1.25rem;
         border-radius: 10px;
         font-weight: 600;
@@ -279,9 +281,12 @@
         transition: all 0.2s ease;
         text-decoration: none;
         height: 40px;
+        box-sizing: border-box;
     }
 
     .btn-primary {
+        width: auto !important;
+        margin: 0 !important;
         background: linear-gradient(135deg, var(--primary), var(--secondary));
         color: white;
         box-shadow: 0 4px 12px rgba(117, 95, 62, 0.25);
@@ -334,205 +339,283 @@
     .kanban-table-wrapper {
         width: 100%;
         overflow-x: auto;
+        background: #ffffff;
     }
 
-    .kanban-matrix-table {
+    /* Kanban Grid Table matching user specification */
+    .kanban-board-table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 850px;
-        text-align: left;
+        table-layout: fixed;
+        min-width: 960px;
+        background: #ffffff;
+        border: 2px solid #2c2721;
     }
 
-    .kanban-matrix-table th {
-        background: #e2dcd3;
-        color: var(--text-main);
-        font-weight: 700;
+    .kanban-board-table th,
+    .kanban-board-table td {
+        border: 1px solid #2c2721;
+        box-sizing: border-box;
+    }
+
+    /* Header Row Merged: Judul kolom dan icon dalam 1 cell */
+    .header-row-merged th {
+        background: #ede8df;
+        color: #2c2721;
+        font-weight: 800;
         font-size: 0.88rem;
-        padding: 0.85rem 1rem;
-        border: 1px solid rgba(117, 95, 62, 0.2);
-        text-transform: lowercase;
-        white-space: nowrap;
+        padding: 0.85rem 0.5rem;
         text-align: center;
-    }
-
-    .kanban-matrix-table th.project-col-th {
-        text-align: left;
-        min-width: 260px;
-        background: #d8d0c3;
-    }
-
-    /* Column Highlighting for DEVELOPMENT */
-    .kanban-matrix-table th.col-dev-header {
-        background: linear-gradient(180deg, #d4a373 0%, #c48c56 100%) !important;
-        color: #ffffff !important;
-        font-weight: 800;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(180, 83, 9, 0.4) !important;
-        border-top: 3px solid #b45309 !important;
-    }
-
-    .col-dev-tag {
-        display: inline-block;
-        background: #ffffff;
-        color: #8c531b;
-        font-size: 0.65rem;
-        padding: 0.1rem 0.35rem;
-        border-radius: 4px;
-        font-weight: 800;
-        margin-left: 0.35rem;
+        position: sticky;
+        top: 0;
+        z-index: 5;
         vertical-align: middle;
-        text-shadow: none;
-        letter-spacing: 0.5px;
+        transition: background-color 0.2s ease, outline 0.2s ease;
     }
 
-    .step-cell.col-dev-cell {
-        background-color: rgba(212, 163, 115, 0.08) !important;
-        border-left: 1.5px solid rgba(180, 83, 9, 0.2) !important;
-        border-right: 1.5px solid rgba(180, 83, 9, 0.2) !important;
+    .header-row-merged th.col-dev-header {
+        background: #fde68a !important;
+        color: #92400e !important;
+        border-top: 3px solid #d97706 !important;
     }
 
-    .step-cell.col-dev-cell:hover {
-        background-color: rgba(212, 163, 115, 0.2) !important;
-    }
-
-    .kanban-matrix-table td {
-        padding: 0.75rem 0.85rem;
-        border: 1px solid rgba(117, 95, 62, 0.18);
-        vertical-align: middle;
-        background: #ffffff;
-    }
-
-    .kanban-matrix-table tr:hover td {
-        background-color: #faf8f5;
-    }
-
-    /* Active Development Row Highlight */
-    .kanban-matrix-table tr.row-dev-active td.project-cell {
-        background: #eee5d8 !important;
-        border-left: 4px solid #d97706 !important;
-    }
-
-    .project-cell {
-        background: #ede8df !important;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-    }
-
-    .project-cell:hover {
-        background-color: #e4ddd2 !important;
-    }
-
-    .project-title-box {
+    .header-cell-merged {
         display: flex;
         flex-direction: column;
-        gap: 0.25rem;
-    }
-
-    .project-name {
-        font-weight: 600;
-        font-size: 0.92rem;
-        color: var(--text-main);
-        display: flex;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 0.4rem;
+        justify-content: center;
+        gap: 0.55rem;
     }
 
-    .project-name:hover {
-        color: var(--primary);
-    }
-
-    .badge-dev-tag {
-        background: linear-gradient(135deg, #d97706, #b45309);
-        color: #ffffff;
-        padding: 0.15rem 0.45rem;
-        border-radius: 6px;
-        font-weight: 700;
-        font-size: 0.68rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.2rem;
-        box-shadow: 0 2px 6px rgba(217, 119, 6, 0.25);
-    }
-
-    .project-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-        align-items: center;
-        font-size: 0.75rem;
-        color: var(--text-muted);
-    }
-
-    .badge-direktorat {
-        background: rgba(117, 95, 62, 0.12);
-        color: var(--primary);
-        padding: 0.15rem 0.45rem;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.7rem;
-    }
-
-    /* Step Cell Styles */
-    .step-cell {
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        position: relative;
-        min-width: 110px;
-        height: 52px;
-        padding: 0.35rem !important;
-    }
-
-    .step-cell:hover {
-        background-color: rgba(117, 95, 62, 0.08) !important;
-    }
-
-    .step-active-icon {
+    .header-title-box {
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100%;
-        width: 100%;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+    }
+
+    .header-stage-name {
+        font-weight: 800;
+        font-size: 0.86rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        line-height: 1.2;
+    }
+
+    .header-stage-badge {
+        background: rgba(44, 39, 33, 0.14);
+        color: #2c2721;
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.1rem 0.45rem;
+        border-radius: 999px;
+    }
+
+    .col-dev-header .header-stage-badge {
+        background: #d97706;
+        color: #ffffff;
+    }
+
+    .header-icon-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 42px;
+    }
+
+    .header-step-icon {
+        width: 38px;
+        height: 38px;
+        max-width: 42px;
+        max-height: 42px;
+        object-fit: contain;
+        display: inline-block;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
         transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .step-cell:hover .step-active-icon {
+    .header-step-icon:hover {
         transform: scale(1.18);
     }
 
-    .step-icon-img {
-        width: 32px;
-        height: 32px;
-        max-width: 34px;
-        max-height: 34px;
-        object-fit: contain;
-        display: inline-block;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
-    }
-
-    .step-active-fallback {
-        color: #16a34a;
-        display: flex;
+    .header-icon-fallback {
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-    }
-
-    .step-empty-action {
-        color: transparent;
-        font-size: 0.75rem;
-        font-weight: 600;
-        border-radius: 6px;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-    }
-
-    .step-cell:hover .step-empty-action {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: rgba(117, 95, 62, 0.15);
         color: var(--primary);
+        font-weight: 800;
+        font-size: 0.85rem;
+    }
+
+    /* Drag and Drop Visual Feedback */
+    .draggable-card {
+        cursor: grab;
+        user-select: none;
+        -webkit-user-drag: element;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+        border-radius: 6px;
+        padding: 0.25rem 0.35rem;
+        position: relative;
+    }
+
+    .draggable-card:hover {
+        background: rgba(117, 95, 62, 0.08);
+    }
+
+    .draggable-card:active {
+        cursor: grabbing;
+    }
+
+    .draggable-card.is-dragging {
+        opacity: 0.4 !important;
+        transform: scale(0.96);
+        background: #fef3c7 !important;
+        border: 1.5px dashed #d97706 !important;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .draggable-card.is-updating {
+        pointer-events: none;
+        opacity: 0.6;
+        background: #fef9c3 !important;
+    }
+
+    .project-drag-grip {
+        display: inline-flex;
+        align-items: center;
+        color: #a8a29e;
+        margin-right: 0.3rem;
+        vertical-align: middle;
+        cursor: grab;
+    }
+
+    .draggable-card:hover .project-drag-grip {
+        color: #78716c;
+    }
+
+    /* Drop Target Highlights */
+    .drag-active-col {
+        background-color: rgba(245, 158, 11, 0.04) !important;
+    }
+
+    .kanban-table-cell.drop-target-hover,
+    .kanban-col-header.drop-target-hover {
+        background-color: rgba(217, 119, 6, 0.2) !important;
+        outline: 2.5px dashed #d97706 !important;
+        outline-offset: -2px !important;
+    }
+
+    /* Floating Drag-Drop Toast Banner */
+    .kanban-dnd-toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: #2c2721;
+        color: #ffffff;
+        padding: 0.75rem 1.25rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        z-index: 9999;
+        font-size: 0.88rem;
+        font-weight: 600;
+        transform: translateY(20px);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .kanban-dnd-toast.active {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .kanban-dnd-toast.toast-success {
+        border-left: 4px solid #16a34a;
+    }
+
+    .kanban-dnd-toast.toast-error {
+        border-left: 4px solid #dc2626;
+    }
+
+    .kanban-dnd-toast.toast-info {
+        border-left: 4px solid #d97706;
+    }
+
+    /* Table Data Cells */
+    .kanban-table-cell {
+        padding: 0.6rem 0.65rem;
+        min-height: 48px;
+        height: 48px;
+        vertical-align: top;
+        background: #ffffff;
+        transition: background-color 0.15s ease;
+    }
+
+    .kanban-table-cell.has-project {
+        cursor: pointer;
+    }
+
+    .kanban-table-cell.has-project:hover {
+        background-color: #faf6f0;
+    }
+
+    .kanban-table-cell.empty-cell {
+        background: #ffffff;
+    }
+
+    .project-card-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        width: 100%;
+    }
+
+    /* Requirement 2: Text-wrap jika nama project melebihi lebar kolom */
+    .project-name-wrap {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #2c2721;
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+        text-wrap: wrap !important;
+        line-height: 1.35;
+    }
+
+    .kanban-table-cell.has-project:hover .project-name-wrap {
+        color: var(--primary, #755f3e);
+    }
+
+    .project-sub-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        align-items: center;
+        font-size: 0.7rem;
+        color: #78716c;
+        margin-top: 2px;
+    }
+
+    .sub-badge-dir {
         background: rgba(117, 95, 62, 0.1);
+        color: #755f3e;
+        padding: 0.08rem 0.35rem;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.67rem;
+    }
+
+    .sub-pic {
+        color: #6b7280;
     }
 
     /* Modal Styles */
@@ -560,11 +643,12 @@
         background: #ffffff;
         border: 1px solid var(--glass-border);
         border-radius: 20px;
-        padding: 2rem;
+        padding: 1.75rem 2rem;
         width: 100%;
-        max-width: 650px;
+        max-width: 720px;
         max-height: 90vh;
         overflow-y: auto;
+        overflow-x: hidden !important;
         transform: translateY(20px);
         transition: transform 0.3s ease;
         box-shadow: 0 25px 50px -12px rgba(117, 95, 62, 0.25);
@@ -676,6 +760,97 @@
     .form-group-modal textarea {
         resize: vertical;
         min-height: 80px;
+    }
+
+    /* Modal Footer & Buttons Proportional Layout */
+    .modal-footer-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: nowrap !important;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(117, 95, 62, 0.15);
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .modal-footer-right {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: nowrap !important;
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    .modal-footer-box .btn {
+        white-space: nowrap !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
+        padding: 0 0.85rem !important;
+        font-size: 0.83rem !important;
+        font-weight: 600 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        line-height: 1 !important;
+        border-radius: 8px !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    .btn-modal-history {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    .btn-status-change {
+        background: linear-gradient(135deg, #d97706, #b45309) !important;
+        color: #ffffff !important;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25) !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    .btn-status-change:hover {
+        background: linear-gradient(135deg, #b45309, #92400e) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35) !important;
+        opacity: 0.95;
+    }
+
+    .btn-modal-close {
+        min-width: 75px !important;
+        width: auto !important;
+        margin: 0 !important;
+        flex: 0 0 auto !important;
+        padding: 0 1.1rem !important;
+    }
+
+    @media (max-width: 520px) {
+        .modal-footer-box {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 0.5rem !important;
+        }
+        .modal-footer-right {
+            flex-direction: column !important;
+            width: 100% !important;
+            gap: 0.5rem !important;
+        }
+        .modal-footer-box .btn {
+            width: 100% !important;
+        }
     }
 
     .alert {
@@ -914,100 +1089,129 @@
     </div>
 
     <div class="kanban-table-wrapper">
-        @if($projects->isEmpty())
-            <div class="empty-state">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                <h4>Tidak ada data project yang sesuai filter</h4>
-                <p style="font-size: 0.85rem; margin-top: 0.5rem;">Coba sesuaikan filter Status, Direktorat, Tahun, atau kata kunci pencarian Anda.</p>
-            </div>
-        @else
-            <table class="kanban-matrix-table">
-                <thead>
+        @php
+            // Group projects by rproject ID
+            $projectsByStep = [];
+            foreach ($rprojects as $rp) {
+                $projectsByStep[$rp->id] = [];
+            }
+            foreach ($projects as $proj) {
+                if (isset($projectsByStep[$proj->rproject])) {
+                    $projectsByStep[$proj->rproject][] = $proj;
+                }
+            }
+
+            // Max projects count across all columns
+            $maxProjectsInCol = 0;
+            foreach ($rprojects as $rp) {
+                $count = count($projectsByStep[$rp->id] ?? []);
+                if ($count > $maxProjectsInCol) {
+                    $maxProjectsInCol = $count;
+                }
+            }
+
+            // At least 8 rows to match the clean grid aesthetic of the diagram
+            $displayRows = max($maxProjectsInCol, 8);
+
+            // Check if there are projects with unassigned status (e.g. rproject = 0)
+            $unassignedProjects = $projects->filter(function($p) use ($rprojects) {
+                return !in_array($p->rproject, $rprojects->pluck('id')->toArray());
+            });
+        @endphp
+
+        <table class="kanban-board-table" id="kanbanBoardTable">
+            <thead>
+                <!-- Merged Header Row: Judul kolom dan Icon dijadikan 1 cell (merge) -->
+                <tr class="header-row-merged">
+                    @foreach($rprojects as $rproj)
+                        @php
+                            $isDevCol = ($rproj->id == 1 || strtoupper($rproj->deskripsi) === 'DEVELOPMENT');
+                            $colCount = count($projectsByStep[$rproj->id] ?? []);
+                        @endphp
+                        <th class="kanban-col-header {{ $isDevCol ? 'col-dev-header' : '' }}" 
+                            data-step-id="{{ $rproj->id }}" 
+                            data-step-name="{{ $rproj->deskripsi }}"
+                            title="Kolom {{ $rproj->deskripsi }} (Drop project ke sini untuk ubah status)">
+                            <div class="header-cell-merged">
+                                <div class="header-title-box">
+                                    <span class="header-stage-name">{{ strtoupper($rproj->deskripsi) }}</span>
+                                    <span class="header-stage-badge" title="{{ $colCount }} project">{{ $colCount }}</span>
+                                </div>
+                                <div class="header-icon-box">
+                                    @if(!empty($rproj->icon))
+                                        <img src="{{ asset('icons/' . $rproj->icon) }}" 
+                                             alt="{{ $rproj->deskripsi }}" 
+                                             class="header-step-icon" 
+                                             title="{{ $rproj->deskripsi }}"
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                                        <span class="header-icon-fallback" style="display:none;">{{ substr($rproj->deskripsi, 0, 2) }}</span>
+                                    @else
+                                        <span class="header-icon-fallback">{{ substr($rproj->deskripsi, 0, 2) }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </th>
+                    @endforeach
+                </tr>
+            </thead>
+            <tbody>
+                @for($rowIndex = 0; $rowIndex < $displayRows; $rowIndex++)
                     <tr>
-                        <th class="project-col-th">PROJECT</th>
                         @foreach($rprojects as $rproj)
                             @php
-                                $isDevCol = ($rproj->id == 1 || strtoupper($rproj->deskripsi) === 'DEVELOPMENT');
+                                $proj = $projectsByStep[$rproj->id][$rowIndex] ?? null;
                             @endphp
-                            <th class="{{ $isDevCol ? 'col-dev-header' : '' }}">
-                                @if($isDevCol)
-                                    <div style="display: flex; align-items: center; justify-content: center; gap: 0.25rem;">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                                        <span>{{ $rproj->deskripsi }}</span>
-                                        <span class="col-dev-tag">FOKUS</span>
+                            <td class="kanban-table-cell {{ $proj ? 'has-project' : 'empty-cell' }}" 
+                                data-step-id="{{ $rproj->id }}" 
+                                data-step-name="{{ $rproj->deskripsi }}"
+                                data-col-index="{{ $loop->index }}">
+                                @if($proj)
+                                    <div class="project-card-box draggable-card" 
+                                        draggable="true"
+                                        data-idproject="{{ $proj->id }}" 
+                                        data-rproject="{{ $proj->rproject }}" 
+                                        data-project-name="{{ $proj->project_name }}"
+                                        onclick="handleProjectCardClick(event, {{ json_encode($proj) }})"
+                                        title="Tarik / drag untuk pindah status. Klik untuk detail. Klik kanan untuk Donut Menu.">
+                                        <div class="project-name-wrap">
+                                            <span class="project-drag-grip" title="Tarik untuk pindah status">
+                                                <svg width="10" height="13" viewBox="0 0 10 16" fill="currentColor">
+                                                    <circle cx="3" cy="3" r="1.5"></circle>
+                                                    <circle cx="7" cy="3" r="1.5"></circle>
+                                                    <circle cx="3" cy="8" r="1.5"></circle>
+                                                    <circle cx="7" cy="8" r="1.5"></circle>
+                                                    <circle cx="3" cy="13" r="1.5"></circle>
+                                                    <circle cx="7" cy="13" r="1.5"></circle>
+                                                </svg>
+                                            </span>
+                                            <span>{{ $proj->project_name }}</span>
+                                        </div>
+                                        @if($proj->direktorat_rel || $proj->pic_name)
+                                            <div class="project-sub-meta">
+                                                @if($proj->direktorat_rel)
+                                                    <span class="sub-badge-dir">{{ $proj->direktorat_rel->direktorat }}</span>
+                                                @endif
+                                                @if($proj->pic_name)
+                                                    <span class="sub-pic">PIC: {{ $proj->pic_name }}</span>
+                                                @endif
+                                            </div>
+                                        @endif
                                     </div>
                                 @else
-                                    {{ $rproj->deskripsi }}
+                                    &nbsp;
                                 @endif
-                            </th>
+                            </td>
                         @endforeach
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach($projects as $project)
-                        @php
-                            $isProjectInDev = ($project->rproject == 1);
-                        @endphp
-                        <tr class="{{ $isProjectInDev ? 'row-dev-active' : '' }}" data-idproject="{{ $project->id }}" data-rproject="{{ $project->rproject }}" data-project-name="{{ $project->project_name }}" title="Klik kanan untuk menu status (Donut Context Menu)">
-                            <!-- Project Info Column (Clickable to show Project Details) -->
-                            <td class="project-cell" onclick="openProjectDetailModal({{ json_encode($project) }})">
-                                <div class="project-title-box">
-                                    <div class="project-name" title="Klik untuk lihat detail project">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                                        <span>{{ $project->project_name }}</span>
-                                        @if($isProjectInDev)
-                                            <span class="badge-dev-tag" title="Project sedang dalam tahap Development">
-                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                                                DEV
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <div class="project-meta">
-                                        @if($project->direktorat_rel)
-                                             <span class="badge-direktorat">{{ $project->direktorat_rel->direktorat }}</span>
-                                        @endif
-                                        @if($project->pic_name)
-                                            <span>PIC: {{ $project->pic_name }}</span>
-                                        @endif
-                                        @if($project->tanggal_akhir)
-                                            <span>&bull; {{ \Carbon\Carbon::parse($project->tanggal_akhir)->format('d/m/Y') }}</span>
-                                        @elseif($project->tanggal)
-                                            <span>&bull; {{ \Carbon\Carbon::parse($project->tanggal)->format('d/m/Y') }}</span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </td>
+                @endfor
+            </tbody>
+        </table>
 
-                            <!-- Dynamic Step Columns -->
-                            @foreach($rprojects as $rproj)
-                                @php
-                                    $isActive = ($project->rproject == $rproj->id);
-                                    $isDevCol = ($rproj->id == 1 || strtoupper($rproj->deskripsi) === 'DEVELOPMENT');
-                                @endphp
-                                <td class="step-cell {{ $isDevCol ? 'col-dev-cell' : '' }}" data-step-id="{{ $rproj->id }}" 
-                                    onclick="{{ $isActive ? 'openProjectDetailModal('.json_encode($project).')' : 'openStepChangeModal('.$project->id.', '.json_encode($project->project_name).', '.$project->rproject.', '.json_encode($project->rproject_relation->deskripsi ?? 'Unknown').', '.$rproj->id.', '.json_encode($rproj->deskripsi).')' }}"
-                                    title="{{ $isActive ? 'Status saat ini: '.$rproj->deskripsi : 'Klik untuk pindah ke step: '.$rproj->deskripsi }}">
-                                    @if($isActive)
-                                        <div class="step-active-icon">
-                                            @if(!empty($rproj->icon))
-                                                <img src="{{ asset('icons/' . $rproj->icon) }}" alt="{{ $rproj->deskripsi }}" class="step-icon-img" title="{{ $rproj->deskripsi }}" crossorigin="anonymous">
-                                            @else
-                                                <div class="step-active-fallback">
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                                </div>
-                                            @endif
-                                        </div>
-                                    @else
-                                        <div class="step-empty-action">
-                                            <span>Pindah ke sini &rarr;</span>
-                                        </div>
-                                    @endif
-                                </td>
-                            @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        @if($unassignedProjects->isNotEmpty())
+            <div style="padding: 0.75rem 1.25rem; background: rgba(245, 158, 11, 0.08); border-top: 1px solid rgba(245, 158, 11, 0.2); font-size: 0.8rem; color: #92400e; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                <span><strong>Catatan:</strong> Terdapat {{ $unassignedProjects->count() }} project berstatus belum ditentukan (rproject = 0).</span>
+                <span style="font-size: 0.75rem; color: #b45309;">(Dapat diatur melalui halaman Manajemen Project)</span>
+            </div>
         @endif
     </div>
 </div>
@@ -1095,12 +1299,20 @@
             </div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
-            <a href="#" id="detail_history_link" class="btn btn-secondary">
+        <div class="modal-footer-box">
+            <a href="#" id="detail_history_link" class="btn btn-secondary btn-modal-history">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                Lihat Riwayat & File Evidence
+                <span>Lihat Riwayat & File Evidence</span>
             </a>
-            <button type="button" class="btn btn-primary" onclick="closeProjectDetailModal()">Tutup</button>
+            <div class="modal-footer-right">
+                <button type="button" class="btn btn-status-change" onclick="openStepChangeModalFromDetail()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    <span>Pindah Step / Status</span>
+                </button>
+                <button type="button" class="btn btn-primary btn-modal-close" onclick="closeProjectDetailModal()">
+                    Tutup
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -1119,7 +1331,6 @@
         <form action="{{ route('kanban.update_step') }}" method="POST" enctype="multipart/form-data" id="stepChangeForm">
             @csrf
             <input type="hidden" name="idproject" id="step_idproject">
-            <input type="hidden" name="rproject" id="step_target_rproject">
 
             <div class="step-transition-badge">
                 <span>Perpindahan Step:</span>
@@ -1131,6 +1342,15 @@
             <div style="margin-bottom: 1.25rem;">
                 <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 0.2rem;">Project</label>
                 <div id="step_project_name" style="font-weight: 700; font-size: 1rem; color: var(--text-main);">-</div>
+            </div>
+
+            <div class="form-group-modal">
+                <label for="step_target_rproject">Target Step Baru <span style="color: #dc2626;">*</span></label>
+                <select name="rproject" id="step_target_rproject" class="form-control" required>
+                    @foreach($rprojects as $rp)
+                        <option value="{{ $rp->id }}">{{ $rp->deskripsi }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="form-group-modal">
@@ -1173,6 +1393,10 @@
 
 @section('custom-scripts')
 <script>
+    let currentDetailProject = null;
+    let isDraggingProject = false;
+    let dndToastTimeout = null;
+
     function saveKanbanToPDF() {
         const element = document.querySelector('.kanban-board-card');
         const opt = {
@@ -1186,18 +1410,239 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
+        // Init Drag and Drop
+        initKanbanDragAndDrop();
+
         // Init Flatpickr for modal datepicker
         flatpickr("#modal_tanggal", {
             dateFormat: "d-m-Y",
             defaultDate: new Date(),
             allowInput: true
         });
+
+        // Target step dropdown change handler in Step Modal
+        const stepSelect = document.getElementById('step_target_rproject');
+        if (stepSelect) {
+            stepSelect.addEventListener('change', function() {
+                const selectedText = this.options[this.selectedIndex] ? this.options[this.selectedIndex].text : '';
+                const toNameEl = document.getElementById('step_to_name');
+                if (toNameEl) toNameEl.innerText = selectedText;
+                const noteEl = document.getElementById('modal_catatan');
+                if (noteEl && (!noteEl.value || noteEl.value.startsWith('Perubahan status step'))) {
+                    noteEl.value = 'Perubahan status step ke ' + selectedText;
+                }
+            });
+        }
+
+        // Auto reload after Donut Context Menu quick update
+        window.addEventListener('project-status-updated', function(e) {
+            setTimeout(function() {
+                window.location.reload();
+            }, 600);
+        });
     });
+
+    /* ========================================================
+       DRAG AND DROP KANBAN LOGIC
+       ======================================================== */
+    function initKanbanDragAndDrop() {
+        let draggedCard = null;
+        let draggedProjectId = null;
+        let draggedProjectName = '';
+        let draggedSourceStepId = null;
+
+        const cards = document.querySelectorAll('.draggable-card');
+        cards.forEach(card => {
+            card.addEventListener('dragstart', function(e) {
+                isDraggingProject = true;
+                draggedCard = this;
+                draggedProjectId = this.getAttribute('data-idproject');
+                draggedProjectName = this.getAttribute('data-project-name') || ('Project #' + draggedProjectId);
+                draggedSourceStepId = this.getAttribute('data-rproject');
+
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', JSON.stringify({
+                    id: draggedProjectId,
+                    name: draggedProjectName,
+                    fromStep: draggedSourceStepId
+                }));
+
+                setTimeout(() => {
+                    if (draggedCard) draggedCard.classList.add('is-dragging');
+                }, 0);
+            });
+
+            card.addEventListener('dragend', function(e) {
+                if (draggedCard) {
+                    draggedCard.classList.remove('is-dragging');
+                }
+                clearDropHighlights();
+                setTimeout(() => {
+                    isDraggingProject = false;
+                    draggedCard = null;
+                    draggedProjectId = null;
+                    draggedProjectName = '';
+                    draggedSourceStepId = null;
+                }, 180);
+            });
+        });
+
+        // Target drop zones: any element with [data-step-id] (cells or headers)
+        const dropTargets = document.querySelectorAll('.kanban-board-table [data-step-id]');
+        dropTargets.forEach(target => {
+            target.addEventListener('dragover', function(e) {
+                if (!draggedProjectId) return;
+                const targetStepId = this.getAttribute('data-step-id');
+                // Only allow dropping into different columns
+                if (targetStepId && String(targetStepId) !== String(draggedSourceStepId)) {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                }
+            });
+
+            target.addEventListener('dragenter', function(e) {
+                if (!draggedProjectId) return;
+                const targetStepId = this.getAttribute('data-step-id');
+                if (targetStepId && String(targetStepId) !== String(draggedSourceStepId)) {
+                    clearDropHighlights();
+                    highlightColumn(targetStepId);
+                    this.classList.add('drop-target-hover');
+                }
+            });
+
+            target.addEventListener('dragleave', function(e) {
+                if (!this.contains(e.relatedTarget)) {
+                    this.classList.remove('drop-target-hover');
+                }
+            });
+
+            target.addEventListener('drop', async function(e) {
+                e.preventDefault();
+                clearDropHighlights();
+
+                if (!draggedProjectId) return;
+
+                const targetStepId = this.getAttribute('data-step-id');
+                const targetStepName = this.getAttribute('data-step-name') || ('Step #' + targetStepId);
+
+                if (!targetStepId || String(targetStepId) === String(draggedSourceStepId)) {
+                    return;
+                }
+
+                await executeStatusUpdateViaDrop(draggedProjectId, draggedProjectName, targetStepId, targetStepName, draggedCard);
+            });
+        });
+
+        function highlightColumn(stepId) {
+            document.querySelectorAll(`.kanban-board-table [data-step-id="${stepId}"]`).forEach(el => {
+                el.classList.add('drag-active-col');
+            });
+        }
+
+        function clearDropHighlights() {
+            document.querySelectorAll('.drag-active-col').forEach(el => el.classList.remove('drag-active-col'));
+            document.querySelectorAll('.drop-target-hover').forEach(el => el.classList.remove('drop-target-hover'));
+        }
+    }
+
+    async function executeStatusUpdateViaDrop(projectId, projectName, targetStepId, targetStepName, cardElement) {
+        if (cardElement) {
+            cardElement.classList.add('is-updating');
+        }
+
+        showDndToast(`Memindahkan "${projectName}" ke ${targetStepName}...`, 'info');
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+        try {
+            const response = await fetch("{{ route('project.quick_status_update') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    idproject: projectId,
+                    rproject: targetStepId
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                showDndToast(`Status "${projectName}" berhasil diubah menjadi "${targetStepName}".`, 'success');
+
+                // Trigger global update event
+                window.dispatchEvent(new CustomEvent('project-status-updated', {
+                    detail: result.data || { idproject: projectId, rproject: targetStepId, status_name: targetStepName }
+                }));
+
+                // Reload page to reflect column counts and positions
+                setTimeout(() => {
+                    window.location.reload();
+                }, 450);
+            } else {
+                throw new Error(result.message || 'Gagal mengubah status project.');
+            }
+        } catch (err) {
+            console.error('Drag-drop status update error:', err);
+            showDndToast(err.message || 'Terjadi kesalahan saat memindahkan project.', 'error');
+            if (cardElement) {
+                cardElement.classList.remove('is-updating');
+            }
+        }
+    }
+
+    function showDndToast(message, type = 'info') {
+        let toast = document.getElementById('kanban-dnd-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'kanban-dnd-toast';
+            toast.className = 'kanban-dnd-toast';
+            document.body.appendChild(toast);
+        }
+
+        toast.className = `kanban-dnd-toast toast-${type} active`;
+        
+        let iconSvg = '';
+        if (type === 'success') {
+            iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        } else if (type === 'error') {
+            iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+        } else {
+            iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+        }
+
+        toast.innerHTML = `${iconSvg}<span>${message}</span>`;
+
+        if (dndToastTimeout) clearTimeout(dndToastTimeout);
+        dndToastTimeout = setTimeout(() => {
+            toast.classList.remove('active');
+        }, 3500);
+    }
+
+    function handleProjectCardClick(event, project) {
+        if (isDraggingProject) {
+            return;
+        }
+        openProjectDetailModal(project);
+    }
 
     // Modal 1: Project Details Logic
     function openProjectDetailModal(project) {
+        currentDetailProject = project;
         document.getElementById('detail_project_name').innerText = project.project_name || '-';
-        document.getElementById('detail_direktorat').innerText = project.direktorat_rel ? project.direktorat_rel.direktorat : '-';
+        // Direktorat
+        let dirText = '-';
+        if (project.direktorat_rel) {
+            dirText = project.direktorat_rel.deskripsi || project.direktorat_rel.direktorat || '-';
+        } else if (project.direktorat) {
+            dirText = project.direktorat;
+        }
+        document.getElementById('detail_direktorat').innerText = dirText;
+
         document.getElementById('detail_bagian').innerText = project.bagian || '-';
         document.getElementById('detail_no_surat').innerText = project.no_surat || '-';
         document.getElementById('detail_pic_name').innerText = project.pic_name || '-';
@@ -1205,9 +1650,17 @@
         document.getElementById('detail_supportby').innerText = project.supportby_rel ? project.supportby_rel.nama : (project.supportby || '-');
         document.getElementById('detail_tanggal_awal').innerText = project.tanggal_awal ? formatDate(project.tanggal_awal) : '-';
         document.getElementById('detail_tanggal_akhir').innerText = project.tanggal_akhir ? formatDate(project.tanggal_akhir) : '-';
-        document.getElementById('detail_status').innerText = project.rproject_relation ? project.rproject_relation.deskripsi : '-';
+        document.getElementById('detail_status').innerText = project.rproject_relation ? project.rproject_relation.deskripsi : ('Step #' + (project.rproject || '0'));
         document.getElementById('detail_rkap').innerText = project.rkap || '-';
-        document.getElementById('detail_catalog').innerText = (project.catalog_rel ? project.catalog_rel.nama_aplikasi : '') + (project.catalog_version ? ' (v' + project.catalog_version + ')' : '-');
+
+        // Catalog
+        let catalogTitle = '';
+        if (project.catalog_rel) {
+            catalogTitle = project.catalog_rel.description || project.catalog_rel.nama_aplikasi || '';
+        }
+        let catalogVer = project.catalog_version ? ` (v${project.catalog_version})` : '';
+        document.getElementById('detail_catalog').innerText = (catalogTitle || catalogVer) ? `${catalogTitle}${catalogVer}`.trim() : '-';
+
         document.getElementById('detail_vendor').innerText = (project.byvendor == 1 ? 'Ya' : 'Tidak') + (project.vendorname ? ' - ' + project.vendorname : '');
         document.getElementById('detail_catatan').innerText = project.catatan || '-';
 
@@ -1222,13 +1675,29 @@
     }
 
     // Modal 2: Step Change Logic
+    function openStepChangeModalFromDetail() {
+        if (!currentDetailProject) return;
+        const proj = currentDetailProject;
+        closeProjectDetailModal();
+        const currentStepName = proj.rproject_relation ? proj.rproject_relation.deskripsi : ('Step #' + (proj.rproject || '0'));
+        openStepChangeModal(proj.id, proj.project_name, proj.rproject, currentStepName);
+    }
+
     function openStepChangeModal(projectId, projectName, currentStepId, currentStepName, targetStepId, targetStepName) {
         document.getElementById('step_idproject').value = projectId;
-        document.getElementById('step_target_rproject').value = targetStepId;
         document.getElementById('step_project_name').innerText = projectName;
         document.getElementById('step_from_name').innerText = currentStepName || 'Step Sebelumnya';
-        document.getElementById('step_to_name').innerText = targetStepName;
-        document.getElementById('modal_catatan').value = 'Perubahan status step ke ' + targetStepName;
+        
+        const select = document.getElementById('step_target_rproject');
+        if (select) {
+            select.value = targetStepId || currentStepId || select.options[0].value;
+            const toNameEl = document.getElementById('step_to_name');
+            if (toNameEl) {
+                toNameEl.innerText = targetStepName || (select.options[select.selectedIndex] ? select.options[select.selectedIndex].text : '-');
+            }
+        }
+        
+        document.getElementById('modal_catatan').value = 'Perubahan status step ke ' + (targetStepName || (select && select.options[select.selectedIndex] ? select.options[select.selectedIndex].text : 'tahap baru'));
         document.getElementById('modal_progress').value = '';
         document.getElementById('modal_evidence').value = '';
 
