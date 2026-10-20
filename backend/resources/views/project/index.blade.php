@@ -399,7 +399,7 @@
             </thead>
             <tbody>
                 @forelse($projects as $proj)
-                <tr data-idproject="{{ $proj->id }}" data-rproject="{{ $proj->rproject }}" data-project-name="{{ $proj->project_name }}" title="Klik kanan untuk menu status (Donut Context Menu)">
+                <tr data-idproject="{{ $proj->id }}" data-rproject="{{ $proj->rproject }}" data-project-name="{{ $proj->project_name }}" data-leadby="{{ $proj->leadby }}" title="Klik kanan untuk menu status (Donut Context Menu)">
                     <td style="display:none;">{{ $proj->id }}</td>
                     <td>
                         <a href="{{ route('hproject.index', $proj->id) }}" style="color: var(--primary); text-decoration: none; font-weight: 600;" title="Buka Progress Project">

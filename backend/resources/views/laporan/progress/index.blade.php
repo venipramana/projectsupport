@@ -158,7 +158,7 @@
             </thead>
             <tbody>
                 @forelse($data as $row)
-                <tr data-idproject="{{ $row->idproject }}" data-rproject="{{ $row->rproject }}" data-project-name="{{ $row->project_name }}" title="Klik kanan untuk menu status (Donut Context Menu)">
+                <tr data-idproject="{{ $row->idproject }}" data-rproject="{{ $row->rproject }}" data-project-name="{{ $row->project_name }}" data-leadby="{{ $row->assign_to }}" title="Klik kanan untuk menu status (Donut Context Menu)">
                     <td class="text-center icon-col">
                         @if($row->icon)
                             <img src="{{ asset('icons/' . $row->icon) }}" alt="{{ $row->status_project }}" style="width: 24px; height: 24px; object-fit: contain;" title="{{ $row->status_project }}">

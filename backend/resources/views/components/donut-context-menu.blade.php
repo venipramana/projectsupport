@@ -14,7 +14,7 @@
 
         {{-- SVG Radial Donut --}}
         <div class="donut-svg-wrapper">
-            <svg id="donut-svg" class="donut-svg" viewBox="0 0 560 560" width="560" height="560">
+            <svg id="donut-svg" class="donut-svg" viewBox="0 0 420 420" width="420" height="420">
                 <defs>
                     {{-- Default Slice Gradient --}}
                     <linearGradient id="donut-grad-default" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -121,8 +121,8 @@
 
 .donut-container {
     position: absolute;
-    width: 560px;
-    height: 560px;
+    width: 420px;
+    height: 420px;
     user-select: none;
     opacity: 0;
     transform: scale(calc(0.6 * var(--donut-scale, 1))) rotate(-15deg);
@@ -139,7 +139,7 @@
 /* Floating Project Badge */
 .donut-project-badge {
     position: absolute;
-    top: -58px;
+    top: -44px;
     left: 50%;
     transform: translateX(-50%);
     background: linear-gradient(135deg, rgba(38, 30, 23, 0.96), rgba(24, 18, 14, 0.98));
@@ -150,7 +150,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    max-width: 440px;
+    max-width: 330px;
     backdrop-filter: blur(10px);
     animation: donutBadgeSlideDown 0.3s ease-out;
 }
@@ -199,8 +199,8 @@
 /* SVG Wrapper */
 .donut-svg-wrapper {
     position: relative;
-    width: 560px;
-    height: 560px;
+    width: 420px;
+    height: 420px;
 }
 
 .donut-svg {
@@ -212,7 +212,7 @@
 .donut-slice {
     cursor: pointer;
     transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    transform-origin: 280px 280px;
+    transform-origin: 210px 210px;
 }
 
 .donut-slice-path {
@@ -261,8 +261,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 220px;
-    height: 220px;
+    width: 165px;
+    height: 165px;
     border-radius: 50%;
     background: radial-gradient(circle at 35% 35%, rgba(48, 38, 29, 0.98), rgba(20, 16, 12, 0.99));
     border: 3.5px solid rgba(226, 184, 102, 0.45);
@@ -292,8 +292,8 @@
 }
 
 .donut-center-icon {
-    width: 56px;
-    height: 56px;
+    width: 42px;
+    height: 42px;
     object-fit: contain;
     margin-bottom: 8px;
     filter: drop-shadow(0 3px 6px rgba(0,0,0,0.45));
@@ -308,7 +308,7 @@
     letter-spacing: 0.8px;
     line-height: 1.2;
     margin-bottom: 4px;
-    max-width: 190px;
+    max-width: 143px;
     word-break: break-word;
 }
 
@@ -317,7 +317,7 @@
     font-weight: 500;
     color: rgba(255, 255, 255, 0.7);
     line-height: 1.15;
-    max-width: 180px;
+    max-width: 135px;
 }
 
 /* Spinner */
@@ -330,8 +330,8 @@
 }
 
 .donut-spinner {
-    width: 44px;
-    height: 44px;
+    width: 33px;
+    height: 33px;
     border: 3.5px solid rgba(226, 184, 102, 0.2);
     border-top-color: #ffd479;
     border-radius: 50%;
@@ -351,7 +351,7 @@
 /* Hint Pill below Donut */
 .donut-hint-pill {
     position: absolute;
-    bottom: -46px;
+    bottom: -35px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(20, 16, 12, 0.88);
@@ -474,6 +474,8 @@ tr[data-idproject] {
     let rprojectsData = @json($donutRprojects ?? []);
     const ASSET_ICON_BASE = "{{ asset('icons') }}";
     const QUICK_UPDATE_URL = "{{ route('project.quick_status_update') }}";
+    const DONUT_USER_LEVEL = @json(Auth::user()->levelpengguna ?? null);
+    const DONUT_USER_ID = @json(Auth::user()->idpengguna ?? null);
 
     // Active state
     let activeProjectId = null;
@@ -577,12 +579,12 @@ tr[data-idproject] {
         const count = items.length;
         if (count === 0) return;
 
-        const cx = 280;
-        const cy = 280;
-        const rOut = 264;
-        const rIn = 130;
-        const rMid = (rOut + rIn) / 2; // 197
-        const iconSize = 68;
+        const cx = 210;
+        const cy = 210;
+        const rOut = 198;
+        const rIn = 97.5;
+        const rMid = (rOut + rIn) / 2; // 147.75
+        const iconSize = 51;
 
         const sliceAngle = 360 / count;
         // Subtle separation gap between wedges
@@ -868,10 +870,10 @@ tr[data-idproject] {
         resetCenterHub();
 
         // Calculate Position & Clamp within Viewport
-        const donutSize = 560;
+        const donutSize = 420;
         const halfSize = donutSize / 2;
         const margin = 16;
-        const totalHeight = donutSize + 115; // including badge and hint
+        const totalHeight = donutSize + 86; // including badge and hint
 
         let posX = options.x - halfSize;
         let posY = options.y - halfSize;
@@ -880,14 +882,14 @@ tr[data-idproject] {
         const maxPosY = window.innerHeight - totalHeight - margin;
 
         posX = Math.max(margin, Math.min(posX, maxPosX));
-        posY = Math.max(margin + 58, Math.min(posY, maxPosY));
+        posY = Math.max(margin + 44, Math.min(posY, maxPosY));
 
         containerEl.style.left = `${posX}px`;
         containerEl.style.top = `${posY}px`;
 
         // Responsive auto-scale if viewport is smaller than donut menu
         const availW = window.innerWidth - (margin * 2);
-        const availH = window.innerHeight - (margin * 2) - 80;
+        const availH = window.innerHeight - (margin * 2) - 60;
         let scaleFactor = 1;
         if (availW < donutSize || availH < donutSize) {
             scaleFactor = Math.min(1, Math.max(0.45, Math.min(availW / donutSize, availH / donutSize)));
@@ -954,6 +956,16 @@ tr[data-idproject] {
             // Find closest element with project ID info
             const projectRow = e.target.closest('[data-idproject], [data-project-id]');
             if (!projectRow) return;
+
+            // Restriction: non-admin (level != 0) may only open donut menu on projects they lead
+            const rowLeadBy = projectRow.getAttribute('data-leadby')
+                || projectRow.getAttribute('data-lead-by')
+                || projectRow.getAttribute('data-assign-to')
+                || projectRow.getAttribute('data-assign_to');
+            const isAdmin = (DONUT_USER_LEVEL === 0 || DONUT_USER_LEVEL === '0');
+            if (!isAdmin && String(rowLeadBy ?? '') !== String(DONUT_USER_ID ?? '')) {
+                return;
+            }
 
             // Prevent default browser context menu
             e.preventDefault();

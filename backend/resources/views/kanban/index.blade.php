@@ -1171,6 +1171,7 @@
                                         data-idproject="{{ $proj->id }}" 
                                         data-rproject="{{ $proj->rproject }}" 
                                         data-project-name="{{ $proj->project_name }}"
+                                        data-leadby="{{ $proj->leadby }}"
                                         onclick="handleProjectCardClick(event, {{ json_encode($proj) }})"
                                         title="Tarik / drag untuk pindah status. Klik untuk detail. Klik kanan untuk Donut Menu.">
                                         <div class="project-name-wrap">
