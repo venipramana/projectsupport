@@ -41,6 +41,19 @@
         gap: 1.5rem;
     }
 
+    .busy-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(220, 38, 38, 0.15);
+        color: #dc2626;
+        border: 1px solid rgba(220, 38, 38, 0.35);
+        border-radius: 999px;
+        width: 24px;
+        height: 24px;
+        margin-left: 0.25rem;
+    }
+
     .leadby-widget-content {
         display: grid;
         grid-template-columns: 1fr 1.5fr;
@@ -758,7 +771,16 @@
                         @forelse($projects_by_lead as $item)
                             <div class="list-item interactive" data-lead="{{ $item->lead_by }}" onclick="filterDetilByLead(this.getAttribute('data-lead'))">
                                 <span class="list-item-title">{{ $item->lead_by }}</span>
-                                <span class="list-item-badge">{{ $item->total }} Project</span>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    @if(in_array(trim($item->lead_by), $busy_leads ?? []))
+                                        <span class="busy-badge" title="Busy">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        </span>
+                                    @endif
+                                    <span class="list-item-badge">{{ $item->total }} Project</span>
+                                </div>
                             </div>
                         @empty
                             <div class="empty-state">Data Lead By kosong.</div>

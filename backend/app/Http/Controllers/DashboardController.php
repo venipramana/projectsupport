@@ -49,6 +49,28 @@ class DashboardController extends Controller
                 ->get();
         });
 
+        // Petugas (lead) yang sedang busy: memiliki project yang berjalan (status 1-5)
+        // dan aktif pada bulan berjalan (current month)
+        $currentMonth = now();
+        $monthStart = $currentMonth->copy()->startOfMonth()->toDateString();
+        $monthEnd = $currentMonth->copy()->endOfMonth()->toDateString();
+        $busy_leads = Cache::remember("dashboard_busy_leads_{$currentMonth->format('Y_m')}", $cacheTtl, function () use ($monthStart, $monthEnd) {
+            return ViewProgress::whereBetween('rproject', [1, 5])
+                ->where('tanggal_awal', '<=', $monthEnd)
+                ->where(function ($q) use ($monthStart) {
+                    $q->whereNull('tanggal_akhir')
+                      ->orWhere('tanggal_akhir', '>=', $monthStart);
+                })
+                ->pluck('assign_to_name')
+                ->map(function ($name) {
+                    return trim($name);
+                })
+                ->filter()
+                ->unique()
+                ->values()
+                ->toArray();
+        });
+
         // 4: List project dengan status development (rproject = 1)
         $dev_projects = Cache::remember('dashboard_dev_projects', $cacheTtl, function () {
             return ViewProgress::where('rproject', 1)
@@ -76,7 +98,8 @@ class DashboardController extends Controller
             'dev_projects',
             'qa_projects',
             'all_projects',
-            'currentYear'
+            'currentYear',
+            'busy_leads'
         ));
     }
 }
