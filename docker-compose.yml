@@ -52,7 +52,7 @@ networks:
   pm-network:
     driver: bridge
 
-  # Network untuk terhubung ke container MySQL & MinIO di luar environment ini
+  # Network untuk terhubung ke container MySQL/PostgreSQL & MinIO di luar environment ini
   external_default:
     name: db_default 
     external: true

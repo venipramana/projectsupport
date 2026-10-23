@@ -130,7 +130,8 @@ class ProjectController extends Controller
         }
 
         // Status Development ID (default 1)
-        if (empty($data['rproject'])) {
+        // Catatan: rproject = 0 berarti "ONHOLD", jadi 0 tidak boleh dianggap kosong
+        if (!isset($data['rproject']) || $data['rproject'] === '' || $data['rproject'] === null) {
             $data['rproject'] = 1;
         }
 

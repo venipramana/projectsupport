@@ -25,15 +25,22 @@ class KanbanProjectController extends Controller
         $selectedSort = $request->sort_by ?? 'dev_first';
         $searchKeyword = $request->search ?? '';
 
-        $query = Project::with([
-            'direktorat_rel',
-            'rproject_relation',
-            'leadby_rel',
-            'supportby_rel',
-            'vul_passed_rel',
-            'rkap_rel',
-            'catalog_rel'
-        ]);
+        $query = Project::select('project.*')
+            ->selectSub(function($q) {
+                $q->from('hproject')
+                  ->whereColumn('hproject.idproject', 'project.id')
+                  ->where('hproject.rproject', 1)
+                  ->selectRaw('MAX(tanggal)');
+            }, 'last_dev_date')
+            ->with([
+                'direktorat_rel',
+                'rproject_relation',
+                'leadby_rel',
+                'supportby_rel',
+                'vul_passed_rel',
+                'rkap_rel',
+                'catalog_rel'
+            ]);
 
         // Filter Tahun berdasarkan tanggal_akhir (default current year jika tidak ada parameter)
         if (!empty($selectedTahun) && $selectedTahun !== 'all') {

@@ -55,4 +55,62 @@ class Project extends Model
     {
         return $this->belongsTo(Rcatalog::class, 'id_catalog', 'id');
     }
+
+    public function hprojects()
+    {
+        return $this->hasMany(Hproject::class, 'idproject', 'id');
+    }
+
+    /**
+     * Get latest date when this project had status = 1 (Development).
+     */
+    public function getLastDevDateAttribute($value)
+    {
+        if (!empty($value)) {
+            return $value;
+        }
+
+        if ($this->relationLoaded('hprojects')) {
+            $latestH = $this->hprojects
+                ->where('rproject', 1)
+                ->sortByDesc('tanggal')
+                ->first();
+            if ($latestH && !empty($latestH->tanggal)) {
+                return $latestH->tanggal;
+            }
+        }
+
+        if ($this->rproject == 1) {
+            $hdev = Hproject::where('idproject', $this->id)
+                ->where('rproject', 1)
+                ->orderBy('tanggal', 'desc')
+                ->orderBy('id', 'desc')
+                ->first();
+            if ($hdev && !empty($hdev->tanggal)) {
+                return $hdev->tanggal;
+            }
+            return $this->tanggal_awal ?? $this->tanggal ?? ($this->tgl_update ? \Carbon\Carbon::parse($this->tgl_update)->format('Y-m-d') : null);
+        }
+
+        return null;
+    }
+
+    /**
+     * Get development duration in days from latest development date to today (current_date).
+     */
+    public function getDevDurationDaysAttribute()
+    {
+        $startDateStr = $this->last_dev_date;
+        if (!$startDateStr) {
+            return null;
+        }
+
+        try {
+            $startDate = \Carbon\Carbon::parse($startDateStr)->startOfDay();
+            $today = \Carbon\Carbon::today();
+            return $startDate->isFuture() ? 0 : (int) $startDate->diffInDays($today);
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
 }

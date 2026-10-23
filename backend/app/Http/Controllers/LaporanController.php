@@ -17,33 +17,47 @@ class LaporanController extends Controller
     {
         $query = ViewProgress::query();
 
-        if ($request->filled('search')) {
-            $query->where('project_name', 'like', '%' . $request->search . '%');
+        // Semua nilai filter dinormalisasi ke string. Ini mencegah perbandingan
+        // longgar (==) di view salah memilih opsi, terutama untuk status
+        // "ONHOLD" yang id rproject-nya bernilai 0 (0 == '' / 0 == null).
+        $selectedSearch = (string) $request->query('search', '');
+        $selectedDirektorat = (string) $request->query('direktorat', '');
+        $selectedProgress = (string) $request->query('progress', '');
+        $selectedTahun = (string) $request->query('tahun', '');
+        $selectedBulan = (string) $request->query('bulan', '');
+        $selectedRkap = (string) $request->query('rkap', '');
+        $selectedPic = (string) $request->query('pic', '');
+
+        if ($selectedSearch !== '') {
+            $query->where('project_name', 'like', '%' . $selectedSearch . '%');
         }
 
-        if ($request->filled('direktorat')) {
-            $query->where('direktorat', $request->direktorat);
+        if ($selectedDirektorat !== '') {
+            $query->where('direktorat', $selectedDirektorat);
         }
 
-        if ($request->filled('progress')) {
-            $query->where('rproject', $request->progress);
+        // Filter status project (rproject).
+        // Catatan: id rproject = 0 berarti "ONHOLD", jadi nilai "0" yang sah
+        // (bukan filter kosong) tetap harus bisa dipakai.
+        if ($selectedProgress !== '') {
+            $query->where('rproject', $selectedProgress);
         }
 
-        if ($request->filled('tahun')) {
-            $query->whereYear('tanggal_awal', $request->tahun);
+        if ($selectedTahun !== '') {
+            $query->whereYear('tanggal_awal', $selectedTahun);
         }
 
-        if ($request->filled('bulan')) {
-            $query->whereMonth('tanggal_awal', $request->bulan);
+        if ($selectedBulan !== '') {
+            $query->whereMonth('tanggal_awal', $selectedBulan);
         }
 
-        if ($request->filled('rkap')) {
-            $query->where('rkap', $request->rkap);
+        if ($selectedRkap !== '') {
+            $query->where('rkap', $selectedRkap);
         }
 
-        if ($request->filled('pic')) {
+        if ($selectedPic !== '') {
             // Memfilter berdasarkan assign_to_name
-            $query->where('assign_to_name', $request->pic);
+            $query->where('assign_to_name', $selectedPic);
         }
 
         // Hitung total agregat dari seluruh data terfilter sebelum paginasi
@@ -83,7 +97,9 @@ class LaporanController extends Controller
 
         return view('laporan.progress.index', compact(
             'data', 'allData', 'total_projects', 'total_bsurkap',
-            'direktoratOptions', 'progressOptions', 'rkapOptions', 'picOptions', 'tahunOptions', 'bulanOptions'
+            'direktoratOptions', 'progressOptions', 'rkapOptions', 'picOptions', 'tahunOptions', 'bulanOptions',
+            'selectedSearch', 'selectedDirektorat', 'selectedProgress',
+            'selectedTahun', 'selectedBulan', 'selectedRkap', 'selectedPic'
         ));
     }
 

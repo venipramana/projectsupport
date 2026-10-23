@@ -840,7 +840,8 @@
         document.getElementById('edit_project_name').value = data.project_name || '';
         document.getElementById('edit_tanggal').value = data.tanggal || '';
         document.getElementById('edit_direktorat').value = data.direktorat || '';
-        document.getElementById('edit_rproject').value = data.rproject || '';
+        // rproject = 0 berarti "ONHOLD", jadi jangan pakai || (0 dianggap falsy)
+        document.getElementById('edit_rproject').value = data.rproject ?? '';
         document.getElementById('edit_bagian').value = data.bagian || '';
         document.getElementById('edit_pic_name').value = data.pic_name || '';
         document.getElementById('edit_no_surat').value = data.no_surat || '';

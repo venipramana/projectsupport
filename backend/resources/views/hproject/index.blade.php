@@ -854,7 +854,8 @@
         const form = document.getElementById('editForm');
         form.action = `/hproject/${data.id}`;
 
-        document.getElementById('edit_rproject').value = data.rproject || '';
+        // rproject = 0 berarti "ONHOLD", jadi jangan pakai || (0 dianggap falsy)
+        document.getElementById('edit_rproject').value = data.rproject ?? '';
         
         const dateInput = document.getElementById('edit_tanggal');
         dateInput.value = data.tanggal || '';

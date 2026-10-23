@@ -45,6 +45,62 @@
             flex-direction: column;
             backdrop-filter: blur(12px);
             box-shadow: 2px 0 10px rgba(117, 95, 62, 0.04);
+            transition: width 0.3s ease, padding 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar dalam kondisi collapsed (tersembunyi) */
+        body.sidebar-collapsed aside {
+            width: 0;
+            padding-left: 0;
+            padding-right: 0;
+            border-right: none;
+            overflow: hidden;
+        }
+
+        body.sidebar-collapsed main {
+            padding-left: 4.5rem;
+        }
+
+        /* Tombol toggle sidebar */
+        .sidebar-toggle {
+            position: fixed;
+            top: 1.5rem;
+            left: calc(var(--sidebar-width) - 14px);
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            border-radius: 8px;
+            background: #ffffff;
+            border: 1px solid var(--glass-border);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 900;
+            box-shadow: 0 2px 8px rgba(117, 95, 62, 0.18);
+            transition: left 0.3s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .sidebar-toggle svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        body.sidebar-collapsed .sidebar-toggle {
+            left: 0.75rem;
+        }
+
+        body.sidebar-collapsed .sidebar-toggle svg {
+            transform: rotate(180deg);
         }
 
         .logo {
@@ -377,6 +433,11 @@
 </head>
 <body>
 
+    <button type="button" class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()"
+            title="Sembunyikan menu" aria-label="Sembunyikan menu" aria-expanded="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+
     <aside>
         <div class="logo">
             <svg viewBox="0 0 100 100" width="40" height="40">
@@ -489,7 +550,38 @@
             menu.classList.toggle('open');
             headerElement.classList.toggle('open');
         }
-        
+
+        // Sidebar Collapsible
+        const SIDEBAR_KEY = 'pm-sidebar-collapsed';
+
+        function isSidebarCollapsed() {
+            return document.body.classList.contains('sidebar-collapsed');
+        }
+
+        function updateSidebarToggle() {
+            const btn = document.getElementById('sidebarToggle');
+            if (!btn) return;
+            const collapsed = isSidebarCollapsed();
+            const label = collapsed ? 'Tampilkan menu' : 'Sembunyikan menu';
+            btn.title = label;
+            btn.setAttribute('aria-label', label);
+            btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        }
+
+        function setSidebarCollapsed(collapsed) {
+            document.body.classList.toggle('sidebar-collapsed', collapsed);
+            try {
+                localStorage.setItem(SIDEBAR_KEY, collapsed ? '1' : '0');
+            } catch (e) {
+                // localStorage tidak tersedia (mis. mode privat), abaikan
+            }
+            updateSidebarToggle();
+        }
+
+        function toggleSidebar() {
+            setSidebarCollapsed(!isSidebarCollapsed());
+        }
+
         // Auto-open active menus on load
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll('.nav-submenu.open').forEach(menu => {
@@ -498,6 +590,16 @@
                     header.classList.add('open');
                 }
             });
+
+            // Restore status sidebar dari storage
+            let collapsed = false;
+            try {
+                collapsed = localStorage.getItem(SIDEBAR_KEY) === '1';
+            } catch (e) {
+                collapsed = false;
+            }
+            document.body.classList.toggle('sidebar-collapsed', collapsed);
+            updateSidebarToggle();
         });
 
         // Password Modal Logic

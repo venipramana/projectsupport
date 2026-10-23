@@ -33,15 +33,15 @@
         
         <div class="form-group" style="flex: 1 1 100%;">
             <label>Cari Project</label>
-            <input type="text" name="search" class="form-control" placeholder="Ketik nama project lalu tekan Enter..." value="{{ request('search') }}">
+            <input type="text" name="search" class="form-control" placeholder="Ketik nama project lalu tekan Enter..." value="{{ $selectedSearch }}">
         </div>
 
         <div class="form-group">
             <label>Direktorat</label>
             <select name="direktorat" class="form-control" onchange="this.form.submit()">
-                <option value="">Semua Direktorat</option>
+                <option value="" {{ $selectedDirektorat === '' ? 'selected' : '' }}>Semua Direktorat</option>
                 @foreach($direktoratOptions as $dir)
-                    <option value="{{ $dir->deskripsi }}" {{ request('direktorat') == $dir->deskripsi ? 'selected' : '' }}>
+                    <option value="{{ $dir->deskripsi }}" {{ $selectedDirektorat === $dir->deskripsi ? 'selected' : '' }}>
                         {{ $dir->deskripsi }}
                     </option>
                 @endforeach
@@ -51,9 +51,9 @@
         <div class="form-group">
             <label>Progress (Status)</label>
             <select name="progress" class="form-control" onchange="this.form.submit()">
-                <option value="">Semua Status</option>
+                <option value="" {{ $selectedProgress === '' ? 'selected' : '' }}>Semua Status</option>
                 @foreach($progressOptions as $prog)
-                    <option value="{{ $prog->id }}" {{ request('progress') == $prog->id ? 'selected' : '' }}>
+                    <option value="{{ $prog->id }}" {{ $selectedProgress === (string) $prog->id ? 'selected' : '' }}>
                         {{ $prog->deskripsi }}
                     </option>
                 @endforeach
@@ -63,9 +63,9 @@
         <div class="form-group">
             <label>Tahun (Tanggal Awal)</label>
             <select name="tahun" class="form-control" onchange="this.form.submit()">
-                <option value="">Semua Tahun</option>
+                <option value="" {{ $selectedTahun === '' ? 'selected' : '' }}>Semua Tahun</option>
                 @foreach($tahunOptions as $thn)
-                    <option value="{{ $thn }}" {{ request('tahun') == $thn ? 'selected' : '' }}>
+                    <option value="{{ $thn }}" {{ $selectedTahun === (string) $thn ? 'selected' : '' }}>
                         {{ $thn }}
                     </option>
                 @endforeach
@@ -75,9 +75,9 @@
         <div class="form-group">
             <label>Bulan (Tanggal Awal)</label>
             <select name="bulan" class="form-control" onchange="this.form.submit()">
-                <option value="">Semua Bulan</option>
+                <option value="" {{ $selectedBulan === '' ? 'selected' : '' }}>Semua Bulan</option>
                 @foreach($bulanOptions as $num => $name)
-                    <option value="{{ $num }}" {{ request('bulan') == $num ? 'selected' : '' }}>
+                    <option value="{{ $num }}" {{ $selectedBulan === (string) $num ? 'selected' : '' }}>
                         {{ $name }}
                     </option>
                 @endforeach
@@ -87,9 +87,9 @@
         <div class="form-group">
             <label>RKAP</label>
             <select name="rkap" class="form-control" onchange="this.form.submit()">
-                <option value="">Semua Pembiayaan</option>
+                <option value="" {{ $selectedRkap === '' ? 'selected' : '' }}>Semua Pembiayaan</option>
                 @foreach($rkapOptions as $rk)
-                    <option value="{{ $rk->nama_rkap }}" {{ request('rkap') == $rk->nama_rkap ? 'selected' : '' }}>
+                    <option value="{{ $rk->nama_rkap }}" {{ $selectedRkap === $rk->nama_rkap ? 'selected' : '' }}>
                         {{ $rk->nama_rkap }}
                     </option>
                 @endforeach
@@ -99,9 +99,9 @@
         <div class="form-group">
             <label>Lead By</label>
             <select name="pic" class="form-control" onchange="this.form.submit()">
-                <option value="">Semua Lead By</option>
+                <option value="" {{ $selectedPic === '' ? 'selected' : '' }}>Semua Lead By</option>
                 @foreach($picOptions as $pc)
-                    <option value="{{ $pc->nama }}" {{ request('pic') == $pc->nama ? 'selected' : '' }}>
+                    <option value="{{ $pc->nama }}" {{ $selectedPic === $pc->nama ? 'selected' : '' }}>
                         {{ $pc->nama }}
                     </option>
                 @endforeach

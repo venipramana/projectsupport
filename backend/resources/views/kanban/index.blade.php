@@ -618,6 +618,153 @@
         color: #6b7280;
     }
 
+    /* Development Column Subtle Highlight */
+    .kanban-table-cell.col-dev-cell.has-project {
+        background-color: rgba(254, 243, 199, 0.22);
+    }
+
+    .kanban-table-cell.col-dev-cell.has-project:hover {
+        background-color: rgba(254, 243, 199, 0.45);
+    }
+
+    /* Modern Development Duration Badge */
+    .dev-duration-badge-wrapper {
+        margin: 0.35rem 0 0.15rem 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .dev-duration-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.22rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: 0.2px;
+        text-decoration: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        cursor: default;
+        position: relative;
+    }
+
+    .dev-duration-badge:hover {
+        transform: translateY(-1px) scale(1.02);
+    }
+
+    /* Normal Tier (<= 14 days) - Warm Amber Glow */
+    .dev-duration-badge.is-normal {
+        background: linear-gradient(135deg, rgba(254, 243, 199, 0.95), rgba(253, 230, 138, 0.9));
+        border: 1px solid rgba(217, 119, 6, 0.4);
+        color: #92400e;
+        box-shadow: 0 2px 8px rgba(217, 119, 6, 0.16);
+    }
+
+    .dev-duration-badge.is-normal:hover {
+        box-shadow: 0 4px 12px rgba(217, 119, 6, 0.28);
+        border-color: #d97706;
+    }
+
+    /* Warning Tier (15 - 30 days) - Energetic Warm Orange */
+    .dev-duration-badge.is-warning {
+        background: linear-gradient(135deg, rgba(255, 237, 213, 0.95), rgba(254, 215, 170, 0.9));
+        border: 1px solid rgba(234, 88, 12, 0.45);
+        color: #9a3412;
+        box-shadow: 0 2px 8px rgba(234, 88, 12, 0.18);
+    }
+
+    .dev-duration-badge.is-warning:hover {
+        box-shadow: 0 4px 12px rgba(234, 88, 12, 0.32);
+        border-color: #ea580c;
+    }
+
+    /* Critical / Long Running Tier (> 30 days) - High Visibility Rose-Crimson */
+    .dev-duration-badge.is-critical {
+        background: linear-gradient(135deg, rgba(254, 226, 226, 0.95), rgba(254, 202, 202, 0.9));
+        border: 1px solid rgba(220, 38, 38, 0.45);
+        color: #991b1b;
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.18);
+    }
+
+    .dev-duration-badge.is-critical:hover {
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.32);
+        border-color: #dc2626;
+    }
+
+    /* Pulsing Active Status Dot */
+    .dev-badge-pulse-dot {
+        width: 6.5px;
+        height: 6.5px;
+        border-radius: 50%;
+        display: inline-block;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .dev-duration-badge.is-normal .dev-badge-pulse-dot {
+        background: #d97706;
+        animation: devPulseAmber 2s infinite ease-in-out;
+    }
+
+    .dev-duration-badge.is-warning .dev-badge-pulse-dot {
+        background: #ea580c;
+        animation: devPulseOrange 2s infinite ease-in-out;
+    }
+
+    .dev-duration-badge.is-critical .dev-badge-pulse-dot {
+        background: #dc2626;
+        animation: devPulseRed 1.8s infinite ease-in-out;
+    }
+
+    @keyframes devPulseAmber {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.7); }
+        70% { transform: scale(1.15); box-shadow: 0 0 0 5px rgba(217, 119, 6, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
+    }
+
+    @keyframes devPulseOrange {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.7); }
+        70% { transform: scale(1.15); box-shadow: 0 0 0 5px rgba(234, 88, 12, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(234, 88, 12, 0); }
+    }
+
+    @keyframes devPulseRed {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.75); }
+        70% { transform: scale(1.2); box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+
+    .dev-badge-icon {
+        display: inline-flex;
+        align-items: center;
+        flex-shrink: 0;
+        opacity: 0.9;
+    }
+
+    .dev-badge-label {
+        font-size: 0.63rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        opacity: 0.85;
+    }
+
+    .dev-badge-sep {
+        font-size: 0.55rem;
+        opacity: 0.45;
+        margin: 0 -0.1rem;
+    }
+
+    .dev-badge-count {
+        font-weight: 800;
+        font-size: 0.73rem;
+    }
+
     /* Modal Styles */
     .modal-overlay {
         position: fixed;
@@ -1160,13 +1307,34 @@
                         @foreach($rprojects as $rproj)
                             @php
                                 $proj = $projectsByStep[$rproj->id][$rowIndex] ?? null;
+                                $isDevCol = ($rproj->id == 1 || strtoupper($rproj->deskripsi) === 'DEVELOPMENT');
                             @endphp
-                            <td class="kanban-table-cell {{ $proj ? 'has-project' : 'empty-cell' }}" 
+                            <td class="kanban-table-cell {{ $proj ? 'has-project' : 'empty-cell' }} {{ $isDevCol ? 'col-dev-cell' : '' }}" 
                                 data-step-id="{{ $rproj->id }}" 
                                 data-step-name="{{ $rproj->deskripsi }}"
                                 data-col-index="{{ $loop->index }}">
                                 @if($proj)
-                                    <div class="project-card-box draggable-card" 
+                                    @php
+                                        $durasiDevDays = null;
+                                        $formattedDevDate = '-';
+                                        if ($isDevCol) {
+                                            $lastDevDate = $proj->last_dev_date 
+                                                ?? $proj->tanggal_awal 
+                                                ?? $proj->tanggal 
+                                                ?? ($proj->tgl_update ? \Carbon\Carbon::parse($proj->tgl_update)->format('Y-m-d') : null);
+                                            if ($lastDevDate) {
+                                                try {
+                                                    $startDate = \Carbon\Carbon::parse($lastDevDate)->startOfDay();
+                                                    $today = \Carbon\Carbon::today();
+                                                    $durasiDevDays = $startDate->isFuture() ? 0 : (int) $startDate->diffInDays($today);
+                                                    $formattedDevDate = $startDate->format('d-m-Y');
+                                                } catch (\Exception $e) {
+                                                    $durasiDevDays = null;
+                                                }
+                                            }
+                                        }
+                                    @endphp
+                                    <div class="project-card-box draggable-card {{ $isDevCol ? 'is-dev-card' : '' }}" 
                                         draggable="true"
                                         data-idproject="{{ $proj->id }}" 
                                         data-rproject="{{ $proj->rproject }}" 
@@ -1187,6 +1355,23 @@
                                             </span>
                                             <span>{{ $proj->project_name }}</span>
                                         </div>
+
+                                        @if($isDevCol && $durasiDevDays !== null)
+                                            <div class="dev-duration-badge-wrapper">
+                                                <span class="dev-duration-badge {{ $durasiDevDays > 30 ? 'is-critical' : ($durasiDevDays > 14 ? 'is-warning' : 'is-normal') }}" 
+                                                      title="Durasi Development: {{ $durasiDevDays }} hari (Tanggal terakhir status Development: {{ $formattedDevDate }} &bull; Current date: {{ date('d-m-Y') }})">
+                                                    <span class="dev-badge-pulse-dot"></span>
+                                                    <svg class="dev-badge-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="12" cy="12" r="10"></circle>
+                                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                                    </svg>
+                                                    <span class="dev-badge-label">Dev</span>
+                                                    <span class="dev-badge-sep">&bull;</span>
+                                                    <span class="dev-badge-count">{{ $durasiDevDays }} hari</span>
+                                                </span>
+                                            </div>
+                                        @endif
+
                                         @if($proj->direktorat_rel || $proj->pic_name)
                                             <div class="project-sub-meta">
                                                 @if($proj->direktorat_rel)
@@ -1277,6 +1462,11 @@
             <div class="info-item">
                 <span class="info-label">Status Saat Ini</span>
                 <span class="info-value" id="detail_status" style="font-weight: 700; color: #15803d;">-</span>
+            </div>
+
+            <div class="info-item" id="detail_dev_duration_wrap" style="display: none;">
+                <span class="info-label">Durasi Development</span>
+                <span class="info-value" id="detail_dev_duration" style="font-weight: 700; color: #d97706;">-</span>
             </div>
 
             <div class="info-item">
@@ -1652,6 +1842,41 @@
         document.getElementById('detail_tanggal_awal').innerText = project.tanggal_awal ? formatDate(project.tanggal_awal) : '-';
         document.getElementById('detail_tanggal_akhir').innerText = project.tanggal_akhir ? formatDate(project.tanggal_akhir) : '-';
         document.getElementById('detail_status').innerText = project.rproject_relation ? project.rproject_relation.deskripsi : ('Step #' + (project.rproject || '0'));
+
+        // Durasi Development di Modal Detail
+        const devDurationWrap = document.getElementById('detail_dev_duration_wrap');
+        const devDateStr = project.last_dev_date || project.tanggal_awal || project.tanggal;
+        if (project.rproject == 1 && devDateStr) {
+            try {
+                const devStart = new Date(devDateStr);
+                const today = new Date();
+                devStart.setHours(0, 0, 0, 0);
+                today.setHours(0, 0, 0, 0);
+                const diffTime = today - devStart;
+                const diffDays = Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
+                
+                const formattedDate = formatDate(devDateStr);
+                const tierClass = diffDays > 30 ? 'is-critical' : (diffDays > 14 ? 'is-warning' : 'is-normal');
+                
+                document.getElementById('detail_dev_duration').innerHTML = `
+                    <span class="dev-duration-badge ${tierClass}" style="box-shadow: none;">
+                        <span class="dev-badge-pulse-dot"></span>
+                        <svg class="dev-badge-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <span class="dev-badge-count">${diffDays} hari</span>
+                        <span style="font-size: 0.72rem; font-weight: 500; opacity: 0.85;">(terhitung sejak ${formattedDate})</span>
+                    </span>
+                `;
+                if (devDurationWrap) devDurationWrap.style.display = 'flex';
+            } catch (e) {
+                if (devDurationWrap) devDurationWrap.style.display = 'none';
+            }
+        } else {
+            if (devDurationWrap) devDurationWrap.style.display = 'none';
+        }
+
         document.getElementById('detail_rkap').innerText = project.rkap || '-';
 
         // Catalog
