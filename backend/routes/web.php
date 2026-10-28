@@ -64,4 +64,5 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/laporan/progress', [LaporanController::class, 'progressIndex'])->name('laporan.progress');
     Route::get('/laporan/nonproject', [LaporanController::class, 'nonprojectIndex'])->name('laporan.nonproject');
+    Route::get('/laporan/kegiatan-bulanan', [LaporanController::class, 'kegiatanBulanan'])->name('laporan.kegiatan_bulanan');
 });

@@ -428,6 +428,16 @@
             color: var(--text-muted);
         }
 
+        .pagination svg,
+        nav[role="navigation"] svg {
+            width: 1rem !important;
+            height: 1rem !important;
+            max-width: 16px !important;
+            max-height: 16px !important;
+            vertical-align: middle;
+            display: inline-block;
+        }
+
         @yield('custom-styles')
     </style>
 </head>
@@ -489,6 +499,7 @@
             <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
             <a href="{{ route('laporan.progress') }}" class="nav-item {{ request()->routeIs('laporan.progress') ? 'active' : '' }}">Project</a>
             <a href="{{ route('laporan.nonproject') }}" class="nav-item {{ request()->routeIs('laporan.nonproject') ? 'active' : '' }}">Non Project</a>
+            <a href="{{ route('laporan.kegiatan_bulanan') }}" class="nav-item {{ request()->routeIs('laporan.kegiatan_bulanan') ? 'active' : '' }}">Kegiatan Bulanan</a>
         </div>
         
         <div class="spacer"></div>

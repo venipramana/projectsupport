@@ -170,4 +170,142 @@ class LaporanController extends Controller
             'data', 'allData', 'total_kegiatan', 'tahunOptions', 'bulanOptions', 'picOptions'
         ));
     }
+
+    public function kegiatanBulanan(Request $request)
+    {
+        $selectedTahun = $request->has('tahun') ? (string) $request->query('tahun', '') : (string) date('Y');
+        $selectedBulan = $request->has('bulan') ? (string) $request->query('bulan', '') : (string) (int) date('m');
+        $selectedSearch = (string) $request->query('search', '');
+        $selectedSumber = (string) $request->query('sumber', '');
+
+        // Query dari hproject
+        $hprojectQuery = DB::table('hproject')
+            ->leftJoin('project', 'hproject.idproject', '=', 'project.id')
+            ->leftJoin('rproject', 'hproject.rproject', '=', 'rproject.id')
+            ->select([
+                DB::raw("'project' COLLATE utf8mb4_general_ci as sumber"),
+                'hproject.id as ref_id',
+                DB::raw('CAST(hproject.tanggal AS CHAR) COLLATE utf8mb4_general_ci as tanggal'),
+                DB::raw("COALESCE(project.project_name, CONCAT('Project #', hproject.idproject)) COLLATE utf8mb4_general_ci as project_kegiatan"),
+                DB::raw("COALESCE(rproject.deskripsi, '-') COLLATE utf8mb4_general_ci as deskripsi_kegiatan"),
+                DB::raw("COALESCE(hproject.catatan, '') COLLATE utf8mb4_general_ci as catatan"),
+            ]);
+
+        // Query dari nonproject
+        $nonprojectQuery = DB::table('nonproject')
+            ->select([
+                DB::raw("'nonproject' COLLATE utf8mb4_general_ci as sumber"),
+                'nonproject.id as ref_id',
+                DB::raw("(CASE WHEN CHAR_LENGTH(tanggal) = 8 THEN CONCAT(SUBSTRING(tanggal, 1, 4), '-', SUBSTRING(tanggal, 5, 2), '-', SUBSTRING(tanggal, 7, 2)) ELSE tanggal END) COLLATE utf8mb4_general_ci as tanggal"),
+                DB::raw("'LAIN-LAIN' COLLATE utf8mb4_general_ci as project_kegiatan"),
+                DB::raw("COALESCE(kegiatan, '-') COLLATE utf8mb4_general_ci as deskripsi_kegiatan"),
+                DB::raw("COALESCE(catatan, '') COLLATE utf8mb4_general_ci as catatan"),
+            ]);
+
+        // Filter hproject berdasarkan tahun & bulan
+        if ($selectedTahun !== '') {
+            $hprojectQuery->whereYear('hproject.tanggal', $selectedTahun);
+        }
+        if ($selectedBulan !== '') {
+            $hprojectQuery->whereMonth('hproject.tanggal', $selectedBulan);
+        }
+
+        // Filter nonproject berdasarkan tahun & bulan
+        if ($selectedTahun !== '' && $selectedBulan !== '') {
+            $bulanPad = sprintf('%02d', (int) $selectedBulan);
+            $nonprojectQuery->where(function ($q) use ($selectedTahun, $bulanPad) {
+                $q->where('nonproject.tanggal', 'like', $selectedTahun . $bulanPad . '%')
+                  ->orWhere('nonproject.tanggal', 'like', $selectedTahun . '-' . $bulanPad . '%');
+            });
+        } elseif ($selectedTahun !== '') {
+            $nonprojectQuery->where(function ($q) use ($selectedTahun) {
+                $q->where('nonproject.tanggal', 'like', $selectedTahun . '%');
+            });
+        } elseif ($selectedBulan !== '') {
+            $bulanPad = sprintf('%02d', (int) $selectedBulan);
+            $nonprojectQuery->where(function ($q) use ($bulanPad) {
+                $q->where('nonproject.tanggal', 'like', '____' . $bulanPad . '%')
+                  ->orWhere('nonproject.tanggal', 'like', '____-' . $bulanPad . '%');
+            });
+        }
+
+        // Satukan kedua query menggunakan unionAll dan subquery wrapper
+        $combined = $hprojectQuery->unionAll($nonprojectQuery);
+        $outerQuery = DB::query()->fromSub($combined, 'combined_kegiatan');
+
+        if ($selectedSumber !== '') {
+            $outerQuery->where('sumber', $selectedSumber);
+        }
+
+        if ($selectedSearch !== '') {
+            $outerQuery->where(function ($q) use ($selectedSearch) {
+                $q->where('project_kegiatan', 'like', '%' . $selectedSearch . '%')
+                  ->orWhere('deskripsi_kegiatan', 'like', '%' . $selectedSearch . '%')
+                  ->orWhere('catatan', 'like', '%' . $selectedSearch . '%');
+            });
+        }
+
+        // Hitung total ringkasan
+        $total_kegiatan = (clone $outerQuery)->count();
+        $total_project = (clone $outerQuery)->where('sumber', 'project')->count();
+        $total_nonproject = (clone $outerQuery)->where('sumber', 'nonproject')->count();
+
+        // Data lengkap untuk ekspor Excel (Project didahulukan, lalu di-sort berdasarkan project/kegiatan)
+        $allData = (clone $outerQuery)
+            ->orderByRaw("CASE WHEN sumber = 'project' THEN 1 ELSE 2 END ASC")
+            ->orderBy('project_kegiatan', 'asc')
+            ->orderBy('tanggal', 'asc')
+            ->orderBy('ref_id', 'asc')
+            ->get();
+
+        // Data paginasi untuk tampilan tabel
+        $data = $outerQuery
+            ->orderByRaw("CASE WHEN sumber = 'project' THEN 1 ELSE 2 END ASC")
+            ->orderBy('project_kegiatan', 'asc')
+            ->orderBy('tanggal', 'asc')
+            ->orderBy('ref_id', 'asc')
+            ->paginate(25)
+            ->withQueryString();
+
+        // Ambil daftar tahun unik dari kedua tabel
+        $hYears = DB::table('hproject')
+            ->select(DB::raw('YEAR(tanggal) as tahun'))
+            ->whereNotNull('tanggal')
+            ->distinct()
+            ->pluck('tahun')
+            ->map(fn($y) => (string) $y);
+
+        $nYears = DB::table('nonproject')
+            ->select(DB::raw('SUBSTRING(tanggal, 1, 4) as tahun'))
+            ->whereNotNull('tanggal')
+            ->whereRaw('CHAR_LENGTH(tanggal) >= 4')
+            ->distinct()
+            ->pluck('tahun')
+            ->map(fn($y) => (string) $y);
+
+        $currentYear = (string) date('Y');
+        $tahunOptions = $hYears->merge($nYears)->push($currentYear)->filter()->unique()->sortDesc()->values();
+
+        $bulanOptions = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
+
+        return view('laporan.kegiatan_bulanan.index', compact(
+            'data', 'allData', 'total_kegiatan', 'total_project', 'total_nonproject',
+            'tahunOptions', 'bulanOptions',
+            'selectedTahun', 'selectedBulan', 'selectedSearch', 'selectedSumber'
+        ));
+    }
 }
+
